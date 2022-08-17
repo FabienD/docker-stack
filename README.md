@@ -6,7 +6,7 @@ This project is composed of a collection of usefull docker-compose files and a c
 
 ## A collection of docker-compose files
 
-A pre-configured docker-compose files [collection](.collection) helping web developers.
+A pre-configured docker-compose files [collection](collection) helping web developers.
 
 The collection is composed of five parts. Each ".dist" files need to be copy as as ".yml" file and customized.
 
@@ -24,6 +24,7 @@ The collection is composed of five parts. Each ".dist" files need to be copy as 
 | Portainer EE | The container manager | tools | stack.tools.portainer | [⤴](https://hub.docker.com/r/portainer/portainer-ee) | [⤴](https://docs.portainer.io/) |
 
 You can add our own services to the collection, decide which services are enabled by default or not.
+Softwares version, credentials are also configurable, this is defined in the environment file on the root of the collection.
 
 Don't hesitate to make a PR to improve the collection.
 
@@ -57,7 +58,7 @@ https://dashboard.stack.local (default)
 
 As the reverse proxy service, the mail catcher service is also exposed through a local domain.
 
-https://mailcatcher.stack.local (default)
+http://mailcatcher.stack.local (default)
 
 ![Mailcatcher Dashboard](doc/stack_mailcatcher.png)
 
@@ -80,7 +81,11 @@ RabbitMQ service is exposed on port 5672, and accessible at http://rabbitmq.stac
 
 #### 2.3. PostgreSQL
 
+PostgreSQL service is exposed on port 5432, the default port for PostgreSQL.
+
 #### 2.4. MySQL
+
+MySQL service is exposed on port 3306, the default port for MySQL.
 
 ### 3. Logging
 
