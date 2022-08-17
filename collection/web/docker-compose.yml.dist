@@ -1,0 +1,60 @@
+services:
+
+  # The reverse proxy. 
+  # Use a local domain to contact your web applications.
+  reverse-proxy:
+    container_name: stack.web.reverse_proxy
+    image: traefik:${TRAEFIK_VERSION}
+    command:
+      --api.dashboard=true
+      --providers.docker=true
+      --providers.docker.useBindPortIP=true
+      --providers.docker.exposedbydefault=false
+      --entrypoints.websecure.address=:443
+      --entrypoints.web.address=:80
+      #--entrypoints.web.http.redirections.entryPoint.to=websecure
+      #--entrypoints.web.http.redirections.entryPoint.scheme=https
+      --certificatesresolvers.letsencryptresolver.acme.httpchallenge=true
+      --certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web
+      --certificatesresolvers.letsencryptresolver.acme.email=user@example.com
+      --certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.js
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`dashboard.${DOMAIN}`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencryptresolver"
+      #- "traefik.http.routers.dashboard.middlewares=traefik-auth"
+      # Change user password using htpasswd, https://doc.traefik.io/traefik/middlewares/http/basicauth/ 
+      # demo user & password : (admin/password)
+      #- "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$gs0jc43w$$BGFNtdrIPtMa/qbWKWvs0."
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - traefik-certificates:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  # SMTP catcher
+  mailcatcher:
+    container_name: stack.web.mailcatcher
+    image: schickling/mailcatcher:${MAILCATCHER_VERSION}
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailcatcher.rule=Host(`mailcatcher.${DOMAIN}`)"
+      - "traefik.http.routers.mailcatcher.entrypoints=web"
+      - "traefik.http.routers.mailcatcher.service=mailcatcher"
+      - "traefik.http.services.mailcatcher.loadbalancer.server.port=1080"
+    ports:
+      - "1025:1025"
+      - "1080"
+
+volumes:
+  traefik-certificates:
+
+networks:
+  default:
+    name: ${DOCKER_NETWORK}
+    external: true
