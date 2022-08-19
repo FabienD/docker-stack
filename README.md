@@ -8,9 +8,9 @@ This project is composed of a collection of usefull docker-compose files and a c
 
 A pre-configured docker-compose files [collection](collection) helping web developers.
 
-The collection is composed of five parts. Each ".dist" files need to be copy as as ".yml" file and customized.
+The collection is composed of five categories (web, data, logging, tools, monitoring). To use a service, each ```.dist``` files need to be copy as as ```.yml``` file and customized.
 
-| Application     | Description             | Stack      | container name | Image docker | Documentation |
+| Application     | Description             | Category      | container name | Image docker | Documentation |
 |-----------------|-------------------------|------------|----------------|--------------|---------------|
 | Traefik | expose localy your application through a local domain | web | stack.web.reverse | [⤴](https://hub.docker.com/_/traefik) | [⤴](https://docs.traefik.io/en/latest/) |
 | Mail Catcher | catch all emails sent | web | stack.web.mailcatcher | [⤴](https://hub.docker.com/r/schickling/mailcatcher) | [⤴](https://mailcatcher.me/) |
@@ -30,7 +30,7 @@ Don't hesitate to make a PR to improve the collection.
 
 ## Requirements
 
-Docker is required to run the stack. The stack share the same [docker network](https://docs.docker.com/network/) to facilated communication between services. The network is named "stack_dev" in all docker-compose.yml file.
+Docker is required to run the stack. The stack share the same [docker network](https://docs.docker.com/network/) to facilated communication between services. The network is named "stack_dev" in all ```docker-compose.yml``` file.
 
 ```bash
 docker network create stack_dev
@@ -42,17 +42,17 @@ Be free to change the name of the network or use multiple networks.
 
 This is the base of all web projects, composed of the following services :
 
-- A reversed proxy service (Traefik), which is a reverse proxy service that forwards requests to the web application.
-- A mail catcher service (MailCatcher), which is a service that catches all emails sent to the web application.
+- A reversed proxy service (Traefik), which is a reverse proxy service that forwards requests to your different applications. You don't have to worry about the port number, the request can be routed to the right application by following a local domain name rule (a host rule in Traefik).
+- A mail catcher service (MailCatcher), which is a service that catches all emails sent from your applications.
 
 #### 1.1. Reverse proxy
 
 The reverse proxy web interface is exposed through a local domain. The domain is defined in the environnement file in the root of the docker-compose files collection.
-Copy the .env.dist file to .env, and change the domain to your local domain.
+Copy the ```.env.dist``` file to ```.env```, and change the domain to your local domain.
 
 https://dashboard.stack.local (default)
 
-![Traefil Dashboard](doc/stack_reverse_proxy.png)
+![Traefil Dashboard](doc/assets/stack_reverse_proxy.png)
 
 #### 1.2. MailCatcher
 
@@ -60,7 +60,7 @@ As the reverse proxy service, the mail catcher service is also exposed through a
 
 http://mailcatcher.stack.local (default)
 
-![Mailcatcher Dashboard](doc/stack_mailcatcher.png)
+![Mailcatcher Dashboard](doc/assets/stack_mailcatcher.png)
 
 ### 2. Data
 
@@ -77,7 +77,7 @@ Redis service is exposed on port 6379.
 
 RabbitMQ service is exposed on port 5672, and accessible at http://rabbitmq.stack.local for management.
 
-![RabbitMQ Dashboard](doc/stack_rabbitmq.png)
+![RabbitMQ Dashboard](doc/assets/stack_rabbitmq.png)
 
 #### 2.3. PostgreSQL
 
@@ -89,10 +89,30 @@ MySQL service is exposed on port 3306, the default port for MySQL.
 
 ### 3. Logging
 
-- A log service (Rsyslog), which is a service that provides a log aggregator.
 - A Loki service (Loki), which is a service that provides a log viewer.
+- A log service (Rsyslog), which is a service that provides a log aggregator.
+
+#### 3.1. Loki
+
+Loki API service is exposed on port 3100, the default port for Loki. Loki is use to collected Docker logs of containers where you have selected Loki as driver.
+
+To use Loki, you need to [install the docker driver](https://grafana.com/docs/loki/latest/clients/docker-driver/) before, create the loki configuration using the sample file in ```logging/docker/loki/loki-local-config.yaml```. Then, connect loki API to your Grafana
+
+Loki metrics are accessible at http://loki.stack.local/metrics.
+
+We use Grafana (in the tools stack) to explore loki collected logs. [Signin in Grafana](http://grafana.stack.local) with the default credentials (admin/admin) and add a Loki datasource. [Add a new datasource](http://grafana.stack.local/datasources), and select Loki as type.
+
+Use the Loki container name as URL : http://stack.logging.loki:3100
+
+![Loki Datasource](doc/assets/stack_loki.png)
+
+#### 3.2. Rsyslog
+
+WIP, not yet provided.
 
 ### 4. Monitoring
+
+WIP, not yet provided.
 
 ### 5. Tools
 

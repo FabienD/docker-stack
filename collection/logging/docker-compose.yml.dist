@@ -1,0 +1,23 @@
+services:
+ 
+  loki:
+   container_name: stack.logging.loki
+   image: grafana/loki:${LOKI_VERSION}
+   restart: always
+   labels:
+     - "traefik.enable=true"
+     - "traefik.http.routers.loki.rule=Host(`loki.${DOMAIN}`)"
+     - "traefik.http.routers.loki.entrypoints=web"
+     - "traefik.http.routers.loki.service=loki"
+     - "traefik.http.services.loki.loadbalancer.server.port=3100"
+   ports:
+     - "3100"
+   command: -config.file=/etc/loki/loki-local-config.yaml
+   volumes:
+     - ./docker/loki:/etc/loki
+
+
+networks:
+  default:
+    name: ${DOCKER_NETWORK}
+    external: true
