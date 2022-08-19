@@ -119,7 +119,17 @@ WIP, not yet provided.
 - A container manager, which is a tool to manage containers (Portainer).
 - A Grafana service (Grafana), which is a service that provides a dashboard.
 
----
+#### 5.1. Portainer
+
+Portainer is a service that provides a web interface to manage containers.
+
+http://portainer.stack.local (default)
+
+![Portainer Dashboard](doc/assets/stack_portainer.png)
+
+#### 5.2. Grafana
+
+As you have seen if you use Loki, Grafana is also used to explore data collected by different types of sources. You can add a new data source, and select the type of data you want to explore. We use Grafana to visualize tracking and logging data.
 
 ## A cli tools to register and manage docker-compose files
 
