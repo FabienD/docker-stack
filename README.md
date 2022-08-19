@@ -117,7 +117,7 @@ WIP, not yet provided.
 ### 5. Tools
 
 - A container manager, which is a tool to manage containers (Portainer).
-- A Grafana service (Grafana), which is a service that provides a dashboard.
+- A Grafana service (Grafana), which is a service that provides a dashboard to visualize data.
 
 #### 5.1. Portainer
 
@@ -129,9 +129,15 @@ http://portainer.stack.local (default)
 
 #### 5.2. Grafana
 
-As you have seen if you use Loki, Grafana is also used to explore data collected by different types of sources. You can add a new data source, and select the type of data you want to explore. We use Grafana to visualize tracking and logging data.
+As you have seen if you use Loki, Grafana is also used to explore data collected by different types of sources. 
 
-## A cli tools to register and manage docker-compose files
+You can add a new data source, and select the type of data you want to explore. We use Grafana to visualize tracking and logging data.
+
+http://grafana.stack.local (default)
+
+## A cli tools, a docker compose missing feature
+
+**NOT YET IMPLEMENTED**
 
 The cli tools source can be found at [cli](./cli/), it is a Rust binary.
 
@@ -188,7 +194,6 @@ compose_files = [
 ]
 ```
 
-
 ### The cli usage
 
 #### List registered docker-compose files
@@ -215,4 +220,12 @@ dctl stop -n <name>
 dctl restart -n <name>
 ```
 
+## Use the collection without the cli tools
 
+You can use all of the docker-compose files without the cli tools. Simply use the docker-compose command, like this :
+
+```bash
+docker compose -f /docker-stack/web/docker-compose.yml --env-file /docker-stack/.env up -d
+```
+
+Notice that tou use the docker compose V2 syntax.
