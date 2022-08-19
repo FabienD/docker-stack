@@ -21,7 +21,7 @@ The collection is composed of five categories (web, data, logging, tools, monito
 | Rsyslog | A log aggregator | logging | stack.logging.rsyslog | [⤴]() | [⤴]() |
 | Loki | A log aggregator | logging | stack.logging.loki | [⤴](https://hub.docker.com/r/grafana/loki) | [⤴](https://grafana.com/docs/loki/latest/?pg=oss-graf&plcmt=quick-links) |
 | Grafana | The dashboard | tools | stack.tools.grafana | [⤴](https://hub.docker.com/r/grafana/grafana) | [⤴](https://grafana.com/docs/grafana/latest/?pg=oss-graf&plcmt=quick-links) |
-| Portainer EE | The container manager | tools | stack.tools.portainer | [⤴](https://hub.docker.com/r/portainer/portainer-ee) | [⤴](https://docs.portainer.io/) |
+| Portainer CE | The container manager | tools | stack.tools.portainer | [⤴](https://hub.docker.com/r/portainer/portainer.ce) | [⤴](https://docs.portainer.io/) |
 
 You can add our own services to the collection, decide which services are enabled by default or not.
 Softwares version, credentials are also configurable, this is defined in the environment file on the root of the collection.
