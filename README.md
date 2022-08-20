@@ -1,6 +1,7 @@
 # The docker Stack
 
-This project is composed of a collection of usefull docker-compose files and a cli tool to manage them.
+This project is composed of a collection of usefull docker-compose files for web developpers.
+This project will provide a cli to manage the stack (NOT YET IMPLEMENTED).
 
 ---
 
@@ -56,6 +57,26 @@ https://dashboard.stack.local (default)
 
 ![Traefil Dashboard](doc/assets/stack_reverse_proxy.png)
 
+If you want to use a local domain with your application, you must explicitly set the use traefik with docker labels:
+
+```yaml
+services:
+  # Your application web server
+  nginx:
+    container_name: myapp-nginx
+    image: nginx:1.20
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.myapp.rule=Host(`myapp.stack.local`)"
+      - "traefik.http.routers.myapp.entrypoints=web"
+      - "traefik.http.routers.myapp.service=myapp"
+      - "traefik.http.services.myapp.loadbalancer.server.port=8080"
+    ports:
+      - "8080"
+```
+
+Your application can be accessed at ```http://myapp.stack.local```. The entrypoint is ```web``` (port 80), Traefik forwards requests to the port 8080 of your application. Note that the application port 8080 is not exposed.
+
 #### 1.2. MailCatcher
 
 The mail catcher web interface is available via a local domain.
@@ -64,7 +85,7 @@ http://mailcatcher.stack.local (default)
 
 ![Mailcatcher Dashboard](doc/assets/stack_mailcatcher.png)
 
-The SMTP server is exposed on the port 1025.
+The SMTP server is exposed on the port 1025, no authentication is required.
 
 ### 2. Data
 
@@ -75,21 +96,24 @@ The SMTP server is exposed on the port 1025.
 
 #### 2.1. Redis
 
-Redis service is exposed on port 6379.
+Redis service is exposed on port 6379, no authentication is required.
 
 #### 2.2. RabbitMQ
 
 RabbitMQ service is exposed on port 5672, and the managment interface is available via http://rabbitmq.stack.local
+Credentials are defined in the ```.env``` file.
 
 ![RabbitMQ Dashboard](doc/assets/stack_rabbitmq.png)
 
 #### 2.3. PostgreSQL
 
 PostgreSQL service is exposed on port 5432, the default port for PostgreSQL.
+Credentials are defined in the ```.env``` file.
 
 #### 2.4. MySQL
 
 MySQL service is exposed on port 3306, the default port for MySQL.
+Credentials are defined in the ```.env``` file.
 
 ### 3. Logging
 
@@ -113,6 +137,19 @@ We use Grafana (in the tools stack) to explore loki collected logs.
 Use the Loki container name as URL : http://stack.logging.loki:3100
 
 ![Loki Datasource](doc/assets/stack_loki.png)
+
+If you want to see the logs of a container, you must explicitly use Loki as the docker driver and send application log to the standart output.
+
+```yaml
+services:
+  php-fpm:
+    container_name: myapp-php-fpm
+    image: myprod/php:8.1-fpm
+    logging:
+      driver: loki
+      options:
+        loki-url: http://loki.stack.local/loki/api/v1/push
+```
 
 #### 3.2. Rsyslog
 
