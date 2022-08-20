@@ -8,7 +8,7 @@ This project is composed of a collection of usefull docker-compose files and a c
 
 A pre-configured docker-compose files [collection](collection) helping web developers.
 
-The collection is composed of five categories (web, data, logging, tools, monitoring). To use a service, each ```.dist``` files need to be copy as as ```.yml``` file and customized.
+The collection is composed of five categories (web, data, logging, tools, monitoring). To use a service, each ```.dist``` files need to be copy as as ```.yml``` file.
 
 | Application     | Description             | Category      | container name | Image docker | Documentation |
 |-----------------|-------------------------|------------|----------------|--------------|---------------|
@@ -23,32 +23,34 @@ The collection is composed of five categories (web, data, logging, tools, monito
 | Grafana | The dashboard | tools | stack.tools.grafana | [⤴](https://hub.docker.com/r/grafana/grafana) | [⤴](https://grafana.com/docs/grafana/latest/?pg=oss-graf&plcmt=quick-links) |
 | Portainer CE | The container manager | tools | stack.tools.portainer | [⤴](https://hub.docker.com/r/portainer/portainer.ce) | [⤴](https://docs.portainer.io/) |
 
-You can add our own services to the collection, decide which services are enabled by default or not.
-Softwares version, credentials are also configurable, this is defined in the environment file on the root of the collection.
+You can add our own services to the collection and customize the existing ones.
+Softwares version and few properties are also configurable, this is defined in the environment file on the root of the collection.
 
-Don't hesitate to make a PR to improve the collection.
+If you want to contribute and improve this project, fix a typo, make it better (sorry for my english, please correct me), you're welcome, make me a PR.
 
 ## Requirements
 
-Docker is required to run the stack. The stack share the same [docker network](https://docs.docker.com/network/) to facilated communication between services. The network is named "stack_dev" in all ```docker-compose.yml``` file.
+[Docker](https://docs.docker.com/engine/install/) is required to run the stack. The stack share the same [docker network](https://docs.docker.com/network/) to facilated communication between containers. The network is named "stack_dev" by default.
 
 ```bash
 docker network create stack_dev
 ```
 
-Be free to change the name of the network or use multiple networks.
+Be free to change the name of the network, you can change it by editing the ```.env``` file in the root of the collection.
+
+Copy the ```.env.dist``` file to ```.env```, and change the value of the ```DOCKER_NETWORK``` variable.
 
 ### 1. Web
 
-This is the base of all web projects, composed of the following services :
+This is the **base** of all web projects, composed of the following services:
 
-- A reversed proxy service (Traefik), which is a reverse proxy service that forwards requests to your different applications. You don't have to worry about the port number, the request can be routed to the right application by following a local domain name rule (a host rule in Traefik).
-- A mail catcher service (MailCatcher), which is a service that catches all emails sent from your applications.
+- A reversed proxy service (Traefik) that forwards requests to your different applications. You don't have to worry about multiple application port number, the request can be routed to the right application by following a local domain name rule (a host rule in Traefik). So, each application can have is own local domain. For example, the application "myapp" can be accessible at the address ```myapp.stack.local```.
+- A mail catcher service (MailCatcher) that catches all emails sent from your applications. This is avoid to send accidentally emails to real users, you can also check the content of the emails sent by your application whitout beeing connected to Internet.
 
 #### 1.1. Reverse proxy
 
-The reverse proxy web interface is exposed through a local domain. The domain is defined in the environnement file in the root of the docker-compose files collection.
-Copy the ```.env.dist``` file to ```.env```, and change the domain to your local domain.
+The reverse proxy web interface is available via a local domain. The domain is defined in the environnement file, ```DOMAIN```.
+To work, ```the local domain should target the Docker Host IP```.
 
 https://dashboard.stack.local (default)
 
@@ -56,18 +58,20 @@ https://dashboard.stack.local (default)
 
 #### 1.2. MailCatcher
 
-As the reverse proxy service, the mail catcher service is also exposed through a local domain.
+The mail catcher web interface is available via a local domain.
 
 http://mailcatcher.stack.local (default)
 
 ![Mailcatcher Dashboard](doc/assets/stack_mailcatcher.png)
 
+The SMTP server is exposed on the port 1025.
+
 ### 2. Data
 
-- A Redis service, which is a service that provides a cache.
-- A RabbitMQ service, which is a service that provides a message broker.
-- A PostgreSQL service, which is a service that provides a database.
-- A MySQL service, which is a service that provides a database.
+- A Redis service that provides a cache.
+- A RabbitMQ service that provides a message broker.
+- A PostgreSQL service that provides a PostrgreSQL database instance.
+- A MySQL service that provides a MySQL database instance.
 
 #### 2.1. Redis
 
@@ -75,7 +79,7 @@ Redis service is exposed on port 6379.
 
 #### 2.2. RabbitMQ
 
-RabbitMQ service is exposed on port 5672, and accessible at http://rabbitmq.stack.local for management.
+RabbitMQ service is exposed on port 5672, and the managment interface is available via http://rabbitmq.stack.local
 
 ![RabbitMQ Dashboard](doc/assets/stack_rabbitmq.png)
 
@@ -89,18 +93,22 @@ MySQL service is exposed on port 3306, the default port for MySQL.
 
 ### 3. Logging
 
-- A Loki service (Loki), which is a service that provides a log viewer.
-- A log service (Rsyslog), which is a service that provides a log aggregator.
+- A Loki service (Loki) that provides a log aggregator.
+- A log service (Rsyslog) that provides a log aggregator.
 
 #### 3.1. Loki
 
-Loki API service is exposed on port 3100, the default port for Loki. Loki is use to collected Docker logs of containers where you have selected Loki as driver.
+Loki API service is exposed on port 3100, the default port for Loki. Loki is use to collect Docker logs of containers (where you have selected Loki as driver).
 
 To use Loki, you need to [install the docker driver](https://grafana.com/docs/loki/latest/clients/docker-driver/) before, create the loki configuration using the sample file in ```logging/docker/loki/loki-local-config.yaml```. Then, connect loki API to your Grafana
 
 Loki metrics are accessible at http://loki.stack.local/metrics.
 
-We use Grafana (in the tools stack) to explore loki collected logs. [Signin in Grafana](http://grafana.stack.local) with the default credentials (admin/admin) and add a Loki datasource. [Add a new datasource](http://grafana.stack.local/datasources), and select Loki as type.
+We use Grafana (in the tools stack) to explore loki collected logs.
+
+[Signin in Grafana](http://grafana.stack.local) with the default credentials (admin/admin) and add a Loki datasource. 
+
+[Add a new datasource](http://grafana.stack.local/datasources), and select Loki as type.
 
 Use the Loki container name as URL : http://stack.logging.loki:3100
 
@@ -117,7 +125,7 @@ WIP, not yet provided.
 ### 5. Tools
 
 - A container manager, which is a tool to manage containers (Portainer).
-- A Grafana service (Grafana), which is a service that provides a dashboard to visualize data.
+- A Grafana service (Grafana) that provides a dashboard to visualize data.
 
 #### 5.1. Portainer
 
@@ -129,7 +137,7 @@ http://portainer.stack.local (default)
 
 #### 5.2. Grafana
 
-As you have seen if you use Loki, Grafana is also used to explore data collected by different types of sources. 
+As you have seen if you use Loki, Grafana is also used to explore data collected by different types of sources.
 
 You can add a new data source, and select the type of data you want to explore. We use Grafana to visualize tracking and logging data.
 
