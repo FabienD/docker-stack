@@ -241,6 +241,10 @@ compose_files = [
 
 ### The cli usage
 
+```bash
+dctl --help
+```
+
 #### List registered docker-compose files
 
 ```bash
@@ -250,19 +254,19 @@ dctl list
 #### Start a docker-compose file
 
 ```bash
-dctl start -n <name>
+dctl start <name>
 ```
 
 #### Stop a docker-compose file
 
 ```bash
-dctl stop -n <name>
+dctl stop <name>
 ```
 
 #### Restart a docker-compose file
 
 ```bash
-dctl restart -n <name>
+dctl restart <name>
 ```
 
 ## Use the collection without the cli tools
