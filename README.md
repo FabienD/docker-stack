@@ -197,41 +197,45 @@ The config file is a TOML file, with the following structure :
 
 ```toml
 [main]
-DOCKER_PATH = "/usr/bin/docker"
+docker_bin = "/usr/bin/docker"
 
-[collections]
-
-[collections.stack_web]
+[[collections]]
+alias = "stack_web"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
     "/home/fabien/workspace/infra/docker-stack/web/docker-compose.yml",
 ]
 
-[collections.stack_logging]
+[[collections]]
+alias = "stack_logging"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
     "/home/fabien/workspace/infra/docker-stack/logging/docker-compose.yml",
 ]
 
-[collections.stack_tools]
+[[collections]]
+alias = "stack_tools"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
     "/home/fabien/workspace/infra/docker-stack/tools/docker-compose.yml",
 ]
 
-[collections.stack_data]
+[[collections]]
+alias = "stack_data"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
     "/home/fabien/workspace/infra/docker-stack/data/docker-compose.yml",
 ]
 
-[collections.porject_name1]
+[[collections]]
+alias = "project_name1"
 enviroment_file = "/home/fabien/workspace/apps/project1/.env"
 compose_files = [
     "/home/fabien/workspace/apps/project1/docker-compose.yml",
 ]
 
-[collections.porject_name2]
+[[collections]]
+alias = "project_name2"
 enviroment_file = "/home/fabien/workspace/apps/project2/.env"
 compose_files = [
     "/home/fabien/workspace/apps/project2/worker/docker-compose.yml",

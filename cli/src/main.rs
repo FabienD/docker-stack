@@ -1,4 +1,6 @@
 use clap::{Parser, Subcommand};
+use dotenv::dotenv;
+use std::env;
 
 #[derive(Parser)]
 #[clap(author, version, about="A docker-compose missing feature.", long_about="Register docker-compose files, then, play with them whereever you are in the terminal.")]
@@ -36,6 +38,14 @@ enum Commands {
 }
 
 fn main() {
+    // Load .env file
+    dotenv().ok();
+    // Get the custom config file path from env
+    let config_file_path = env::var("CONFIG_FILE_PATH").unwrap_or_else(|_| String::from("~/.config/dctl/config.toml"));
+    // Load config file
+    let config = parser::DctlConfig::load(config_file_path);
+    
+
     let cli = Cli::parse();
     
     match &cli.command {
