@@ -1,7 +1,7 @@
 # The docker Stack
 
 This project is composed of a collection of usefull docker-compose files for web developpers.
-This project will provide a cli to manage the stack (NOT YET IMPLEMENTED).
+This project will provide a cli to manage the stack.
 
 ---
 
@@ -182,9 +182,7 @@ http://grafana.stack.local (default)
 
 ## A cli tools, a docker compose missing feature
 
-**NOT YET IMPLEMENTED**
-
-The cli tools source can be found at [cli](./cli/), it is a Rust binary.
+The cli tools source can be found at [cli](./cli/), it's write in Rust.
 
 ### The cli goals
 
