@@ -201,6 +201,7 @@ docker_bin = "/usr/bin/docker"
 
 [[collections]]
 alias = "stack_web"
+description = "Docker stack - web components"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
     "/home/fabien/workspace/infra/docker-stack/web/docker-compose.yml",
@@ -208,6 +209,7 @@ compose_files = [
 
 [[collections]]
 alias = "stack_logging"
+description = "Docker stack - logging components"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
     "/home/fabien/workspace/infra/docker-stack/logging/docker-compose.yml",
@@ -215,6 +217,7 @@ compose_files = [
 
 [[collections]]
 alias = "stack_tools"
+description = "Docker stack - tools components"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
     "/home/fabien/workspace/infra/docker-stack/tools/docker-compose.yml",
@@ -222,6 +225,7 @@ compose_files = [
 
 [[collections]]
 alias = "stack_data"
+description = "Docker stack - data components"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
     "/home/fabien/workspace/infra/docker-stack/data/docker-compose.yml",
@@ -229,6 +233,7 @@ compose_files = [
 
 [[collections]]
 alias = "project_name1"
+description = "The project 1"
 enviroment_file = "/home/fabien/workspace/apps/project1/.env"
 compose_files = [
     "/home/fabien/workspace/apps/project1/docker-compose.yml",
@@ -236,6 +241,7 @@ compose_files = [
 
 [[collections]]
 alias = "project_name2"
+description = "The project 2"
 enviroment_file = "/home/fabien/workspace/apps/project2/.env"
 compose_files = [
     "/home/fabien/workspace/apps/project2/worker/docker-compose.yml",
