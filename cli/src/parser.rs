@@ -1,6 +1,6 @@
-use std::fs;
+use eyre::{Context, Result};
 use serde::Deserialize;
-use eyre::{Result, Context};
+use std::fs;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct ComposeItem {
@@ -28,10 +28,10 @@ impl DctlConfig {
         // Read the config file
         let config_content = fs::read_to_string(&full_config_path)
             .wrap_err(format!("config file not found in {full_config_path}"))?;
-        // Parse the config file    
+        // Parse the config file
         let config: DctlConfig = toml::from_str(config_content.as_str())
             .wrap_err("TOML parse error, check your config file structure.")?;
-        
+
         Ok(config)
     }
 
