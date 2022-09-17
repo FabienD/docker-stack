@@ -191,6 +191,16 @@ The cli tools source can be found at [cli](./cli/), it is a Rust binary.
 The cli tool can "manage" multiple docker-compose files (start, stop, restart, ...) from everywhere in your terminal.
 All registered docker-compose files are stored in a configuration file (config.toml), by default in your home directory (~/.config/dctl/config.toml).
 
+### Installation
+
+You can download the binary from the [release page](https://github.com/FabienD/docker-stack/releases)
+
+Or you can build it from source. You need to [install Rust and Cargo](https://www.rust-lang.org/tools/install) before.
+
+```bash
+cd cli && cargo build --release
+```
+
 ### The config file
 
 The config file is a TOML file, with the following structure :
