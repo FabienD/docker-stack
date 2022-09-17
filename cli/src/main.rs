@@ -39,7 +39,7 @@ enum Commands {
 }
 
 fn execute_compose_command(config: parser::DctlConfig, command: &Commands, name: String) -> Result<()> {
-    let execution = match config.get_compose_item_by_alias(name.to_string()) {
+    match config.get_compose_item_by_alias(name.to_string()) {
         Some(item) => {
             match command {
                 Commands::Start { .. } => docker::start(item),
@@ -51,9 +51,7 @@ fn execute_compose_command(config: parser::DctlConfig, command: &Commands, name:
         None => {
             Err(eyre!("Compose item {name} not found"))
         },
-    }; 
-
-    return execution;
+    }
 }
 
 fn main() {
@@ -76,7 +74,7 @@ fn main() {
         Commands::List => {
             let items = config.get_all_compose_items();
             for item in items {
-                println!("{}: {}", item.alias, item.description.unwrap_or(String::from("")));
+                println!("{}: {}", item.alias, item.description.unwrap_or_else(|| String::from("")));
             }
             Ok(())
         },
