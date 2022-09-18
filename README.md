@@ -1,3 +1,5 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/FabienD/docker-stack/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/FabienD/docker-stack/tree/main)
+
 # The docker Stack
 
 This project is composed of a collection of usefull docker-compose files for web developpers and a Cli tool to manage a list of docker compose files registered in a config.
