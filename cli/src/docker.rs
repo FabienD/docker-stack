@@ -25,14 +25,14 @@ pub fn restart(item: ComposeItem) -> Result<()> {
 
 fn execute_compose_command(item: ComposeItem, command: DockerCommand) -> Result<()> {
     let mut dc_cmd = Command::new("docker");
-
+    // Common args
     dc_cmd
         .arg("compose")
         .arg("-p")
         .arg(item.alias)
         .arg("--env-file")
         .arg(item.enviroment_file);
-
+    // Compose file(s)
     for compose_file in item.compose_files {
         dc_cmd.arg("-f").arg(compose_file);
     }
