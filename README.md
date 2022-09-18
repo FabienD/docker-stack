@@ -1,7 +1,8 @@
 # The docker Stack
 
-This project is composed of a collection of usefull docker-compose files for web developpers.
-This project will provide a cli to manage the stack.
+This project is composed of a collection of usefull docker-compose files for web developpers and a Cli tool to manage a list of docker compose files registered in a config.
+
+**Cli tool** and **compose files collection** are independants, you can use cli without the compose files and vice versa.
 
 ---
 
@@ -201,7 +202,7 @@ cd cli && cargo build --release
 
 ### The config file
 
-The config file is a TOML file, with the following structure :
+The config file is a [TOML](https://toml.io/en/) file, with the following structure:
 
 ```toml
 [main]
@@ -269,30 +270,30 @@ dctl --help
 dctl list
 ```
 
-#### Start a docker-compose file
+#### Start a docker-compose by it alias name
 
 ```bash
 dctl start <name>
 ```
 
-#### Stop a docker-compose file
+#### Stop a docker-compose by it alias name
 
 ```bash
 dctl stop <name>
 ```
 
-#### Restart a docker-compose file
+#### Restart a docker-compose by it alias name
 
 ```bash
 dctl restart <name>
 ```
 
-## Use the collection without the cli tools
+## Use the collection without the cli tool
 
-You can use all of the docker-compose files without the cli tools. Simply use the docker-compose command, like this :
+You can use all of the docker-compose files without the cli, use docker command like this :
 
 ```bash
-docker compose -f /docker-stack/web/docker-compose.yml --env-file /docker-stack/.env up -d
+docker compose -f /docker-stack/web/docker-compose.yml --env-file /docker-stack/collection/.env up -d
 ```
 
 Notice that tou use the docker compose V2 syntax.
