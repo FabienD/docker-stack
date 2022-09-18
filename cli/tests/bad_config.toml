@@ -1,0 +1,18 @@
+[main]
+docker_bin = "docker"
+
+[[collection]]
+alias = "test1"
+description = "test description"
+enviroment_file = "/home/test/test1/.env"
+compose_files = ["/home/test/test1/docker-compose.yml"]
+
+
+[[collection]]
+alias = "test2"
+description = "test description 2"
+enviroment_file = "/home/test/test2/.env"
+compose_files = [
+    "/home/test/test2/docker-compose1.yml",
+    "/home/test/test2/docker-compose2.yml",
+]
