@@ -23,14 +23,10 @@ pub struct DctlConfig {
 
 impl DctlConfig {
     pub fn load(config_path_file: String) -> Result<Self> {
-        // Load config file
-        let full_config_path = shellexpand::tilde(&config_path_file).to_string();
         // Read the config file
-        let config_content = fs::read_to_string(&full_config_path)
-            .wrap_err(format!("config file not found in {full_config_path}"))?;
+        let config_content = DctlConfig::load_config_file(config_path_file)?;
         // Parse the config file
-        let config: DctlConfig = toml::from_str(config_content.as_str())
-            .wrap_err("TOML parse error, check your config file structure.")?;
+        let config: DctlConfig = DctlConfig::parse_config_file(config_content)?;
 
         Ok(config)
     }
@@ -50,6 +46,25 @@ impl DctlConfig {
     pub fn get_all_compose_items(&self) -> Vec<ComposeItem> {
         self.collections.clone()
     }
+
+    fn load_config_file(config_path_file: String) -> Result<String> {
+        // Load config file
+        let full_config_path = shellexpand::tilde(&config_path_file).to_string();
+        // Read the config file
+        let config_content = fs::read_to_string(&full_config_path)
+            .wrap_err(format!("config file not found in {full_config_path}"))?;
+
+        Ok(config_content)
+    }
+
+    fn parse_config_file(config_content: String) -> Result<Self> {
+        // Parse the config file
+        let config: DctlConfig = toml::from_str(config_content.as_str())
+            .wrap_err("TOML parse error, check your config file structure.")?;
+
+        Ok(config)
+    }
+
 }
 
 #[cfg(test)]
@@ -57,7 +72,6 @@ mod tests {
     use crate::parser::DctlConfig;
 
     fn get_valid_config() -> String {
-
         let config = r#"
         [main]
         docker_bin = "docker"
@@ -79,6 +93,18 @@ mod tests {
         "#;
 
         config.to_string()
+    }
+
+    #[test]
+    fn load_a_valid_config() {
+        let config = DctlConfig::load("tests/valid_config.toml".to_string());
+        assert!(config.is_ok());
+    }
+
+    #[test]
+    fn load_a_unvalid_config() {
+        let config = DctlConfig::load("tests/bad_config.toml".to_string());
+        assert!(config.is_err());
     }
 
     #[test]
@@ -105,7 +131,9 @@ mod tests {
     #[test]
     fn get_item_attributes_values_for_test1() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
-        let item = config.get_compose_item_by_alias(String::from("test1")).unwrap();
+        let item = config
+            .get_compose_item_by_alias(String::from("test1"))
+            .unwrap();
         assert!(item.alias == "test1");
         assert!(item.description.unwrap() == "test description");
         assert!(item.enviroment_file == "/home/test/test1/.env");
@@ -116,7 +144,9 @@ mod tests {
     #[test]
     fn get_item_attributes_values_for_test2() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
-        let item = config.get_compose_item_by_alias(String::from("test2")).unwrap();
+        let item = config
+            .get_compose_item_by_alias(String::from("test2"))
+            .unwrap();
         assert!(item.alias == "test2");
         assert!(item.description.unwrap() == "test description 2");
         assert!(item.enviroment_file == "/home/test/test2/.env");

@@ -19,6 +19,8 @@ struct Cli {
 pub mod docker;
 pub mod parser;
 
+use docker::Docker;
+
 #[derive(Subcommand)]
 enum Commands {
     /// List all the available docker-compose files in config file
@@ -48,11 +50,13 @@ fn execute_compose_command(
     command: &Commands,
     name: String,
 ) -> Result<()> {
+    let docker = Docker::init(config.main.docker_bin.clone());
+
     match config.get_compose_item_by_alias(name.to_string()) {
         Some(item) => match command {
-            Commands::Start { .. } => docker::start(item),
-            Commands::Stop { .. } => docker::stop(item),
-            Commands::Restart { .. } => docker::restart(item),
+            Commands::Start { .. } => docker.start(&item),
+            Commands::Stop { .. } => docker.stop(&item),
+            Commands::Restart { .. } => docker.restart(&item),
             Commands::List => Err(eyre!("List command should not be here")),
         },
         None => Err(eyre!("Compose item {name} not found")),
@@ -63,8 +67,8 @@ fn main() {
     // Load .env file
     dotenv().ok();
     // Get the custom config file path from env
-    let config_file_path =
-        env::var("CONFIG_FILE_PATH").unwrap_or_else(|_| String::from("~/.config/dctl/config.toml"));
+    let config_file_path = env::var("DCTL_CONFIG_FILE_PATH")
+        .unwrap_or_else(|_| String::from("~/.config/dctl/config.toml"));
     // Load config file
     let config = match parser::DctlConfig::load(config_file_path) {
         Ok(config) => config,

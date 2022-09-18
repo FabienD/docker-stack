@@ -1,5 +1,5 @@
 use crate::parser::ComposeItem;
-use eyre::{Context, Result};
+use eyre::{eyre, Context, Result};
 use std::process::Command;
 
 enum DockerCommand {
@@ -8,44 +8,55 @@ enum DockerCommand {
     Restart,
 }
 
-pub fn start(item: ComposeItem) -> Result<()> {
-    execute_compose_command(item, DockerCommand::Start).wrap_err("Docker start error")?;
-    Ok(())
+pub struct Docker {
+    bin_path: String,
 }
 
-pub fn stop(item: ComposeItem) -> Result<()> {
-    execute_compose_command(item, DockerCommand::Stop).wrap_err("Docker stop error")?;
-    Ok(())
-}
-
-pub fn restart(item: ComposeItem) -> Result<()> {
-    execute_compose_command(item, DockerCommand::Restart).wrap_err("Docker restart error")?;
-    Ok(())
-}
-
-fn execute_compose_command(item: ComposeItem, command: DockerCommand) -> Result<()> {
-    let mut dc_cmd = Command::new("docker");
-    // Common args
-    dc_cmd
-        .arg("compose")
-        .arg("-p")
-        .arg(item.alias)
-        .arg("--env-file")
-        .arg(item.enviroment_file);
-    // Compose file(s)
-    for compose_file in item.compose_files {
-        dc_cmd.arg("-f").arg(compose_file);
+impl Docker {
+    pub fn init(bin_path: String) -> Self {
+        Docker { bin_path }
     }
 
-    match command {
-        DockerCommand::Start => dc_cmd.arg("up").arg("-d"),
-        DockerCommand::Stop => dc_cmd.arg("stop"),
-        DockerCommand::Restart => dc_cmd.arg("restart"),
-    };
+    pub fn start(&self, item: &ComposeItem) -> Result<()> {
+        self.execute(DockerCommand::Start, item)
+    }
 
-    dc_cmd
-        .status()
-        .expect("Failed to run docker compose command");
+    pub fn stop(&self, item: &ComposeItem) -> Result<()> {
+        self.execute(DockerCommand::Stop, item)
+    }
 
-    Ok(())
+    pub fn restart(&self, item: &ComposeItem) -> Result<()> {
+        self.execute(DockerCommand::Restart, item)
+    }
+
+    fn execute(&self, command: DockerCommand, item: &ComposeItem) -> Result<()> {
+        let mut cmd = Command::new(&self.bin_path);
+
+        cmd.arg("compose")
+            .arg("-p")
+            .arg(item.alias.clone())
+            .arg("--env-file")
+            .arg(item.enviroment_file.clone());
+
+        // Compose file(s)
+        for compose_file in item.compose_files.clone() {
+            cmd.arg("-f").arg(compose_file);
+        }
+
+        match command {
+            DockerCommand::Start => cmd.arg("up").arg("-d"),
+            DockerCommand::Stop => cmd.arg("stop"),
+            DockerCommand::Restart => cmd.arg("restart"),
+        };
+
+        let status = cmd
+            .status()
+            .context("Failed to execute docker-compose command")?;
+
+        if status.success() {
+            Ok(())
+        } else {
+            Err(eyre!("Docker-compose command failed"))
+        }
+    }
 }
