@@ -204,7 +204,11 @@ cd cli && cargo build --release
 
 ### The config file
 
-The config file is a [TOML](https://toml.io/en/) file, with the following structure:
+The config file is a [TOML](https://toml.io/en/) file, with the following structure.
+
+Note that the **description** and the **environment file** are not mandatory.
+
+```toml
 
 ```toml
 [main]
@@ -244,7 +248,6 @@ compose_files = [
 
 [[collections]]
 alias = "project_name1"
-description = "The project 1"
 enviroment_file = "/home/fabien/workspace/apps/project1/.env"
 compose_files = [
     "/home/fabien/workspace/apps/project1/docker-compose.yml",
@@ -253,7 +256,6 @@ compose_files = [
 [[collections]]
 alias = "project_name2"
 description = "The project 2"
-enviroment_file = "/home/fabien/workspace/apps/project2/.env"
 compose_files = [
     "/home/fabien/workspace/apps/project2/worker/docker-compose.yml",
     "/home/fabien/workspace/apps/project2/api/docker-compose.yml",

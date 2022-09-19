@@ -35,8 +35,16 @@ impl Docker {
         cmd.arg("compose")
             .arg("-p")
             .arg(item.alias.clone())
-            .arg("--env-file")
-            .arg(item.enviroment_file.clone());
+        ;
+
+        let env_file = item.enviroment_file.clone().unwrap();
+        
+        if !env_file.is_empty() {
+             cmd
+                .arg("--env-file")
+                .arg(env_file)
+            ;
+        }
 
         // Compose file(s)
         for compose_file in item.compose_files.clone() {
