@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 use dotenv::dotenv;
 use eyre::{eyre, Result};
 use std::env;
+use tabled::{Margin, Style, Table};
 
 #[derive(Parser)]
 #[clap(
@@ -37,11 +38,26 @@ enum Commands {
         #[clap(value_parser)]
         name: String,
     },
+    /// Down a docker-compose file
+    Down {
+        /// The name of the docker-compose file alias
+        #[clap(value_parser)]
+        name: String,
+    },
     /// Restart a docker-compose file
     Restart {
         /// The name of the docker-compose file alias
         #[clap(value_parser)]
         name: String,
+    },
+    /// Build all or one service from a docker-compose file
+    Build {
+        /// The name of the docker-compose file alias
+        #[clap(value_parser)]
+        name: String,
+        /// The name of the service to build (optional)
+        #[clap(value_parser)]
+        service: Option<String>,
     },
 }
 
@@ -49,6 +65,7 @@ fn execute_compose_command(
     config: parser::DctlConfig,
     command: &Commands,
     name: String,
+    service: Option<String>,
 ) -> Result<()> {
     let docker = Docker::init(config.main.docker_bin.clone());
 
@@ -56,7 +73,9 @@ fn execute_compose_command(
         Some(item) => match command {
             Commands::Start { .. } => docker.start(&item),
             Commands::Stop { .. } => docker.stop(&item),
+            Commands::Down { .. } => docker.down(&item),
             Commands::Restart { .. } => docker.restart(&item),
+            Commands::Build { .. } => docker.build(&item, service),
             Commands::List => Err(eyre!("List command should not be here")),
         },
         None => Err(eyre!("Compose item {name} not found")),
@@ -83,20 +102,32 @@ fn main() {
     let cmd = match &cli.command {
         Commands::List => {
             let items = config.get_all_compose_items();
-            for item in items {
-                println!(
-                    "{}: {}",
-                    item.alias,
-                    item.description.unwrap_or_else(|| String::from(""))
-                );
-            }
+            println!(
+                "{}",
+                Table::new(items)
+                    .with(Style::modern())
+                    .with(Margin::new(0, 0, 1, 1))
+            );
             Ok(())
         }
-        Commands::Start { name } => execute_compose_command(config, &cli.command, name.to_string()),
-        Commands::Stop { name } => execute_compose_command(config, &cli.command, name.to_string()),
-        Commands::Restart { name } => {
-            execute_compose_command(config, &cli.command, name.to_string())
+        Commands::Start { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None)
         }
+        Commands::Stop { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None)
+        }
+        Commands::Down { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None)
+        }
+        Commands::Restart { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None)
+        }
+        Commands::Build { name, service } => execute_compose_command(
+            config,
+            &cli.command,
+            name.to_string(),
+            service.to_owned(),
+        ),
     };
 
     match cmd {

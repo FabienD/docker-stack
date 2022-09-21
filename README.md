@@ -189,7 +189,7 @@ The cli tools source can be found at [cli](./cli/), it's write in Rust.
 
 ### The cli goals
 
-The cli tool can "manage" multiple docker-compose files (start, stop, restart, ...) from everywhere in your terminal.
+The cli tool can "manage" multiple docker-compose files (start, stop, down, restart and build) from everywhere in your terminal.
 All registered docker-compose files are stored in a configuration file (config.toml), by default in your home directory (~/.config/dctl/config.toml).
 
 ### Installation
@@ -286,10 +286,22 @@ dctl start <name>
 dctl stop <name>
 ```
 
+#### Down a docker-compose by it alias name
+
+```bash
+dctl down <name>
+```
+
 #### Restart a docker-compose by it alias name
 
 ```bash
 dctl restart <name>
+```
+
+#### Build a docker-compose by it alias name
+
+```bash
+dctl build <name> [service]
 ```
 
 ## Use the collection without the cli tool
