@@ -1,7 +1,11 @@
 ## Next Release
 
-* 
+*
 
+## Alpha 2 (2022-09-19)
+
+* Environment file is not required anymore.
+  
 ## Alpha 1 (2022-09-18)
 
 * Initial Cli release. Start, Stop and Restart commands are available.

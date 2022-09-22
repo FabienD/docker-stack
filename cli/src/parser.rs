@@ -1,13 +1,29 @@
 use eyre::{Context, Result};
 use serde::Deserialize;
 use std::fs;
+use tabled::Tabled;
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Tabled)]
 pub struct ComposeItem {
+    #[tabled(rename = " 🐋 Alias", display_with = "display_alias")]
     pub alias: String,
+    #[tabled(rename = " 📃 Description", display_with = "display_description")]
     pub description: Option<String>,
+    #[tabled(skip)]
     pub enviroment_file: Option<String>,
+    #[tabled(skip)]
     pub compose_files: Vec<String>,
+}
+
+fn display_alias(alias: &String) -> String {
+    alias.to_string()
+}
+
+fn display_description(o: &Option<String>) -> String {
+    match o {
+        Some(s) => s.to_string(),
+        None => String::new(),
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -64,7 +80,6 @@ impl DctlConfig {
 
         Ok(config)
     }
-
 }
 
 #[cfg(test)]
