@@ -44,9 +44,6 @@ workflows:
       - build:
           requires:
             - tests
-          filters:
-            tags:
-              only: /^\d+\.\d+\.\d+$/
       - publish-github-release:
           type: approval
           requires:
@@ -54,3 +51,5 @@ workflows:
           filters:
             tags:
               only: /^\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
