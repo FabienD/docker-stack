@@ -21,7 +21,16 @@ jobs:
           root: cli/target
           paths:
             - release
-  release:
+  check_release:
+    docker:
+      - image: cimg/base:current
+    steps:
+      - attach_workspace:
+          at: release
+      - run:
+          name: "Release version"
+          command: ./release/dctl --version
+  github_release:
     docker:
       - image: cibuilds/github:0.13.0
     steps:
@@ -34,7 +43,7 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             VERSION=$(./release/dctl --version | cut -d " " -f 2)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./release/dctl    
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./release/dctl
 
 workflows:
   version: 2
@@ -50,11 +59,19 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - release:
+      - check_release:
           type: approval
           requires:
             - tests
             - build
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+      - github_release:
+          requires:
+            - check_release
           filters:
             tags:
               only: /.*/
