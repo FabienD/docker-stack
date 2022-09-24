@@ -29,7 +29,7 @@ jobs:
           at: work
       - run:
           name: "Release version"
-          command: ./work/release/dctl --version
+          command: ls -al work/release/dctl
       - run:
           name: "Publish Release on GitHub"
           command: |
@@ -37,7 +37,7 @@ jobs:
               -t "Release $CIRCLE_TAG" \
               -n "Release $CIRCLE_TAG" \
               -R $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME \
-              ./work/release/dctl
+              work/release/dctl
               
 workflows:
   version: 2
