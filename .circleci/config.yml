@@ -26,7 +26,7 @@ jobs:
   # Release on tags (see workflow) 
   release:
     docker:
-      - image: cibuilds/github:0.10
+      - image: cibuilds/github:0.13.0
     steps:
       - attach_workspace:
           at: release
