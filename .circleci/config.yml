@@ -11,15 +11,15 @@ jobs:
       - run:
           name: Run Tests
           command: "cd cli && cargo test"
-    # Release on tags (see workflow))     
-    publish-github-release:
-      docker:
-        - image: cibuilds/github:0.10
-      steps:
-        - attach_workspace:
-            at: ./target/release
-        - run:
-            name: "Publish Release on GitHub"
-            command: |
-              VERSION=$(dctl --version)
-              ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./target/release/dctl
+  # Release on tags (see workflow))     
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: ./target/release
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            VERSION=$(dctl --version)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./target/release/dctl
