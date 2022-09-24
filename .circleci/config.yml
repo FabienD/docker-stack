@@ -20,21 +20,24 @@ jobs:
           name: Build
           command: cd cli && cargo build --release
       - persist_to_workspace:
-          root: cli
+          root: cli/target
           paths:
-            - ./target/release/dctl
-  # Release on tags (see workflow))    
-  publish-github-release:
+            - release
+  # Release on tags (see workflow) 
+  release:
     docker:
       - image: cibuilds/github:0.10
     steps:
       - attach_workspace:
-          at: ./target/release
+          at: release
+      - run:
+          name: "Release version"
+          command: ./release/dctl --version      
       - run:
           name: "Publish Release on GitHub"
           command: |
-            VERSION=$(dctl --version)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./target/release/dctl
+            VERSION=$(./release/dctl --version | cut -d " " -f 2)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./release/dctl
 
 workflows:
   version: 2
@@ -50,7 +53,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - publish-github-release:
+      - release:
           type: approval
           requires:
             - build
