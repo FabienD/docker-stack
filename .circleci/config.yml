@@ -1,7 +1,6 @@
 version: 2.1
 
 jobs:
-  # Run tests
   tests:
     docker:
       - image: rust:1.64.0-slim
@@ -10,7 +9,6 @@ jobs:
       - run:
           name: Run Tests
           command: cd cli && cargo test
-  # Run build, store dctl
   build:
     docker:
       - image: rust:1.64.0-slim
@@ -23,7 +21,6 @@ jobs:
           root: cli/target
           paths:
             - release
-  # Release on tags
   release:
     docker:
       - image: cibuilds/github:0.13.0
@@ -32,12 +29,12 @@ jobs:
           at: release
       - run:
           name: "Release version"
-          command: ./release/dctl --version      
+          command: ./release/dctl --version  
       - run:
           name: "Publish Release on GitHub"
           command: |
             VERSION=$(./release/dctl --version | cut -d " " -f 2)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./release/dctl
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./release/dctl    
 
 workflows:
   version: 2
@@ -53,7 +50,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - hold:
+      - release:
           type: approval
           requires:
             - tests
@@ -63,6 +60,4 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
-      - release:
-          requires:
-            - hold
+
