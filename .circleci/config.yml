@@ -29,14 +29,16 @@ jobs:
           at: work
       - run:
           name: "Release version"
-          command: ls -al work/release
+          command: ./work/release/dctl --version
       - run:
           name: "Publish Release on GitHub"
           command: |
-            cd work/release
-            VERSION=$(dctl --version | cut -d " " -f 2)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} dctl
-
+            gh release create $CIRCLE_TAG \
+              -t "Release $CIRCLE_TAG" \
+              -n "Release $CIRCLE_TAG" \
+              -R $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME \
+              ./work/release/dctl
+              
 workflows:
   version: 2
   test_build_release:
