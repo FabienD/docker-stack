@@ -28,17 +28,10 @@ jobs:
       - attach_workspace:
           at: work
       - run:
-          name: "Release version"
-          command: ls -al work/release/dctl
-      - run:
           name: "Publish Release on GitHub"
           command: |
-            gh release create $CIRCLE_TAG \
-              -t "Release $CIRCLE_TAG" \
-              -n "Release $CIRCLE_TAG" \
-              -R $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME \
-              work/release/dctl
-              
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} work/release/dctl
+
 workflows:
   version: 2
   test_build_release:
