@@ -1,16 +1,21 @@
 version: 2.1
 
 jobs:
-  # Build cli and run test
+  # Run tests
+  tests:
+    docker:
+      - image: rust:1.64.0-slim
+    steps:
+      - checkout
+      - run:
+          name: Run Tests
+          command: cd cli && cargo test
+  # Run build, store dctl
   build:
     docker:
       - image: rust:1.64.0-slim
     steps:
       - checkout
-      - run: cd cli && cargo --version
-      - run:
-          name: Run Tests
-          command: cd cli && cargo test
       - run:
           name: Build
           command: cd cli && cargo build --release
@@ -32,10 +37,17 @@ jobs:
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./target/release/dctl
 
 workflows:
-  version: 2
   main:
     jobs:
-      - build
+      - tests
+      - build:
+          requires:
+            - tests
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
       - publish-github-release:
           requires:
             - build
