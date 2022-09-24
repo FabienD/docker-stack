@@ -44,15 +44,12 @@ workflows:
           requires:
             - tests
           filters:
-            branches:
-              ignore: /.*/
             tags:
               only: /^\d+\.\d+\.\d+$/
       - publish-github-release:
+          type: approval
           requires:
             - build
           filters:
-            branches:
-              ignore: /.*/
             tags:
               only: /^\d+\.\d+\.\d+$/
