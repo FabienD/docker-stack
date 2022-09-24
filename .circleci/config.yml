@@ -29,7 +29,7 @@ jobs:
           at: release
       - run:
           name: "Release version"
-          command: ./release/dctl --version
+          command: ls -al release
   github_release:
     docker:
       - image: cibuilds/github:0.13.0
@@ -38,12 +38,13 @@ jobs:
           at: release
       - run:
           name: "Release version"
-          command: ls -al
+          command: ls -al release
       - run:
           name: "Publish Release on GitHub"
           command: |
-            VERSION=$(./release/dctl --version | cut -d " " -f 2)
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./release/dctl
+            cd release
+            VERSION=$(dctl --version | cut -d " " -f 2)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} dctl
 
 workflows:
   version: 2
