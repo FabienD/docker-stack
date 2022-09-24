@@ -1,6 +1,7 @@
 version: 2.1
 
 jobs:
+  # Build cli and run test
   build:
     docker:
       - image: rust:1.64.0-slim
@@ -10,3 +11,15 @@ jobs:
       - run:
           name: Run Tests
           command: "cd cli && cargo test"
+    # Release on tags (see workflow))     
+    publish-github-release:
+      docker:
+        - image: cibuilds/github:0.10
+      steps:
+        - attach_workspace:
+            at: ./target/release
+        - run:
+            name: "Publish Release on GitHub"
+            command: |
+              VERSION=$(dctl --version)
+              ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./target/release/dctl
