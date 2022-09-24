@@ -38,7 +38,7 @@ jobs:
           at: release
       - run:
           name: "Release version"
-          command: ./release/dctl --version  
+          command: ls -al
       - run:
           name: "Publish Release on GitHub"
           command: |
