@@ -37,7 +37,8 @@ jobs:
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./target/release/dctl
 
 workflows:
-  main:
+  version: 2
+  test_build_release:
     jobs:
       - tests
       - build:
