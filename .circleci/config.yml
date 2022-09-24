@@ -40,16 +40,22 @@ workflows:
   version: 2
   test_build_release:
     jobs:
-      - tests
+      - tests:
+          filters:
+            tags:
+              only: /.*/
       - build:
           requires:
             - tests
+          filters:
+            tags:
+              only: /.*/
       - publish-github-release:
           type: approval
           requires:
             - build
           filters:
             tags:
-              only: /^\d+\.\d+\.\d+$/
+              only: /.*/
             branches:
               ignore: /.*/
