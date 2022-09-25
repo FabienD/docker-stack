@@ -6,17 +6,29 @@ jobs:
       - image: rust:1.64.0-slim
     steps:
       - checkout
+      - restore_cache:
+          key: cargo-{{ checksum "cli/cargo.toml" }}
       - run:
           name: Run Tests
           command: cd cli && cargo test
+      - save_cache:
+          key: cargo-{{ checksum "cli/cargo.toml" }}
+          paths:
+            - "~/.cargo"
   build:
     docker:
       - image: rust:1.64.0-slim
     steps:
       - checkout
+      - restore_cache:
+          key: cargo-{{ checksum "cli/cargo.toml" }}
       - run:
           name: Build
           command: cd cli && cargo build --release
+      - save_cache:
+          key: cargo-{{ checksum "cli/cargo.toml" }}
+          paths:
+            - "~/.cargo"
       - persist_to_workspace:
           root: cli/target
           paths:
