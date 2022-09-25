@@ -214,8 +214,6 @@ The config file is a [TOML](https://toml.io/en/) file, with the following struct
 Note that the **description** and the **environment file** are not mandatory.
 
 ```toml
-
-```toml
 [main]
 docker_bin = "/usr/bin/docker"
 
