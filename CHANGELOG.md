@@ -2,6 +2,10 @@
 
 *
 
+## 0.1.0 (2022-09-24)
+
+* Initial release
+
 ## Alpha 2 (2022-09-19)
 
 * Environment file is not required anymore.

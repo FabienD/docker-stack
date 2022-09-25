@@ -1,0 +1,42 @@
+services:
+
+  grafana:
+    container_name: stack.tools.grafana
+    image: grafana/grafana-oss:${GRAFANA_VERSION}
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)"
+      - "traefik.http.routers.grafana.entrypoints=web"
+      - "traefik.http.routers.grafana.service=grafana"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+    volumes:
+      - grafana-data:/var/lib/grafana  
+    ports:
+      - "3000"
+
+  portainer:
+    container_name: stack.tools.portainer
+    image: portainer/portainer-ce:${PORTAINER_VERSION}
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
+      - "traefik.http.routers.portainer.entrypoints=web"
+      - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+    ports:
+      - "9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  grafana-data:
+  portainer_data:
+
+networks:
+  default:
+    name: ${DOCKER_NETWORK}
+    external: true
