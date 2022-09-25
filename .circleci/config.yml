@@ -7,12 +7,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: cargo-{{ checksum "cli/cargo.toml" }}
+          key: cargo-{{ checksum "cli/Cargo.toml" }}
       - run:
           name: Run Tests
           command: cd cli && cargo test
       - save_cache:
-          key: cargo-{{ checksum "cli/cargo.toml" }}
+          key: cargo-{{ checksum "cli/Cargo.toml" }}
           paths:
             - "~/.cargo"
   build:
@@ -21,12 +21,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: cargo-{{ checksum "cli/cargo.toml" }}
+          key: cargo-{{ checksum "cli/Cargo.toml" }}
       - run:
           name: Build
           command: cd cli && cargo build --release
       - save_cache:
-          key: cargo-{{ checksum "cli/cargo.toml" }}
+          key: cargo-{{ checksum "cli/Cargo.toml" }}
           paths:
             - "~/.cargo"
       - persist_to_workspace:
