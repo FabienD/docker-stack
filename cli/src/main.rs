@@ -24,8 +24,14 @@ use docker::Docker;
 
 #[derive(Subcommand)]
 enum Commands {
-    /// List all the available docker-compose files in config file
+    /// List all the available docker-compose files in the config
     List,
+    /// Go to the directory of the docker-compose file
+    Cd {
+        /// The name of the docker-compose file alias
+        #[clap(value_parser)]
+        name: String,
+    },
     /// Start a docker-compose file
     Start {
         /// The name of the docker-compose file alias
@@ -50,7 +56,7 @@ enum Commands {
         #[clap(value_parser)]
         name: String,
     },
-    /// Build all or one service from a docker-compose file
+    /// Build all or one service of a docker-compose file
     Build {
         /// The name of the docker-compose file alias
         #[clap(value_parser)]
@@ -59,13 +65,32 @@ enum Commands {
         #[clap(value_parser)]
         service: Option<String>,
     },
-}
+    /// Show running containers of a docker-compose file
+    Ps {
+        /// The name of the docker-compose file alias
+        #[clap(value_parser)]
+        name: String,
+    },
+    /// Execute a command in a container of a docker-compose file
+    Exec {
+        /// The name of the docker-compose file alias
+        #[clap(value_parser)]
+        name: String,
+        /// The name of the service where to exexute the command
+        #[clap(value_parser)]
+        service: String,
+        /// The command to execute
+        #[clap(value_parser)]
+        subcommand: String,
+    },
+}   
 
 fn execute_compose_command(
     config: parser::DctlConfig,
     command: &Commands,
     name: String,
     service: Option<String>,
+    subcommand: Option<String>,
 ) -> Result<()> {
     let docker = Docker::init(config.main.docker_bin.clone());
 
@@ -76,7 +101,10 @@ fn execute_compose_command(
             Commands::Down { .. } => docker.down(&item),
             Commands::Restart { .. } => docker.restart(&item),
             Commands::Build { .. } => docker.build(&item, service),
+            Commands::Ps { .. } => docker.ps(&item),
+            Commands::Exec { .. } => docker.exec(&item, service, subcommand),
             Commands::List => Err(eyre!("List command should not be here")),
+            Commands::Cd { .. } => todo!("Not yet implemented"),
         },
         None => Err(eyre!("Compose item {name} not found")),
     }
@@ -110,23 +138,25 @@ fn main() {
             );
             Ok(())
         }
-        Commands::Start { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None)
-        }
-        Commands::Stop { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None)
-        }
-        Commands::Down { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None)
-        }
-        Commands::Restart { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None)
-        }
+        Commands::Cd { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
+        Commands::Start { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
+        Commands::Stop { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
+        Commands::Down { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
+        Commands::Restart { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
+        Commands::Ps { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
+        Commands::Exec { name,  service, subcommand } => execute_compose_command(
+            config, 
+            &cli.command, 
+            name.to_string(),  
+            Some(service.to_string()), 
+            Some(subcommand.to_string())
+        ),
         Commands::Build { name, service } => execute_compose_command(
             config,
             &cli.command,
             name.to_string(),
             service.to_owned(),
+            None
         ),
     };
 

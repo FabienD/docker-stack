@@ -8,6 +8,8 @@ enum DockerCommand {
     Down,
     Restart,
     Build,
+    Ps,
+    Exec,
 }
 
 pub struct Docker {
@@ -20,23 +22,31 @@ impl Docker {
     }
 
     pub fn start(&self, item: &ComposeItem) -> Result<()> {
-        self.execute(DockerCommand::Start, item, None)
+        self.execute(DockerCommand::Start, item, None, None)
     }
 
     pub fn stop(&self, item: &ComposeItem) -> Result<()> {
-        self.execute(DockerCommand::Stop, item, None)
+        self.execute(DockerCommand::Stop, item, None, None)
     }
 
     pub fn down(&self, item: &ComposeItem) -> Result<()> {
-        self.execute(DockerCommand::Down, item, None)
+        self.execute(DockerCommand::Down, item, None, None)
     }
 
     pub fn restart(&self, item: &ComposeItem) -> Result<()> {
-        self.execute(DockerCommand::Restart, item, None)
+        self.execute(DockerCommand::Restart, item, None, None)
     }
 
     pub fn build(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
-        self.execute(DockerCommand::Build, item, service)
+        self.execute(DockerCommand::Build, item, service, None)
+    }   
+
+    pub fn ps(&self, item: &ComposeItem) -> Result<()> {
+        self.execute(DockerCommand::Ps, item, None, None)
+    }
+
+    pub fn exec(&self, item: &ComposeItem, service: Option<String>, subcommand: Option<String>) -> Result<()> {
+        self.execute(DockerCommand::Exec, item, service, subcommand)
     }
 
     fn execute(
@@ -44,6 +54,7 @@ impl Docker {
         command: DockerCommand,
         item: &ComposeItem,
         service: Option<String>,
+        subcommand: Option<String>,
     ) -> Result<()> {
         let mut cmd = Command::new(&self.bin_path);
 
@@ -66,10 +77,16 @@ impl Docker {
             DockerCommand::Down => cmd.arg("down"),
             DockerCommand::Restart => cmd.arg("restart"),
             DockerCommand::Build => cmd.arg("build"),
+            DockerCommand::Ps => cmd.arg("ps"),
+            DockerCommand::Exec => cmd.arg("exec"),
         };
 
         if let Some(service) = service {
             cmd.arg(service);
+        }
+
+        if let Some(subcommand) = subcommand {
+            cmd.arg(subcommand);
         }
 
         let status = cmd
