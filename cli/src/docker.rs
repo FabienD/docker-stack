@@ -39,13 +39,18 @@ impl Docker {
 
     pub fn build(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
         self.execute(DockerCommand::Build, item, service, None)
-    }   
+    }
 
     pub fn ps(&self, item: &ComposeItem) -> Result<()> {
         self.execute(DockerCommand::Ps, item, None, None)
     }
 
-    pub fn exec(&self, item: &ComposeItem, service: Option<String>, subcommand: Option<String>) -> Result<()> {
+    pub fn exec(
+        &self,
+        item: &ComposeItem,
+        service: Option<String>,
+        subcommand: Option<String>,
+    ) -> Result<()> {
         self.execute(DockerCommand::Exec, item, service, subcommand)
     }
 
@@ -60,11 +65,12 @@ impl Docker {
 
         cmd.arg("compose").arg("-p").arg(item.alias.clone());
 
-        let env_file = item.enviroment_file.clone().unwrap();
-
-        if !env_file.is_empty() {
-            cmd.arg("--env-file").arg(env_file);
-        }
+        match item.enviroment_file.clone() {
+            Some(env_file) => {
+                cmd.arg("--env-file").arg(env_file);
+            }
+            None => {}
+        };
 
         // Compose file(s)
         for compose_file in item.compose_files.clone() {
@@ -72,7 +78,7 @@ impl Docker {
         }
 
         match command {
-            DockerCommand::Start => cmd.arg("up").arg("-d"),
+            DockerCommand::Start => cmd.arg("up").arg("-d").arg("--remove-orphans"),
             DockerCommand::Stop => cmd.arg("stop"),
             DockerCommand::Down => cmd.arg("down"),
             DockerCommand::Restart => cmd.arg("restart"),

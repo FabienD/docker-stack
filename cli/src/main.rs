@@ -83,7 +83,7 @@ enum Commands {
         #[clap(value_parser)]
         subcommand: String,
     },
-}   
+}
 
 fn execute_compose_command(
     config: parser::DctlConfig,
@@ -138,25 +138,41 @@ fn main() {
             );
             Ok(())
         }
-        Commands::Cd { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
-        Commands::Start { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
-        Commands::Stop { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
-        Commands::Down { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
-        Commands::Restart { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
-        Commands::Ps { name } => execute_compose_command(config, &cli.command, name.to_string(), None, None),
-        Commands::Exec { name,  service, subcommand } => execute_compose_command(
-            config, 
-            &cli.command, 
-            name.to_string(),  
-            Some(service.to_string()), 
-            Some(subcommand.to_string())
+        Commands::Cd { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None, None)
+        }
+        Commands::Start { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None, None)
+        }
+        Commands::Stop { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None, None)
+        }
+        Commands::Down { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None, None)
+        }
+        Commands::Restart { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None, None)
+        }
+        Commands::Ps { name } => {
+            execute_compose_command(config, &cli.command, name.to_string(), None, None)
+        }
+        Commands::Exec {
+            name,
+            service,
+            subcommand,
+        } => execute_compose_command(
+            config,
+            &cli.command,
+            name.to_string(),
+            Some(service.to_string()),
+            Some(subcommand.to_string()),
         ),
         Commands::Build { name, service } => execute_compose_command(
             config,
             &cli.command,
             name.to_string(),
             service.to_owned(),
-            None
+            None,
         ),
     };
 
