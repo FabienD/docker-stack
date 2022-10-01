@@ -17,10 +17,12 @@ struct Cli {
     command: Commands,
 }
 
+pub mod command;
 pub mod docker;
 pub mod parser;
 
-use docker::Docker;
+use docker::docker::Docker;
+use parser::parser::DctlConfig;
 
 #[derive(Subcommand)]
 enum Commands {
@@ -86,7 +88,7 @@ enum Commands {
 }
 
 fn execute_compose_command(
-    config: parser::DctlConfig,
+    config: DctlConfig,
     command: &Commands,
     name: String,
     service: Option<String>,
@@ -117,7 +119,7 @@ fn main() {
     let config_file_path = env::var("DCTL_CONFIG_FILE_PATH")
         .unwrap_or_else(|_| String::from("~/.config/dctl/config.toml"));
     // Load config file
-    let config = match parser::DctlConfig::load(config_file_path) {
+    let config = match DctlConfig::load(config_file_path) {
         Ok(config) => config,
         Err(err) => {
             println!("Load config error: {}", err);
