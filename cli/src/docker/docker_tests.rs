@@ -134,7 +134,7 @@ mod tests {
         }
     }
 
-    #[test] 
+    #[test]
     fn prepare_restart_command() {
         let item = get_compose_item();
         let command = docker::prepare_command(
@@ -172,7 +172,7 @@ mod tests {
         }
     }
 
-    #[test] 
+    #[test]
     fn prepare_ps_command() {
         let item = get_compose_item();
         let command = docker::prepare_command(
@@ -210,7 +210,7 @@ mod tests {
         }
     }
 
-    #[test] 
+    #[test]
     fn prepare_build_command() {
         let item = get_compose_item();
         let command = docker::prepare_command(
@@ -249,7 +249,7 @@ mod tests {
         }
     }
 
-    #[test] 
+    #[test]
     fn prepare_exec_command() {
         let item = get_compose_item();
         let command = docker::prepare_command(

@@ -4,6 +4,15 @@ use eyre::{eyre, Result};
 use std::env;
 use tabled::{Margin, Style, Table};
 
+pub mod command;
+pub mod docker;
+pub mod parser;
+pub mod system;
+
+use docker::docker::Docker;
+use parser::parser::DctlConfig;
+use system::system::System;
+
 #[derive(Parser)]
 #[clap(
     author,
@@ -17,18 +26,12 @@ struct Cli {
     command: Commands,
 }
 
-pub mod command;
-pub mod docker;
-pub mod parser;
-
-use docker::docker::Docker;
-use parser::parser::DctlConfig;
-
 #[derive(Subcommand)]
 enum Commands {
     /// List all the available docker-compose files in the config
     List,
-    /// Go to the directory of the docker-compose file
+    /// Print the directory of the docker-compose file.
+    /// Uesful to use with shell cd command.
     Cd {
         /// The name of the docker-compose file alias
         #[clap(value_parser)]
@@ -95,6 +98,7 @@ fn execute_compose_command(
     subcommand: Option<String>,
 ) -> Result<()> {
     let docker = Docker::init(config.main.docker_bin.clone());
+    let system = System::init();
 
     match config.get_compose_item_by_alias(name.to_string()) {
         Some(item) => match command {
@@ -106,7 +110,7 @@ fn execute_compose_command(
             Commands::Ps { .. } => docker.ps(&item),
             Commands::Exec { .. } => docker.exec(&item, service, subcommand),
             Commands::List => Err(eyre!("List command should not be here")),
-            Commands::Cd { .. } => todo!("Not yet implemented"),
+            Commands::Cd { .. } => system.cd(&item),
         },
         None => Err(eyre!("Compose item {name} not found")),
     }
