@@ -301,10 +301,37 @@ dctl down <name>
 dctl restart <name>
 ```
 
+#### PS a docker-compose by it alias name
+
+```bash
+dctl ps <name>
+```
+
 #### Build a docker-compose by it alias name
 
 ```bash
 dctl build <name> [service]
+```
+
+#### CD a docker-compose by it alias name
+
+```bash
+dctl cd <name>
+```
+
+This return the path name of the first docker-compose file of the collection.
+We can't directly interact with the shell, you can use the command with the `cd` command.
+
+```bash
+cd "$(dctl cd <name>)"
+```
+
+Use a shell function to make it easier, for example in your .bashrc or .zshrc
+
+```bash
+function gocd() {
+    cd "$(dctl cd $1)"
+}
 ```
 
 ## Use the collection without the cli tool

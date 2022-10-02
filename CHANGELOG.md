@@ -2,9 +2,14 @@
 
 *
 
+## 0.2.0 (2022-10-02)
+
+* Add additional features (Build, Exec, Ps & Cd comamnds).
+* Little refactoring with more tests.
+
 ## 0.1.0 (2022-09-24)
 
-* Initial release
+* Initial release.
 
 ## Alpha 2 (2022-09-19)
 
