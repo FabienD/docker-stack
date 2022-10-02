@@ -1,6 +1,10 @@
 ## Next Release
 
-*
+* 
+
+## 0.2.1 (2022-10-02)
+
+* Major upgrade of clap crate to v4.
 
 ## 0.2.0 (2022-10-02)
 
