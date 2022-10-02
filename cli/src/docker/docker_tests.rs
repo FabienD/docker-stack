@@ -51,7 +51,8 @@ mod tests {
                 args.push(OsStr::new("--remove-orphans"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();
 
-                assert!(cmd_args == args);
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
             }
             Err(_) => assert!(false),
         }
@@ -88,7 +89,8 @@ mod tests {
                 args.push(OsStr::new("stop"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();
 
-                assert!(cmd_args == args);
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
             }
             Err(_) => assert!(false),
         }
@@ -125,7 +127,8 @@ mod tests {
                 args.push(OsStr::new("down"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();
 
-                assert!(cmd_args == args);
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
             }
             Err(_) => assert!(false),
         }
@@ -162,7 +165,8 @@ mod tests {
                 args.push(OsStr::new("restart"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();
 
-                assert!(cmd_args == args);
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
             }
             Err(_) => assert!(false),
         }
@@ -199,7 +203,8 @@ mod tests {
                 args.push(OsStr::new("ps"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();
 
-                assert!(cmd_args == args);
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
             }
             Err(_) => assert!(false),
         }
@@ -237,7 +242,8 @@ mod tests {
                 args.push(OsStr::new("my_service"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();
 
-                assert!(cmd_args == args);
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
             }
             Err(_) => assert!(false),
         }
@@ -276,6 +282,7 @@ mod tests {
                 args.push(OsStr::new("./bin/console doctrine:migrations:migrate"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();
 
+                assert_eq!(command.get_program(), OsStr::new("docker"));
                 assert!(cmd_args == args);
             }
             Err(_) => assert!(false),
