@@ -1,0 +1,3 @@
+[report]
+out = ["Html", "Xml"]
+output-dir="reports"
