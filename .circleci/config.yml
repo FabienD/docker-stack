@@ -9,10 +9,9 @@ jobs:
       - checkout
       - run:
           name: Coverage with docker
-          command: mkdir coverage && cd cli && docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin --out Xml --output-dir ../coverage
+          command: cd cli && mkdir reports && docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin
       - codecov/upload:
-          file: ./coverage/coverage.xml
-
+          file: ./reports/coverage.xml
 
   tests:
     docker:
