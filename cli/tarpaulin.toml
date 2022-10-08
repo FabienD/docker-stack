@@ -1,3 +1,6 @@
+[feature_dctl]
+features="dctl"
+
 [report]
-out = ["Html", "Xml"]
+out = ["Xml"]
 output-dir="reports"

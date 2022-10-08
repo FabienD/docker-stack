@@ -14,7 +14,7 @@ jobs:
           name: Coverage with docker
           command: cd cli && docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin
       - codecov/upload:
-          file: ./reports/coverage.xml
+          file: ./reports/cobertura.xml
 
   tests:
     docker:
