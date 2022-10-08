@@ -1,5 +1,7 @@
 version: 2.1
 
+orbs:
+  codecov: codecov/codecov@1.0.2
 jobs:
   coverage:
     machine: true
@@ -7,7 +9,10 @@ jobs:
       - checkout
       - run:
           name: Coverage with docker
-          command: cd cli && docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin
+          command: mkdir coverage && cd cli && docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin --out Xml --output-dir ../coverage
+      - codecov/upload:
+          file: ./coverage/coverage.xml
+
   tests:
     docker:
       - image: rust:1.64.0-slim
