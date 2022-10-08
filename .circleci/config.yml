@@ -1,6 +1,13 @@
 version: 2.1
 
 jobs:
+  coverage:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Coverage with docker
+          command: docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin
   tests:
     docker:
       - image: rust:1.64.0-slim
@@ -52,13 +59,19 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - coverage:
+          requires:
+            - tests
+          filters:
+            tags:
+              only: /.*/
       - build:
           requires:
             - tests
           filters:
             tags:
               only: /.*/
-      - check_release:
+      - do_release:
           type: approval
           requires:
             - tests
@@ -70,7 +83,7 @@ workflows:
               ignore: /.*/
       - github_release:
           requires:
-            - check_release
+            - do_release
           filters:
             tags:
               only: /.*/
