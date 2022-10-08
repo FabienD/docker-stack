@@ -8,8 +8,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Make coverage dir
+          command: cd cli && mkdir -p reports
+      - run:
           name: Coverage with docker
-          command: cd cli && mkdir reports && docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin
+          command: cd cli && docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin
       - codecov/upload:
           file: ./reports/coverage.xml
 
