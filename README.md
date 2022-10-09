@@ -1,6 +1,6 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/FabienD/docker-stack/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/FabienD/docker-stack/tree/main)
 [![codecov](https://codecov.io/github/FabienD/docker-stack/branch/main/graph/badge.svg?token=IH5NLYP8K4)](https://codecov.io/github/FabienD/docker-stack)
-[![GitHub release](https://img.shields.io/github/release/FabienD/docker-stack.svg)](
+[![GitHub release](https://img.shields.io/github/release/FabienD/docker-stack.svg)](https://github.com/FabienD/docker-stack/releases)
 
 # The docker Stack
 
