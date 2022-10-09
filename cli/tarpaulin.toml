@@ -1,0 +1,3 @@
+[dctl]
+out = ["Xml"]
+output-dir="reports"

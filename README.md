@@ -1,15 +1,17 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/FabienD/docker-stack/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/FabienD/docker-stack/tree/main)
+[![codecov](https://codecov.io/github/FabienD/docker-stack/branch/main/graph/badge.svg?token=IH5NLYP8K4)](https://codecov.io/github/FabienD/docker-stack)
+[![GitHub release](https://img.shields.io/github/release/FabienD/docker-stack.svg)](
 
 # The docker Stack
 
-This project is composed of a collection of usefull docker-compose files for web developpers and a Cli tool to manage a list of docker compose files registered in a config.
+This project is composed of a collection of usefull docker-compose files for web developpers. We also provide a standalone Cli tool to manage a list of docker compose files registered in a config.
 
 **Cli tool** and **compose files collection** are independants, you can use cli without the compose files and vice versa.
 
 ## The cli "dctl" vs docker compose ?
 
 The command "docker compose" relies on containers launched by docker-compose, you only see docker-compose projects having started or stopped containers.
-With the cli "dctl", we relies on a config file, no need to have started or stopped containers of a docker-compose file to see and manage them.
+With the "dctl" cli, we relies on a config file, no need to have started or stopped containers of a docker-compose file to see and manage them.
 
 ---
 
@@ -33,7 +35,7 @@ The collection is composed of five categories (web, data, logging, tools, monito
 | Portainer CE | The container manager | tools | stack.tools.portainer | [⤴](https://hub.docker.com/r/portainer/portainer.ce) | [⤴](https://docs.portainer.io/) |
 
 You can add our own services to the collection and customize the existing ones.
-Softwares version and few properties are also configurable, this is defined in the environment file on the root of the collection.
+**Softwares version** and **few properties** are also **configurable**, this is defined in the environment file on the root of the collection.
 
 If you want to contribute and improve this project, fix a typo, make it better (sorry for my english, please correct me), you're welcome, make me a PR.
 
@@ -53,8 +55,8 @@ Copy the ```.env.dist``` file to ```.env```, and change the value of the ```DOCK
 
 This is the **base** of all web projects, composed of the following services:
 
-- A reversed proxy service (Traefik) that forwards requests to your different applications. You don't have to worry about multiple application port number, the request can be routed to the right application by following a local domain name rule (a host rule in Traefik). So, each application can have is own local domain. For example, the application "myapp" can be accessible at the address ```myapp.stack.local```.
-- A mail catcher service (MailCatcher) that catches all emails sent from your applications. This is avoid to send accidentally emails to real users, you can also check the content of the emails sent by your application whitout beeing connected to Internet.
+- A reversed proxy service (Traefik) that forwards requests to your different applications. You don't have to worry about multiple applications port number, the request can be routed to the right application by following a local domain name rule (a host rule in Traefik). So, each application can have is own local domain. For example, the application "myapp" can be accessible at the address ```myapp.stack.local```.
+- A mail catcher service (MailCatcher) that captures all emails sent from your applications. This is avoid to send accidentally emails to real users, you can also check the content of the emails sent by your application whitout beeing connected to Internet.
 
 #### 1.1. Reverse proxy
 
