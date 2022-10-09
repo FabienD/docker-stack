@@ -8,7 +8,7 @@ This project is composed of a collection of usefull docker-compose files for web
 
 **Cli tool** and **compose files collection** are independants, you can use cli without the compose files and vice versa.
 
-## The cli "dctl" vs docker compose ?
+## The "dctl" cli vs docker compose command ?
 
 The command "docker compose" relies on containers launched by docker-compose, you only see docker-compose projects having started or stopped containers.
 With the "dctl" cli, we relies on a config file, no need to have started or stopped containers of a docker-compose file to see and manage them.

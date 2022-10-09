@@ -110,7 +110,10 @@ fn execute_compose_command(
             Commands::Ps { .. } => docker.ps(&item),
             Commands::Exec { .. } => docker.exec(&item, service, subcommand),
             Commands::List => Err(eyre!("List command should not be here")),
-            Commands::Cd { .. } => system.cd(&item),
+            Commands::Cd { .. } => {
+                println!("{}", system.cd(&item).unwrap());
+                Ok(())
+            },
         },
         None => Err(eyre!("Compose item {name} not found")),
     }

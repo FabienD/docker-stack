@@ -3,6 +3,7 @@ use eyre::Result;
 use crate::parser::parser::ComposeItem;
 use std::{ffi::OsStr, path::Path};
 
+#[derive(PartialEq)]
 pub struct System {}
 
 impl System {
@@ -10,14 +11,14 @@ impl System {
         System {}
     }
 
-    pub fn cd(&self, item: &ComposeItem) -> Result<()> {
+    pub fn cd<'a>(&'a self, item: &'a ComposeItem) -> Result<&str> {
         // Get path from a compose item
         let path = Path::new(OsStr::new(&item.compose_files[0]))
             .parent()
             .unwrap();
 
-        println!("{}", path.to_str().unwrap());
+        let path_str = path.to_str().unwrap();
 
-        Ok(())
+        Ok(&path_str)
     }
 }
