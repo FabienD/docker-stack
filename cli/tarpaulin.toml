@@ -1,4 +1,6 @@
 [dctl]
-out = ["Xml"]
+out = ["Xml","Html"]
 output-dir = "reports"
 release = true
+tests = true
+force-clean = true
