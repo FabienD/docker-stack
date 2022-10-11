@@ -26,15 +26,16 @@
     - [The cli goals](#the-cli-goals)
     - [Installation](#installation)
     - [The config file](#the-config-file)
-    - [The cli usage](#the-cli-usage)
+    - [dctl cli usage](#dctl-cli-usage)
       - [List registered docker-compose files](#list-registered-docker-compose-files)
       - [Start a docker-compose by it alias name](#start-a-docker-compose-by-it-alias-name)
       - [Stop a docker-compose by it alias name](#stop-a-docker-compose-by-it-alias-name)
-      - [Down a docker-compose by it alias name](#down-a-docker-compose-by-it-alias-name)
+      - [Stop and remove all containers of a docker-compose by it alias name](#stop-and-remove-all-containers-of-a-docker-compose-by-it-alias-name)
       - [Restart a docker-compose by it alias name](#restart-a-docker-compose-by-it-alias-name)
-      - [PS a docker-compose by it alias name](#ps-a-docker-compose-by-it-alias-name)
+      - [Show processus list of a docker-compose by it alias name](#show-processus-list-of-a-docker-compose-by-it-alias-name)
+      - [Show logs of a docker-compose by it alias name](#show-logs-of-a-docker-compose-by-it-alias-name)
       - [Build a docker-compose by it alias name](#build-a-docker-compose-by-it-alias-name)
-      - [CD a docker-compose by it alias name](#cd-a-docker-compose-by-it-alias-name)
+      - [Show the path of a docker-compose by it alias name](#show-the-path-of-a-docker-compose-by-it-alias-name)
   - [Use the collection without the cli tool](#use-the-collection-without-the-cli-tool)
 
 
@@ -228,7 +229,7 @@ http://grafana.stack.local (default)
 
 ## A cli tools, a docker compose missing feature
 
-The cli tools source can be found at [cli](./cli/), it's write in Rust.
+The dctl sources can be found in the [cli](./cli/) path, it's write in Rust.
 
 ### The cli goals
 
@@ -308,7 +309,7 @@ compose_files = [
 ]
 ```
 
-### The cli usage
+### dctl cli usage
 
 ```bash
 dctl --help
@@ -332,7 +333,7 @@ dctl start <name>
 dctl stop <name>
 ```
 
-#### Down a docker-compose by it alias name
+#### Stop and remove all containers of a docker-compose by it alias name
 
 ```bash
 dctl down <name>
@@ -344,10 +345,16 @@ dctl down <name>
 dctl restart <name>
 ```
 
-#### PS a docker-compose by it alias name
+#### Show processus list of a docker-compose by it alias name
 
 ```bash
 dctl ps <name>
+```
+
+#### Show logs of a docker-compose by it alias name
+
+```bash
+dctl logs <name> [service]
 ```
 
 #### Build a docker-compose by it alias name
@@ -356,7 +363,7 @@ dctl ps <name>
 dctl build <name> [service]
 ```
 
-#### CD a docker-compose by it alias name
+#### Show the path of a docker-compose by it alias name
 
 ```bash
 dctl cd <name>
