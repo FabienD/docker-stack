@@ -15,6 +15,7 @@ mod tests {
             description: None,
             compose_files: vec![String::from("/home/test/test/docker-compose.yml")],
             enviroment_file: None,
+            use_project_name: None,
         };
 
         let system = System::init();

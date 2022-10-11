@@ -10,6 +10,8 @@ pub struct ComposeItem {
     #[tabled(rename = " 📃 Description", display_with = "display_description")]
     pub description: Option<String>,
     #[tabled(skip)]
+    pub use_project_name: Option<bool>,
+    #[tabled(skip)]
     pub enviroment_file: Option<String>,
     #[tabled(skip)]
     pub compose_files: Vec<String>,

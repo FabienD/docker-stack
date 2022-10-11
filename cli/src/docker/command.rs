@@ -1,4 +1,4 @@
-use crate::parser::config::ComposeItem;
+    use crate::parser::config::ComposeItem;
 use eyre::{eyre, Context, Result};
 use std::{ffi::OsStr, process::Command};
 
@@ -29,8 +29,17 @@ pub fn prepare_command(
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("compose"));
-    args.push(OsStr::new("-p"));
-    args.push(OsStr::new(&item.alias));
+
+    let use_project_name = match item.use_project_name {
+        Some(b) => b,
+        None => true,
+    };
+    
+    // By default, use the project name
+    if use_project_name {
+        args.push(OsStr::new("-p"));
+        args.push(OsStr::new(&item.alias));
+    }
 
     match &item.enviroment_file {
         Some(env_file) => {
