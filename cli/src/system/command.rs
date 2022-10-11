@@ -1,9 +1,9 @@
 use eyre::Result;
 
-use crate::parser::parser::ComposeItem;
+use crate::parser::config::ComposeItem;
 use std::{ffi::OsStr, path::Path};
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub struct System {}
 
 impl System {
@@ -19,6 +19,6 @@ impl System {
 
         let path_str = path.to_str().unwrap();
 
-        Ok(&path_str)
+        Ok(path_str)
     }
 }

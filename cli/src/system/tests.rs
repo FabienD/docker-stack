@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::{system::system::System, parser::parser::ComposeItem};
+    use crate::{parser::config::ComposeItem, system::command::System};
 
     #[test]
     pub fn test_init() {

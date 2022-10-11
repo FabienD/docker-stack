@@ -8,7 +8,7 @@ pub(crate) fn builder(bin_command: String, sorted_args: Vec<&OsStr>) -> Command 
         cmd.arg(arg);
     });
 
-    return cmd;
+    cmd
 }
 
 #[cfg(test)]

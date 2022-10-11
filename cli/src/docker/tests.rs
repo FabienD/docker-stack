@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use crate::docker::docker;
-    use crate::parser::parser::ComposeItem;
+    use crate::docker::command as docker;
+    use crate::parser::config::ComposeItem;
     use std::ffi::OsStr;
 
     fn get_compose_item() -> ComposeItem {

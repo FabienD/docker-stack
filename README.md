@@ -1,6 +1,42 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/FabienD/docker-stack/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/FabienD/docker-stack/tree/main)
 [![codecov](https://codecov.io/github/FabienD/docker-stack/branch/main/graph/badge.svg?token=IH5NLYP8K4)](https://codecov.io/github/FabienD/docker-stack)
 [![GitHub release](https://img.shields.io/github/release/FabienD/docker-stack.svg)](https://github.com/FabienD/docker-stack/releases)
+[![GitHub license](https://img.shields.io/github/license/FabienD/docker-stack.svg)](https://github.com/FabienD/docker-stack/blob/main/LICENSE)
+
+- [The docker Stack](#the-docker-stack)
+  - [The "dctl" cli vs docker compose command ?](#the-dctl-cli-vs-docker-compose-command-)
+  - [A collection of docker-compose files](#a-collection-of-docker-compose-files)
+    - [Requirements](#requirements)
+    - [1. Web](#1-web)
+      - [1.1. Reverse proxy](#11-reverse-proxy)
+      - [1.2. MailCatcher](#12-mailcatcher)
+    - [2. Data](#2-data)
+      - [2.1. Redis](#21-redis)
+      - [2.2. RabbitMQ](#22-rabbitmq)
+      - [2.3. PostgreSQL](#23-postgresql)
+      - [2.4. MySQL](#24-mysql)
+    - [3. Logging](#3-logging)
+      - [3.1. Loki](#31-loki)
+      - [3.2. Rsyslog](#32-rsyslog)
+    - [4. Monitoring](#4-monitoring)
+    - [5. Tools](#5-tools)
+      - [5.1. Portainer](#51-portainer)
+      - [5.2. Grafana](#52-grafana)
+  - [A cli tools, a docker compose missing feature](#a-cli-tools-a-docker-compose-missing-feature)
+    - [The cli goals](#the-cli-goals)
+    - [Installation](#installation)
+    - [The config file](#the-config-file)
+    - [The cli usage](#the-cli-usage)
+      - [List registered docker-compose files](#list-registered-docker-compose-files)
+      - [Start a docker-compose by it alias name](#start-a-docker-compose-by-it-alias-name)
+      - [Stop a docker-compose by it alias name](#stop-a-docker-compose-by-it-alias-name)
+      - [Down a docker-compose by it alias name](#down-a-docker-compose-by-it-alias-name)
+      - [Restart a docker-compose by it alias name](#restart-a-docker-compose-by-it-alias-name)
+      - [PS a docker-compose by it alias name](#ps-a-docker-compose-by-it-alias-name)
+      - [Build a docker-compose by it alias name](#build-a-docker-compose-by-it-alias-name)
+      - [CD a docker-compose by it alias name](#cd-a-docker-compose-by-it-alias-name)
+  - [Use the collection without the cli tool](#use-the-collection-without-the-cli-tool)
+
 
 # The docker Stack
 
@@ -39,7 +75,7 @@ You can add our own services to the collection and customize the existing ones.
 
 If you want to contribute and improve this project, fix a typo, make it better (sorry for my english, please correct me), you're welcome, make me a PR.
 
-## Requirements
+### Requirements
 
 [Docker](https://docs.docker.com/engine/install/) is required to run the stack. The stack share the same [docker network](https://docs.docker.com/network/) to facilated communication between containers. The network is named "stack_dev" by default.
 

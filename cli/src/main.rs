@@ -9,9 +9,9 @@ pub mod docker;
 pub mod parser;
 pub mod system;
 
-use docker::docker::Docker;
-use parser::parser::DctlConfig;
-use system::system::System;
+use docker::command::Docker;
+use parser::config::DctlConfig;
+use system::command::System;
 
 #[derive(Parser)]
 #[clap(
@@ -113,7 +113,7 @@ fn execute_compose_command(
             Commands::Cd { .. } => {
                 println!("{}", system.cd(&item).unwrap());
                 Ok(())
-            },
+            }
         },
         None => Err(eyre!("Compose item {name} not found")),
     }

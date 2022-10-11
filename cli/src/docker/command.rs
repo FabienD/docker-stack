@@ -1,4 +1,4 @@
-use crate::parser::parser::ComposeItem;
+use crate::parser::config::ComposeItem;
 use eyre::{eyre, Context, Result};
 use std::{ffi::OsStr, process::Command};
 
