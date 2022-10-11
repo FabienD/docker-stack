@@ -81,3 +81,24 @@ impl DctlConfig {
         Ok(config)
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_display_alias() {
+        let alias = String::from("test");
+        assert_eq!(display_alias(&alias), "test");
+    }
+
+    #[test]
+    fn get_display_description() {
+        let description = Some(String::from("description"));
+        assert_eq!(display_description(&description), "description");
+
+        let description = None;
+        assert_eq!(display_description(&description), "");
+    }
+}

@@ -10,6 +10,7 @@ pub enum DockerCommand {
     Down,
     Restart,
     Build,
+    Logs,
     Ps,
     Exec,
 }
@@ -54,6 +55,7 @@ pub fn prepare_command(
         DockerCommand::Down => args.push(OsStr::new("down")),
         DockerCommand::Restart => args.push(OsStr::new("restart")),
         DockerCommand::Build => args.push(OsStr::new("build")),
+        DockerCommand::Logs => args.push(OsStr::new("logs")),
         DockerCommand::Ps => args.push(OsStr::new("ps")),
         DockerCommand::Exec => args.push(OsStr::new("exec")),
     };
@@ -98,6 +100,10 @@ impl Docker {
 
     pub fn build(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
         self.execute_command(DockerCommand::Build, item, service, None)
+    }
+
+    pub fn logs(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
+        self.execute_command(DockerCommand::Logs, item, service, None)
     }
 
     pub fn ps(&self, item: &ComposeItem) -> Result<()> {

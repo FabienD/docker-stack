@@ -250,6 +250,45 @@ mod tests {
     }
 
     #[test]
+    fn prepare_logs_command() {
+        let item = get_compose_item();
+        let command = docker::prepare_command(
+            String::from("docker"),
+            docker::DockerCommand::Logs,
+            &item,
+            Some(String::from("my_service")),
+            None,
+        );
+
+        match command {
+            Ok(command) => {
+                let mut args: Vec<&OsStr> = vec![];
+                args.push(OsStr::new("compose"));
+                args.push(OsStr::new("-p"));
+                args.push(OsStr::new(&item.alias));
+                args.push(OsStr::new("--env-file"));
+                match &item.enviroment_file {
+                    Some(env_file) => {
+                        args.push(OsStr::new(env_file));
+                    }
+                    None => {}
+                };
+                item.compose_files.iter().for_each(|compose_file| {
+                    args.push(OsStr::new("-f"));
+                    args.push(OsStr::new(compose_file));
+                });
+                args.push(OsStr::new("logs"));
+                args.push(OsStr::new("my_service"));
+                let cmd_args: Vec<&OsStr> = command.get_args().collect();
+
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
+            }
+            Err(_) => assert!(false),
+        }
+    }
+
+    #[test]
     fn prepare_exec_command() {
         let item = get_compose_item();
         let command = docker::prepare_command(
