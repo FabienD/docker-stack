@@ -9,9 +9,9 @@ pub mod docker;
 pub mod parser;
 pub mod system;
 
-use docker::docker::Docker;
-use parser::parser::DctlConfig;
-use system::system::System;
+use docker::command::Docker;
+use parser::config::DctlConfig;
+use system::command::System;
 
 #[derive(Parser)]
 #[clap(
@@ -70,6 +70,15 @@ enum Commands {
         #[clap(value_parser)]
         service: Option<String>,
     },
+    /// Display logs of all or one service of a docker-compose file
+    Logs {
+        /// The name of the docker-compose file alias
+        #[clap(value_parser)]
+        name: String,
+        /// The name of the service to build (optional)
+        #[clap(value_parser)]
+        service: Option<String>,
+    },
     /// Show running containers of a docker-compose file
     Ps {
         /// The name of the docker-compose file alias
@@ -107,10 +116,14 @@ fn execute_compose_command(
             Commands::Down { .. } => docker.down(&item),
             Commands::Restart { .. } => docker.restart(&item),
             Commands::Build { .. } => docker.build(&item, service),
+            Commands::Logs { .. } => docker.logs(&item, service),
             Commands::Ps { .. } => docker.ps(&item),
             Commands::Exec { .. } => docker.exec(&item, service, subcommand),
             Commands::List => Err(eyre!("List command should not be here")),
-            Commands::Cd { .. } => system.cd(&item),
+            Commands::Cd { .. } => {
+                println!("{}", system.cd(&item).unwrap());
+                Ok(())
+            }
         },
         None => Err(eyre!("Compose item {name} not found")),
     }
@@ -174,6 +187,13 @@ fn main() {
             Some(subcommand.to_string()),
         ),
         Commands::Build { name, service } => execute_compose_command(
+            config,
+            &cli.command,
+            name.to_string(),
+            service.to_owned(),
+            None,
+        ),
+        Commands::Logs { name, service } => execute_compose_command(
             config,
             &cli.command,
             name.to_string(),

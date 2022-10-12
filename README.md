@@ -1,6 +1,43 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/FabienD/docker-stack/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/FabienD/docker-stack/tree/main)
 [![codecov](https://codecov.io/github/FabienD/docker-stack/branch/main/graph/badge.svg?token=IH5NLYP8K4)](https://codecov.io/github/FabienD/docker-stack)
 [![GitHub release](https://img.shields.io/github/release/FabienD/docker-stack.svg)](https://github.com/FabienD/docker-stack/releases)
+[![GitHub license](https://img.shields.io/github/license/FabienD/docker-stack.svg)](https://github.com/FabienD/docker-stack/blob/main/LICENSE)
+
+- [The docker Stack](#the-docker-stack)
+  - [The "dctl" cli vs docker compose command ?](#the-dctl-cli-vs-docker-compose-command-)
+  - [A collection of docker-compose files](#a-collection-of-docker-compose-files)
+    - [Requirements](#requirements)
+    - [1. Web](#1-web)
+      - [1.1. Reverse proxy](#11-reverse-proxy)
+      - [1.2. MailCatcher](#12-mailcatcher)
+    - [2. Data](#2-data)
+      - [2.1. Redis](#21-redis)
+      - [2.2. RabbitMQ](#22-rabbitmq)
+      - [2.3. PostgreSQL](#23-postgresql)
+      - [2.4. MySQL](#24-mysql)
+    - [3. Logging](#3-logging)
+      - [3.1. Loki](#31-loki)
+      - [3.2. Rsyslog](#32-rsyslog)
+    - [4. Monitoring](#4-monitoring)
+    - [5. Tools](#5-tools)
+      - [5.1. Portainer](#51-portainer)
+      - [5.2. Grafana](#52-grafana)
+  - [A cli tools, a docker compose missing feature](#a-cli-tools-a-docker-compose-missing-feature)
+    - [The cli goals](#the-cli-goals)
+    - [Installation](#installation)
+    - [The config file](#the-config-file)
+    - [dctl cli usage](#dctl-cli-usage)
+      - [List registered docker-compose files](#list-registered-docker-compose-files)
+      - [Start a docker-compose by it alias name](#start-a-docker-compose-by-it-alias-name)
+      - [Stop a docker-compose by it alias name](#stop-a-docker-compose-by-it-alias-name)
+      - [Stop and remove all containers of a docker-compose by it alias name](#stop-and-remove-all-containers-of-a-docker-compose-by-it-alias-name)
+      - [Restart a docker-compose by it alias name](#restart-a-docker-compose-by-it-alias-name)
+      - [Show processus list of a docker-compose by it alias name](#show-processus-list-of-a-docker-compose-by-it-alias-name)
+      - [Show logs of a docker-compose by it alias name](#show-logs-of-a-docker-compose-by-it-alias-name)
+      - [Build a docker-compose by it alias name](#build-a-docker-compose-by-it-alias-name)
+      - [Show the path of a docker-compose by it alias name](#show-the-path-of-a-docker-compose-by-it-alias-name)
+  - [Use the collection without the cli tool](#use-the-collection-without-the-cli-tool)
+
 
 # The docker Stack
 
@@ -8,7 +45,7 @@ This project is composed of a collection of usefull docker-compose files for web
 
 **Cli tool** and **compose files collection** are independants, you can use cli without the compose files and vice versa.
 
-## The cli "dctl" vs docker compose ?
+## The "dctl" cli vs docker compose command ?
 
 The command "docker compose" relies on containers launched by docker-compose, you only see docker-compose projects having started or stopped containers.
 With the "dctl" cli, we relies on a config file, no need to have started or stopped containers of a docker-compose file to see and manage them.
@@ -39,7 +76,7 @@ You can add our own services to the collection and customize the existing ones.
 
 If you want to contribute and improve this project, fix a typo, make it better (sorry for my english, please correct me), you're welcome, make me a PR.
 
-## Requirements
+### Requirements
 
 [Docker](https://docs.docker.com/engine/install/) is required to run the stack. The stack share the same [docker network](https://docs.docker.com/network/) to facilated communication between containers. The network is named "stack_dev" by default.
 
@@ -192,7 +229,7 @@ http://grafana.stack.local (default)
 
 ## A cli tools, a docker compose missing feature
 
-The cli tools source can be found at [cli](./cli/), it's write in Rust.
+The dctl sources can be found in the [cli](./cli/) path, it's write in Rust.
 
 ### The cli goals
 
@@ -213,7 +250,10 @@ cd cli && cargo build --release
 
 The config file is a [TOML](https://toml.io/en/) file, with the following structure.
 
-Note that the **description** and the **environment file** are not mandatory.
+Note that the **use_project_name**, **description** and the **environment file** are not mandatory.
+
+**use_project_name** is true by default, docker compose will use the alias as project name. For a full compatibilty with project running without setting a [project name](https://github.com/compose-spec/compose-spec/blob/master/spec.md#name-top-level-element), set it to false, docker compose will use the directory name as project name.
+
 
 ```toml
 [main]
@@ -221,6 +261,7 @@ docker_bin = "/usr/bin/docker"
 
 [[collections]]
 alias = "stack_web"
+use_project_name = true # Default value is true
 description = "Docker stack - web components"
 enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
 compose_files = [
@@ -260,6 +301,7 @@ compose_files = [
 
 [[collections]]
 alias = "project_name2"
+use_project_name = false
 description = "The project 2"
 compose_files = [
     "/home/fabien/workspace/apps/project2/worker/docker-compose.yml",
@@ -267,7 +309,7 @@ compose_files = [
 ]
 ```
 
-### The cli usage
+### dctl cli usage
 
 ```bash
 dctl --help
@@ -291,7 +333,7 @@ dctl start <name>
 dctl stop <name>
 ```
 
-#### Down a docker-compose by it alias name
+#### Stop and remove all containers of a docker-compose by it alias name
 
 ```bash
 dctl down <name>
@@ -303,10 +345,16 @@ dctl down <name>
 dctl restart <name>
 ```
 
-#### PS a docker-compose by it alias name
+#### Show processus list of a docker-compose by it alias name
 
 ```bash
 dctl ps <name>
+```
+
+#### Show logs of a docker-compose by it alias name
+
+```bash
+dctl logs <name> [service]
 ```
 
 #### Build a docker-compose by it alias name
@@ -315,7 +363,7 @@ dctl ps <name>
 dctl build <name> [service]
 ```
 
-#### CD a docker-compose by it alias name
+#### Show the path of a docker-compose by it alias name
 
 ```bash
 dctl cd <name>

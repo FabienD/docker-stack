@@ -3,18 +3,26 @@ version: 2.1
 orbs:
   codecov: codecov/codecov@3.2.3
 jobs:
+  
   coverage:
-    machine: true
+    docker:
+      - image: rust:1.64.0-slim
     steps:
       - checkout
       - run:
-          name: Make coverage dir
-          command: cd cli && mkdir -p reports
+          name: Install grcov
+          command: rustup component add llvm-tools-preview && cargo install grcov
       - run:
-          name: Coverage with docker
-          command: cd cli && docker run --security-opt seccomp=unconfined -v "${PWD}:/volume" xd009642/tarpaulin
+          name: Run test
+          command: export RUSTFLAGS="-Cinstrument-coverage" && export LLVM_PROFILE_FILE="your_name-%p-%m.profraw" && cd cli && cargo build && cargo test
+      - run:
+          name: Run grcov
+          command: cd cli && grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info 
+      - run:
+          name: Install codecov deps
+          command: apt-get update && apt-get install -y curl gpg git
       - codecov/upload:
-          file: cli/reports/cobertura.xml
+          file: cli/lcov.info
 
   tests:
     docker:

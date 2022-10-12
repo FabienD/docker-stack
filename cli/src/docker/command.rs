@@ -1,4 +1,4 @@
-use crate::parser::parser::ComposeItem;
+    use crate::parser::config::ComposeItem;
 use eyre::{eyre, Context, Result};
 use std::{ffi::OsStr, process::Command};
 
@@ -10,6 +10,7 @@ pub enum DockerCommand {
     Down,
     Restart,
     Build,
+    Logs,
     Ps,
     Exec,
 }
@@ -28,8 +29,17 @@ pub fn prepare_command(
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("compose"));
-    args.push(OsStr::new("-p"));
-    args.push(OsStr::new(&item.alias));
+
+    let use_project_name = match item.use_project_name {
+        Some(b) => b,
+        None => true,
+    };
+    
+    // By default, use the project name
+    if use_project_name {
+        args.push(OsStr::new("-p"));
+        args.push(OsStr::new(&item.alias));
+    }
 
     match &item.enviroment_file {
         Some(env_file) => {
@@ -54,6 +64,7 @@ pub fn prepare_command(
         DockerCommand::Down => args.push(OsStr::new("down")),
         DockerCommand::Restart => args.push(OsStr::new("restart")),
         DockerCommand::Build => args.push(OsStr::new("build")),
+        DockerCommand::Logs => args.push(OsStr::new("logs")),
         DockerCommand::Ps => args.push(OsStr::new("ps")),
         DockerCommand::Exec => args.push(OsStr::new("exec")),
     };
@@ -98,6 +109,10 @@ impl Docker {
 
     pub fn build(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
         self.execute_command(DockerCommand::Build, item, service, None)
+    }
+
+    pub fn logs(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
+        self.execute_command(DockerCommand::Logs, item, service, None)
     }
 
     pub fn ps(&self, item: &ComposeItem) -> Result<()> {

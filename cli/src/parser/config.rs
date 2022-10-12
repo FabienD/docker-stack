@@ -10,6 +10,8 @@ pub struct ComposeItem {
     #[tabled(rename = " 📃 Description", display_with = "display_description")]
     pub description: Option<String>,
     #[tabled(skip)]
+    pub use_project_name: Option<bool>,
+    #[tabled(skip)]
     pub enviroment_file: Option<String>,
     #[tabled(skip)]
     pub compose_files: Vec<String>,
@@ -79,5 +81,26 @@ impl DctlConfig {
             .wrap_err("TOML parse error, check your config file structure.")?;
 
         Ok(config)
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_display_alias() {
+        let alias = String::from("test");
+        assert_eq!(display_alias(&alias), "test");
+    }
+
+    #[test]
+    fn get_display_description() {
+        let description = Some(String::from("description"));
+        assert_eq!(display_description(&description), "description");
+
+        let description = None;
+        assert_eq!(display_description(&description), "");
     }
 }
