@@ -21,7 +21,7 @@ jobs:
       - save_cache:
           key: coverage-{{ .Branch }}
           paths:
-            - "cli/lcov.info"
+            - "~/cli/lcov.info"
 
   codecov:
     machine: true
@@ -29,7 +29,7 @@ jobs:
       - restore_cache:
           key: coverage-{{ .Branch }}
       - codecov/upload:
-          file: lcov.info
+          file: cli/lcov.info
 
   tests:
     docker:
