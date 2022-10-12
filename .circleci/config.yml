@@ -81,12 +81,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - codecov:
-          requires:
-            - coverage
-          filters:
-            tags:
-              only: /.*/
       - build:
           requires:
             - tests
