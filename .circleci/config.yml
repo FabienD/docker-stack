@@ -14,10 +14,10 @@ jobs:
           command: rustup component add llvm-tools-preview && cargo install grcov
       - run:
           name: Run test
-          command: export RUSTFLAGS="-Cinstrument-coverage" && export LLVM_PROFILE_FILE="your_name-%p-%m.profraw" && cd cli && cargo test
+          command: export RUSTFLAGS="-Cinstrument-coverage" && export LLVM_PROFILE_FILE="your_name-%p-%m.profraw" && cd cli && cargo build && cargo test
       - run:
           name: Run grcov
-          command: cd cli && mkdir -p reports && grcov . -s . -t lcov --llvm --branch --ignore-not-existing --ignore "/*" -o reports/lcov.info      
+          command: cd cli && mkdir -p reports && grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info    
       - codecov/upload:
           file: cli/reports/lcov.info 
 
