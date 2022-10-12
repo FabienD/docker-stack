@@ -17,9 +17,19 @@ jobs:
           command: export RUSTFLAGS="-Cinstrument-coverage" && export LLVM_PROFILE_FILE="your_name-%p-%m.profraw" && cd cli && cargo build && cargo test
       - run:
           name: Run grcov
-          command: cd cli && mkdir -p reports && grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info    
+          command: cd cli && grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info    
+      - save_cache:
+          key: coverage-{{ .BuildNum }}
+          paths:
+            - "cli/lcov.info"
+
+  codecov:
+    machine: true
+    steps:
+      - restore_cache:
+          key: coverage-{{ .BuildNum }}
       - codecov/upload:
-          file: cli/reports/lcov.info 
+          file: lcov.info
 
   tests:
     docker:
@@ -75,6 +85,12 @@ workflows:
       - coverage:
           requires:
             - tests
+          filters:
+            tags:
+              only: /.*/
+      - codecov:
+          requires:
+            - coverage
           filters:
             tags:
               only: /.*/
