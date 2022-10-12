@@ -19,7 +19,7 @@ jobs:
           name: Run grcov
           command: cd cli && grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info    
       - save_cache:
-          key: coverage-{{ .BuildNum }}
+          key: coverage-{{ .Branch }}
           paths:
             - "cli/lcov.info"
 
@@ -27,7 +27,7 @@ jobs:
     machine: true
     steps:
       - restore_cache:
-          key: coverage-{{ .BuildNum }}
+          key: coverage-{{ .Branch }}
       - codecov/upload:
           file: lcov.info
 
