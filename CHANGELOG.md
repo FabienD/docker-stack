@@ -2,6 +2,11 @@
 
 * 
 
+## 0.3.0 (2022-10-12)
+
+* dctl cli now supports "dctl logs" command.
+* dctl can use alias (default) or directory name (for compose compatibilty) as project name. Cf. new config option "use_project_name".
+
 ## 0.2.1 (2022-10-02)
 
 * Major upgrade of clap crate to v4.
