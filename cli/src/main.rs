@@ -2,16 +2,13 @@ use clap::{Parser, Subcommand};
 use dotenv::dotenv;
 use eyre::{eyre, Result};
 use std::env;
-use tabled::{Margin, Style, Table};
 
 pub mod command;
-pub mod docker;
 pub mod parser;
-pub mod system;
 
-use docker::command::Docker;
+use command::docker::Docker;
+use command::system::System;
 use parser::config::DctlConfig;
-use system::command::System;
 
 #[derive(Parser)]
 #[clap(
@@ -100,32 +97,38 @@ enum Commands {
 }
 
 fn execute_compose_command(
-    config: DctlConfig,
+    config: &mut DctlConfig,
     command: &Commands,
-    name: String,
+    name: Option<String>,
     service: Option<String>,
     subcommand: Option<String>,
 ) -> Result<()> {
     let docker = Docker::init(config.main.docker_bin.clone());
     let system = System::init();
 
-    match config.get_compose_item_by_alias(name.to_string()) {
-        Some(item) => match command {
-            Commands::Start { .. } => docker.start(&item),
-            Commands::Stop { .. } => docker.stop(&item),
-            Commands::Down { .. } => docker.down(&item),
-            Commands::Restart { .. } => docker.restart(&item),
-            Commands::Build { .. } => docker.build(&item, service),
-            Commands::Logs { .. } => docker.logs(&item, service),
-            Commands::Ps { .. } => docker.ps(&item),
-            Commands::Exec { .. } => docker.exec(&item, service, subcommand),
-            Commands::List => Err(eyre!("List command should not be here")),
-            Commands::Cd { .. } => {
-                println!("{}", system.cd(&item).unwrap());
-                Ok(())
-            }
+    match name {
+        Some(name) => match config.get_compose_item_by_alias(name.to_string()) {
+            Some(item) => match command {
+                Commands::Start { .. } => docker.start(&item),
+                Commands::Stop { .. } => docker.stop(&item),
+                Commands::Down { .. } => docker.down(&item),
+                Commands::Restart { .. } => docker.restart(&item),
+                Commands::Build { .. } => docker.build(&item, service),
+                Commands::Logs { .. } => docker.logs(&item, service),
+                Commands::Ps { .. } => docker.ps(&item),
+                Commands::Exec { .. } => docker.exec(&item, service, subcommand),
+                Commands::Cd { .. } => {
+                    println!("{}", system.cd(&item).unwrap());
+                    Ok(())
+                }
+                _ => Err(eyre!("Should not happen")),
+            },
+            None => Err(eyre!("Compose item {name} not found")),
         },
-        None => Err(eyre!("Compose item {name} not found")),
+        None => match command {
+            Commands::List => docker.list(config),
+            _ => Err(eyre!("Should not happen")),
+        },
     }
 }
 
@@ -136,7 +139,7 @@ fn main() {
     let config_file_path = env::var("DCTL_CONFIG_FILE_PATH")
         .unwrap_or_else(|_| String::from("~/.config/dctl/config.toml"));
     // Load config file
-    let config = match DctlConfig::load(config_file_path) {
+    let mut config = match DctlConfig::load(config_file_path) {
         Ok(config) => config,
         Err(err) => {
             println!("Load config error: {}", err);
@@ -147,56 +150,71 @@ fn main() {
     let cli = Cli::parse();
 
     let cmd = match &cli.command {
-        Commands::List => {
-            let items = config.get_all_compose_items();
-            println!(
-                "{}",
-                Table::new(items)
-                    .with(Style::modern())
-                    .with(Margin::new(0, 0, 1, 1))
-            );
-            Ok(())
-        }
-        Commands::Cd { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None, None)
-        }
-        Commands::Start { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None, None)
-        }
-        Commands::Stop { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None, None)
-        }
-        Commands::Down { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None, None)
-        }
-        Commands::Restart { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None, None)
-        }
-        Commands::Ps { name } => {
-            execute_compose_command(config, &cli.command, name.to_string(), None, None)
-        }
+        Commands::List => execute_compose_command(&mut config, &cli.command, None, None, None),
+        Commands::Cd { name } => execute_compose_command(
+            &mut config,
+            &cli.command,
+            Some(name.to_string()),
+            None,
+            None,
+        ),
+        Commands::Start { name } => execute_compose_command(
+            &mut config,
+            &cli.command,
+            Some(name.to_string()),
+            None,
+            None,
+        ),
+        Commands::Stop { name } => execute_compose_command(
+            &mut config,
+            &cli.command,
+            Some(name.to_string()),
+            None,
+            None,
+        ),
+        Commands::Down { name } => execute_compose_command(
+            &mut config,
+            &cli.command,
+            Some(name.to_string()),
+            None,
+            None,
+        ),
+        Commands::Restart { name } => execute_compose_command(
+            &mut config,
+            &cli.command,
+            Some(name.to_string()),
+            None,
+            None,
+        ),
+        Commands::Ps { name } => execute_compose_command(
+            &mut config,
+            &cli.command,
+            Some(name.to_string()),
+            None,
+            None,
+        ),
         Commands::Exec {
             name,
             service,
             subcommand,
         } => execute_compose_command(
-            config,
+            &mut config,
             &cli.command,
-            name.to_string(),
+            Some(name.to_string()),
             Some(service.to_string()),
             Some(subcommand.to_string()),
         ),
         Commands::Build { name, service } => execute_compose_command(
-            config,
+            &mut config,
             &cli.command,
-            name.to_string(),
+            Some(name.to_owned()),
             service.to_owned(),
             None,
         ),
         Commands::Logs { name, service } => execute_compose_command(
-            config,
+            &mut config,
             &cli.command,
-            name.to_string(),
+            Some(name.to_string()),
             service.to_owned(),
             None,
         ),

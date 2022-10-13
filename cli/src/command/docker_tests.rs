@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::docker::command as docker;
+    use crate::command::docker;
     use crate::parser::config::ComposeItem;
     use std::ffi::OsStr;
 
@@ -14,6 +14,7 @@ mod tests {
                 String::from("/home/test/docker-compose2.yml"),
             ],
             use_project_name: Some(use_project_name),
+            status: None,
         };
 
         item
@@ -25,7 +26,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Start,
-            &item,
+            Some(&item),
             None,
             None,
         );
@@ -65,7 +66,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Start,
-            &item,
+            Some(&item),
             None,
             None,
         );
@@ -103,7 +104,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Stop,
-            &item,
+            Some(&item),
             None,
             None,
         );
@@ -141,7 +142,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Down,
-            &item,
+            Some(&item),
             None,
             None,
         );
@@ -179,7 +180,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Restart,
-            &item,
+            Some(&item),
             None,
             None,
         );
@@ -217,7 +218,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Ps,
-            &item,
+            Some(&item),
             None,
             None,
         );
@@ -255,7 +256,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Build,
-            &item,
+            Some(&item),
             Some(String::from("my_service")),
             None,
         );
@@ -294,7 +295,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Logs,
-            &item,
+            Some(&item),
             Some(String::from("my_service")),
             None,
         );
@@ -333,7 +334,7 @@ mod tests {
         let command = docker::prepare_command(
             String::from("docker"),
             docker::DockerCommand::Exec,
-            &item,
+            Some(&item),
             Some(String::from("my_service")),
             Some(String::from("./bin/console doctrine:migrations:migrate")),
         );

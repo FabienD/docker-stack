@@ -9,6 +9,8 @@ pub struct ComposeItem {
     pub alias: String,
     #[tabled(rename = " 📃 Description", display_with = "display_description")]
     pub description: Option<String>,
+    #[tabled(rename = " Status", display_with = "display_status")]
+    pub status: Option<bool>,
     #[tabled(skip)]
     pub use_project_name: Option<bool>,
     #[tabled(skip)]
@@ -17,8 +19,27 @@ pub struct ComposeItem {
     pub compose_files: Vec<String>,
 }
 
+impl ComposeItem {
+    pub fn set_status(&mut self, status: bool) {
+        self.status = Some(status);
+    }
+}
+
 fn display_alias(alias: &String) -> String {
     alias.to_string()
+}
+
+fn display_status(status: &Option<bool>) -> String {
+    match status {
+        Some(s) => {
+            if *s {
+                "🟢 Running".to_string()
+            } else {
+                "🔴 Stopped".to_string()
+            }
+        }
+        None => "🔴 Stopped".to_string(),
+    }
 }
 
 fn display_description(o: &Option<String>) -> String {
@@ -83,7 +104,6 @@ impl DctlConfig {
         Ok(config)
     }
 }
-
 
 #[cfg(test)]
 mod tests {

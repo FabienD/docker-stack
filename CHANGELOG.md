@@ -1,6 +1,6 @@
-## Next Release
+## 0.4.0 (2022-10-13)
 
-* 
+* Add running status in the dctl command list.
 
 ## 0.3.0 (2022-10-12)
 
