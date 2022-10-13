@@ -9,7 +9,7 @@ pub struct ComposeItem {
     pub alias: String,
     #[tabled(rename = " 📃 Description", display_with = "display_description")]
     pub description: Option<String>,
-    #[tabled(rename = " Status", display_with = "display_status")]
+    #[tabled(rename = "⚡Status", display_with = "display_status")]
     pub status: Option<bool>,
     #[tabled(skip)]
     pub use_project_name: Option<bool>,
