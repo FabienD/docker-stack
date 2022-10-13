@@ -1,5 +1,5 @@
 use crate::parser::config::{ComposeItem, DctlConfig};
-use eyre::{eyre, Context, Result};
+use eyre::{eyre, Result};
 use serde_json::Value;
 use std::ffi::OsStr;
 use std::process::{Command, Output};
@@ -17,6 +17,11 @@ pub enum DockerCommand {
     List,
     Ps,
     Exec,
+}
+
+pub enum CommandOuput {
+    Status,
+    Output,
 }
 
 pub struct Docker {
@@ -103,37 +108,79 @@ impl Docker {
     }
 
     pub fn start(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(DockerCommand::Start, Some(item), None, None);
+        let _ = self.execute_command(
+            DockerCommand::Start,
+            Some(item),
+            None,
+            None,
+            CommandOuput::Status,
+        )?;
         Ok(())
     }
 
     pub fn stop(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(DockerCommand::Stop, Some(item), None, None);
+        let _ = self.execute_command(
+            DockerCommand::Stop,
+            Some(item),
+            None,
+            None,
+            CommandOuput::Status,
+        )?;
         Ok(())
     }
 
     pub fn down(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(DockerCommand::Down, Some(item), None, None);
+        let _ = self.execute_command(
+            DockerCommand::Down,
+            Some(item),
+            None,
+            None,
+            CommandOuput::Status,
+        )?;
         Ok(())
     }
 
     pub fn restart(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(DockerCommand::Restart, Some(item), None, None);
+        let _ = self.execute_command(
+            DockerCommand::Restart,
+            Some(item),
+            None,
+            None,
+            CommandOuput::Status,
+        )?;
         Ok(())
     }
 
     pub fn build(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
-        let _ = self.execute_command(DockerCommand::Build, Some(item), service, None);
+        let _ = self.execute_command(
+            DockerCommand::Build,
+            Some(item),
+            service,
+            None,
+            CommandOuput::Status,
+        )?;
         Ok(())
     }
 
     pub fn logs(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
-        let _ = self.execute_command(DockerCommand::Logs, Some(item), service, None);
+        let _ = self.execute_command(
+            DockerCommand::Logs,
+            Some(item),
+            service,
+            None,
+            CommandOuput::Status,
+        )?;
         Ok(())
     }
 
     pub fn ps(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(DockerCommand::Ps, Some(item), None, None);
+        let _ = self.execute_command(
+            DockerCommand::Ps,
+            Some(item),
+            None,
+            None,
+            CommandOuput::Status,
+        )?;
         Ok(())
     }
 
@@ -143,13 +190,19 @@ impl Docker {
         service: Option<String>,
         subcommand: Option<String>,
     ) -> Result<()> {
-        let _ = self.execute_command(DockerCommand::Exec, Some(item), service, subcommand);
+        let _ = self.execute_command(
+            DockerCommand::Exec,
+            Some(item),
+            service,
+            subcommand,
+            CommandOuput::Status,
+        )?;
         Ok(())
     }
 
     pub fn list(&self, config: &mut DctlConfig) -> Result<()> {
         let cmd_output = self
-            .execute_command(DockerCommand::List, None, None, None)
+            .execute_command(DockerCommand::List, None, None, None, CommandOuput::Output)
             .unwrap();
         let result: Value =
             serde_json::from_str(String::from_utf8(cmd_output.stdout).unwrap().as_str())?;
@@ -159,8 +212,12 @@ impl Docker {
 
         for item in &mut items {
             result.as_array().unwrap().iter().for_each(|project| {
-                if project["Name"].as_str().unwrap() == item.alias 
-                || project["ConfigFiles"].as_str().unwrap().split(',').any(|x| x == item.compose_files[0].as_str())
+                // Relies on at least one compose file full path
+                if project["ConfigFiles"]
+                    .as_str()
+                    .unwrap()
+                    .split(',')
+                    .any(|x| x == item.compose_files[0].as_str())
                 {
                     item.set_status(true);
                 }
@@ -182,18 +239,32 @@ impl Docker {
         item: Option<&ComposeItem>,
         service: Option<String>,
         subcommand: Option<String>,
+        output: CommandOuput,
     ) -> Result<Output> {
         let mut cmd =
             prepare_command(self.bin_path.to_owned(), command, item, service, subcommand)?;
 
-        let cmd_output = cmd
-            .output()
-            .context("Failed to execute docker-compose command")?;
-
-        if cmd_output.status.success() {
-            Ok(cmd_output)
-        } else {
-            Err(eyre!("Docker compose command exit status isn't success."))
+        match output {
+            CommandOuput::Status => {
+                let status = cmd.status()?;
+                if status.success() {
+                    Ok(Output {
+                        status,
+                        stdout: vec![],
+                        stderr: vec![],
+                    })
+                } else {
+                    Err(eyre!("Command failed"))
+                }
+            }
+            CommandOuput::Output => {
+                let output = cmd.output()?;
+                if output.status.success() {
+                    Ok(output)
+                } else {
+                    Err(eyre!("Command failed"))
+                }
+            }
         }
     }
 }

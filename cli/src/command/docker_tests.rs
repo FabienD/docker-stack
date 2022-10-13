@@ -367,4 +367,30 @@ mod tests {
             Err(_) => assert!(false),
         }
     }
+
+    #[test]
+    fn prepare_list_command() {
+        let command = docker::prepare_command(
+            String::from("docker"),
+            docker::DockerCommand::List,
+            None,
+            None,
+            None,
+        );
+
+        match command {
+            Ok(command) => {
+                let mut args: Vec<&OsStr> = vec![];
+                args.push(OsStr::new("compose"));
+                args.push(OsStr::new("ls"));
+                args.push(OsStr::new("--format"));
+                args.push(OsStr::new("json"));
+                let cmd_args: Vec<&OsStr> = command.get_args().collect();
+
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
+            }
+            Err(_) => assert!(false),
+        }
+    }
 }
