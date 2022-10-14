@@ -1,6 +1,7 @@
-## 0.4.0 (2022-10-13)
+## 0.4.0 (2022-10-14)
 
 * Add running status in the dctl command list.
+* Refactoring the code, add more tests.
 
 ## 0.3.0 (2022-10-12)
 
