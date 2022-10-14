@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::docker::command as docker;
+    use crate::command::docker;
     use crate::parser::config::ComposeItem;
     use std::ffi::OsStr;
 
@@ -14,6 +14,7 @@ mod tests {
                 String::from("/home/test/docker-compose2.yml"),
             ],
             use_project_name: Some(use_project_name),
+            status: None,
         };
 
         item
@@ -24,8 +25,8 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Start,
-            &item,
+            docker::CommandType::Start,
+            Some(&item),
             None,
             None,
         );
@@ -64,8 +65,8 @@ mod tests {
         let item = get_compose_item(false);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Start,
-            &item,
+            docker::CommandType::Start,
+            Some(&item),
             None,
             None,
         );
@@ -102,8 +103,8 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Stop,
-            &item,
+            docker::CommandType::Stop,
+            Some(&item),
             None,
             None,
         );
@@ -140,8 +141,8 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Down,
-            &item,
+            docker::CommandType::Down,
+            Some(&item),
             None,
             None,
         );
@@ -178,8 +179,8 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Restart,
-            &item,
+            docker::CommandType::Restart,
+            Some(&item),
             None,
             None,
         );
@@ -216,8 +217,8 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Ps,
-            &item,
+            docker::CommandType::Ps,
+            Some(&item),
             None,
             None,
         );
@@ -254,8 +255,8 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Build,
-            &item,
+            docker::CommandType::Build,
+            Some(&item),
             Some(String::from("my_service")),
             None,
         );
@@ -293,8 +294,8 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Logs,
-            &item,
+            docker::CommandType::Logs,
+            Some(&item),
             Some(String::from("my_service")),
             None,
         );
@@ -332,8 +333,8 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Exec,
-            &item,
+            docker::CommandType::Exec,
+            Some(&item),
             Some(String::from("my_service")),
             Some(String::from("./bin/console doctrine:migrations:migrate")),
         );
@@ -362,6 +363,32 @@ mod tests {
 
                 assert_eq!(command.get_program(), OsStr::new("docker"));
                 assert!(cmd_args == args);
+            }
+            Err(_) => assert!(false),
+        }
+    }
+
+    #[test]
+    fn prepare_list_command() {
+        let command = docker::prepare_command(
+            String::from("docker"),
+            docker::CommandType::List,
+            None,
+            None,
+            None,
+        );
+
+        match command {
+            Ok(command) => {
+                let mut args: Vec<&OsStr> = vec![];
+                args.push(OsStr::new("compose"));
+                args.push(OsStr::new("ls"));
+                args.push(OsStr::new("--format"));
+                args.push(OsStr::new("json"));
+                let cmd_args: Vec<&OsStr> = command.get_args().collect();
+
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
             }
             Err(_) => assert!(false),
         }

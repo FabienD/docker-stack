@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod tests {
     use crate::parser::config::*;
-    
 
     fn get_valid_config() -> String {
         let config = r#"
