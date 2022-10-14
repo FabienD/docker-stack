@@ -25,7 +25,7 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Start,
+            docker::CommandType::Start,
             Some(&item),
             None,
             None,
@@ -65,7 +65,7 @@ mod tests {
         let item = get_compose_item(false);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Start,
+            docker::CommandType::Start,
             Some(&item),
             None,
             None,
@@ -103,7 +103,7 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Stop,
+            docker::CommandType::Stop,
             Some(&item),
             None,
             None,
@@ -141,7 +141,7 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Down,
+            docker::CommandType::Down,
             Some(&item),
             None,
             None,
@@ -179,7 +179,7 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Restart,
+            docker::CommandType::Restart,
             Some(&item),
             None,
             None,
@@ -217,7 +217,7 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Ps,
+            docker::CommandType::Ps,
             Some(&item),
             None,
             None,
@@ -255,7 +255,7 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Build,
+            docker::CommandType::Build,
             Some(&item),
             Some(String::from("my_service")),
             None,
@@ -294,7 +294,7 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Logs,
+            docker::CommandType::Logs,
             Some(&item),
             Some(String::from("my_service")),
             None,
@@ -333,7 +333,7 @@ mod tests {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::Exec,
+            docker::CommandType::Exec,
             Some(&item),
             Some(String::from("my_service")),
             Some(String::from("./bin/console doctrine:migrations:migrate")),
@@ -372,7 +372,7 @@ mod tests {
     fn prepare_list_command() {
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::DockerCommand::List,
+            docker::CommandType::List,
             None,
             None,
             None,
