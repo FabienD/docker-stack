@@ -1,3 +1,8 @@
+## 0.5.0 (xxxx-xx-xx)
+
+* Add cli shell completion
+* Update documentation
+
 ## 0.4.0 (2022-10-14)
 
 * Add running status in the dctl command list.

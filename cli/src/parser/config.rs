@@ -20,10 +20,24 @@ pub struct ComposeItem {
     pub compose_files: Vec<String>,
 }
 
-impl ComposeItem {
-    pub fn set_status(&mut self, status: bool) {
-        self.status = Some(status);
-    }
+pub trait CliConfig {
+    fn get_container_bin_path(&self) -> Result<String>;
+    fn load(config_path_file: String) -> Result<Self>
+    where
+        Self: Sized;
+    fn get_compose_item_by_alias(&self, alias: String) -> Option<ComposeItem>;
+    fn get_all_compose_items(&self) -> Vec<ComposeItem>;
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Config {
+    pub docker_bin: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct DctlConfig {
+    pub main: Config,
+    pub collections: Vec<ComposeItem>,
 }
 
 fn display_alias(alias: &String) -> String {
@@ -50,30 +64,17 @@ fn display_description(o: &Option<String>) -> String {
     }
 }
 
-pub trait CliConfig {
-    fn get_container_bin_path(&self) -> Result<String>;
-    fn load(config_path_file: String) -> Result<Self>
-    where
-        Self: Sized;
-    fn get_compose_item_by_alias(&self, alias: String) -> Option<ComposeItem>;
-    fn get_all_compose_items(&self) -> Vec<ComposeItem>;
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Config {
-    pub docker_bin: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct DctlConfig {
-    pub main: Config,
-    pub collections: Vec<ComposeItem>,
+impl ComposeItem {
+    pub fn set_status(&mut self, status: bool) {
+        self.status = Some(status);
+    }
 }
 
 impl DctlConfig {
     fn load_config_file(config_path_file: String) -> Result<String> {
         // Load config file
         let full_config_path = shellexpand::tilde(&config_path_file).to_string();
+        
         // Read the config file
         let config_content = fs::read_to_string(&full_config_path)
             .wrap_err(format!("config file not found in {full_config_path}"))?;
