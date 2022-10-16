@@ -121,10 +121,10 @@ pub(crate) fn prepare_command(
 }
 
 impl Docker {
-    fn execute_command<'a>(
+    fn execute_command(
         &self,
         command: CommandType,
-        item: Option<&'a ComposeItem>,
+        item: Option<&ComposeItem>,
         service: Option<String>,
         subcommand: Option<String>,
         output: CommandOuput,
