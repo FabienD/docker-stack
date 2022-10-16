@@ -1,4 +1,4 @@
-## 0.5.0 (xxxx-xx-xx)
+## 0.5.0 (2022-10-16)
 
 * Add cli shell completion
 * Update documentation
