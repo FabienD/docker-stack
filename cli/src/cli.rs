@@ -1,9 +1,8 @@
-use std::io;
-
 use crate::{command::docker::Container, command::system::System, parser::config::CliConfig};
 use clap::{Command, CommandFactory, Parser, Subcommand};
 use clap_complete::{generate, Generator, Shell};
 use eyre::{eyre, Result};
+use std::io;
 
 #[derive(Parser)]
 #[clap(
