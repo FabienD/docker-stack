@@ -483,4 +483,38 @@ mod tests {
 
         assert!(result.is_ok());
     }
+
+    #[test]
+    fn get_test_execute_list_with_name_cmd() {
+        // Mocked config
+        let mut mock_config = get_mocked_config();
+        // Mock docker
+        let mut mock_docker = MockDocker::default();
+        mock_docker.expect_list().returning(|_| Ok(()));
+
+        let command = Commands::List {};
+
+        let result =
+            execute_compose_command(&mut mock_config, &mock_docker, &command, Some(String::from("None")), None, None);
+
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn get_test_execute_any_cmd_without_name_cmd() {
+        // Mocked config
+        let mut mock_config = get_mocked_config();
+        // Mock docker
+        let mut mock_docker = MockDocker::default();
+        mock_docker.expect_start().returning(|_| Ok(()));
+
+        let command = Commands::Start {
+            name: String::from("test"),
+        };
+
+        let result =
+            execute_compose_command(&mut mock_config, &mock_docker, &command, None, None, None);
+
+        assert!(result.is_err());
+    }
 }

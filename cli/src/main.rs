@@ -23,7 +23,7 @@ fn main() {
     // Get the custom config file path from env
     let config_file_path = load_config_path().unwrap();
 
-    // Load config file
+    // Get config file
     let mut config: DctlConfig = match CliConfig::load(config_file_path) {
         Ok(config) => config,
         Err(err) => {
@@ -32,7 +32,7 @@ fn main() {
         }
     };
 
-    // Load container bin path
+    // Get container manager
     let docker: Docker = Container::init(config.get_container_bin_path().unwrap());
 
     // Execute cli command
