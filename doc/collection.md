@@ -52,7 +52,7 @@ To work, ```the local domain should target the Docker Host IP```.
 
 https://dashboard.stack.local (default)
 
-![Traefil Dashboard](doc/assets/stack_reverse_proxy.png)
+![Traefil Dashboard](assets/stack_reverse_proxy.png)
 
 If you want to use a local domain with your application, you must explicitly set the use traefik with docker labels:
 
@@ -80,7 +80,7 @@ The mail catcher web interface is available via a local domain.
 
 http://mailcatcher.stack.local (default)
 
-![Mailcatcher Dashboard](doc/assets/stack_mailcatcher.png)
+![Mailcatcher Dashboard](assets/stack_mailcatcher.png)
 
 The SMTP server is exposed on the port 1025, no authentication is required.
 
@@ -100,7 +100,7 @@ Redis service is exposed on port 6379, no authentication is required.
 RabbitMQ service is exposed on port 5672, and the managment interface is available via http://rabbitmq.stack.local
 Credentials are defined in the ```.env``` file.
 
-![RabbitMQ Dashboard](doc/assets/stack_rabbitmq.png)
+![RabbitMQ Dashboard](assets/stack_rabbitmq.png)
 
 #### 2.3. PostgreSQL
 
@@ -133,7 +133,7 @@ We use Grafana (in the tools stack) to explore loki collected logs.
 
 Use the Loki container name as URL : http://stack.logging.loki:3100
 
-![Loki Datasource](doc/assets/stack_loki.png)
+![Loki Datasource](assets/stack_loki.png)
 
 If you want to see the logs of a container, you must explicitly use Loki as the docker driver and send application log to the standart output.
 
@@ -167,7 +167,7 @@ Portainer is a service that provides a web interface to manage containers.
 
 http://portainer.stack.local (default)
 
-![Portainer Dashboard](doc/assets/stack_portainer.png)
+![Portainer Dashboard](assets/stack_portainer.png)
 
 #### 5.2. Grafana
 
