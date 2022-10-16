@@ -13,14 +13,17 @@ use std::io;
 )]
 #[clap(propagate_version = true)]
 pub struct Cli {
-    #[arg(long = "generate", value_enum)]
-    generator: Option<Shell>,
     #[clap(subcommand)]
     command: Commands,
 }
 
 #[derive(Subcommand, Debug)]
 enum Commands {
+    /// Geneate shell completion (bash, fish, zsh, powershell, elvish)
+    Completion {
+        #[clap(value_enum)]
+        generator: Option<Shell>,
+    },
     /// List all the available docker-compose files in the config
     List,
     /// Print the directory of the docker-compose file.
@@ -135,15 +138,14 @@ impl Cli {
     pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> {
         let cli = Cli::parse();
 
-        // Generate shell completions
-        if let Some(generator) = cli.generator {
-            let mut cmd = Cli::command();
-            eprintln!("Generating completion file for {:?}...", generator);
-            print_completions(generator, &mut cmd);
-            std::process::exit(1);
-        }
-
         match &cli.command {
+            // Generate shell completions
+            Commands::Completion { generator } => {
+                let mut cmd = Cli::command();
+                eprintln!("Generating completion file for {:?}...", &generator);
+                print_completions(generator.unwrap(), &mut cmd);
+                std::process::exit(1);
+            },
             Commands::List => {
                 execute_compose_command(config, container, &cli.command, None, None, None)
             }

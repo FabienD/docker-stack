@@ -159,6 +159,27 @@ function gocd() {
 }
 ```
 
+## Use dctl shell completion
+
+Since version 0.5.0, dctl is able to generate a shell (Bash, Elvish, Fish, PowerShell, Zsh) completion script.
+
+```bash
+dctl completion <shell> > /path/to/completion/file
+```
+
+For example, to generate a completion script for **Bash**, you can run:
+
+```bash
+dctl completion bash > /etc/bash_completion.d/dctl
+```
+
+For **Zsh**, you can run:
+
+```bash
+dctl completion zsh > /usr/local/share/zsh/site-functions/_dctl
+compinit
+```
+
 ## Use the collection without the cli tool
 
 You can use all of the docker-compose files without the cli, use docker command like this :
