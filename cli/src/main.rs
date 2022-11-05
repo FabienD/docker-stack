@@ -43,12 +43,13 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use std::env::set_var;
+    use std::env::{set_var, remove_var};
 
     use super::*;
 
     #[test]
     fn get_default_load_config_path() {
+        remove_var("DCTL_CONFIG_FILE_PATH");
         let config_file_path = load_config_path().unwrap();
         assert_eq!(config_file_path, "~/.config/dctl/config.toml");
     }
