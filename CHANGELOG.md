@@ -1,3 +1,7 @@
+## 0.5.2 (2022-11-18)
+
+* Update libraries
+
 ## 0.5.1 (2022-11-05)
 
 * Update docker images to Rust 1.65 (Circle CI, and Build)
