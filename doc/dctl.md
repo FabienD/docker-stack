@@ -152,7 +152,7 @@ dctl exec <name> <service> <subcommand>
 #### Run a subcommand in a container by the project name
 
 ```bash
-dctl exec <name> <service> <csubommand>
+dctl run <name> <service> <csubommand>
 ```
 
 
