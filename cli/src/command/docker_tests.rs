@@ -21,11 +21,11 @@ mod tests {
     }
 
     #[test]
-    fn prepare_start_command() {
+    fn prepare_up_command() {
         let item = get_compose_item(true);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::CommandType::Start,
+            docker::CommandType::Up,
             Some(&item),
             None,
             None,
@@ -61,11 +61,11 @@ mod tests {
     }
 
     #[test]
-    fn prepare_start_command_without_project_name() {
+    fn prepare_up_command_without_project_name() {
         let item = get_compose_item(false);
         let command = docker::prepare_command(
             String::from("docker"),
-            docker::CommandType::Start,
+            docker::CommandType::Up,
             Some(&item),
             None,
             None,
@@ -89,6 +89,44 @@ mod tests {
                 args.push(OsStr::new("up"));
                 args.push(OsStr::new("-d"));
                 args.push(OsStr::new("--remove-orphans"));
+                let cmd_args: Vec<&OsStr> = command.get_args().collect();
+
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert_eq!(cmd_args, args);
+            }
+            Err(_) => assert!(false),
+        }
+    }
+
+    #[test]
+    fn prepare_start_command() {
+        let item = get_compose_item(true);
+        let command = docker::prepare_command(
+            String::from("docker"),
+            docker::CommandType::Start,
+            Some(&item),
+            None,
+            None,
+        );
+
+        match command {
+            Ok(command) => {
+                let mut args: Vec<&OsStr> = vec![];
+                args.push(OsStr::new("compose"));
+                args.push(OsStr::new("-p"));
+                args.push(OsStr::new(&item.alias));
+                args.push(OsStr::new("--env-file"));
+                match &item.enviroment_file {
+                    Some(env_file) => {
+                        args.push(OsStr::new(env_file));
+                    }
+                    None => {}
+                };
+                item.compose_files.iter().for_each(|compose_file| {
+                    args.push(OsStr::new("-f"));
+                    args.push(OsStr::new(compose_file));
+                });
+                args.push(OsStr::new("start"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();
 
                 assert_eq!(command.get_program(), OsStr::new("docker"));
@@ -357,6 +395,46 @@ mod tests {
                     args.push(OsStr::new(compose_file));
                 });
                 args.push(OsStr::new("exec"));
+                args.push(OsStr::new("my_service"));
+                args.push(OsStr::new("./bin/console doctrine:migrations:migrate"));
+                let cmd_args: Vec<&OsStr> = command.get_args().collect();
+
+                assert_eq!(command.get_program(), OsStr::new("docker"));
+                assert!(cmd_args == args);
+            }
+            Err(_) => assert!(false),
+        }
+    }
+
+    #[test]
+    fn prepare_run_command() {
+        let item = get_compose_item(true);
+        let command = docker::prepare_command(
+            String::from("docker"),
+            docker::CommandType::Run,
+            Some(&item),
+            Some(String::from("my_service")),
+            Some(String::from("./bin/console doctrine:migrations:migrate")),
+        );
+
+        match command {
+            Ok(command) => {
+                let mut args: Vec<&OsStr> = vec![];
+                args.push(OsStr::new("compose"));
+                args.push(OsStr::new("-p"));
+                args.push(OsStr::new(&item.alias));
+                args.push(OsStr::new("--env-file"));
+                match &item.enviroment_file {
+                    Some(env_file) => {
+                        args.push(OsStr::new(env_file));
+                    }
+                    None => {}
+                };
+                item.compose_files.iter().for_each(|compose_file| {
+                    args.push(OsStr::new("-f"));
+                    args.push(OsStr::new(compose_file));
+                });
+                args.push(OsStr::new("run"));
                 args.push(OsStr::new("my_service"));
                 args.push(OsStr::new("./bin/console doctrine:migrations:migrate"));
                 let cmd_args: Vec<&OsStr> = command.get_args().collect();

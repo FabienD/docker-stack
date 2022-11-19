@@ -96,49 +96,67 @@ dctl --help
 dctl list
 ```
 
-#### Start a docker-compose by it alias name
+#### Create and run containers by the project name
+
+```bash
+dctl up <name>
+```
+
+#### Start stopped containers by the project name
 
 ```bash
 dctl start <name>
 ```
 
-#### Stop a docker-compose by it alias name
+#### Stop containers by the project name
 
 ```bash
 dctl stop <name>
 ```
 
-#### Stop and remove all containers of a docker-compose by it alias name
+#### Stop and remove all containers by the project name
 
 ```bash
 dctl down <name>
 ```
 
-#### Restart a docker-compose by it alias name
+#### Restart containers by the project name
 
 ```bash
 dctl restart <name>
 ```
 
-#### Show processus list of a docker-compose by it alias name
+#### Show processus list by the project name
 
 ```bash
 dctl ps <name>
 ```
 
-#### Show logs of a docker-compose by it alias name
+#### Show containers logs by the project name
 
 ```bash
 dctl logs <name> [service]
 ```
 
-#### Build a docker-compose by it alias name
+#### Build a container (or all buildable) by the project name
 
 ```bash
 dctl build <name> [service]
 ```
 
-#### Show the path of a docker-compose by it alias name
+#### Execute a subcommand in a container by the project name
+
+```bash
+dctl exec <name> <service> <subcommand>
+```
+#### Run a subcommand in a container by the project name
+
+```bash
+dctl exec <name> <service> <csubommand>
+```
+
+
+#### Show the path of a docker-compose by the project name
 
 ```bash
 dctl cd <name>
