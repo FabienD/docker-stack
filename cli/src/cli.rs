@@ -33,6 +33,12 @@ enum Commands {
         #[clap(value_parser)]
         name: String,
     },
+    /// Up a docker-compose file
+    Up {
+        /// The name of the docker-compose file alias
+        #[clap(value_parser)]
+        name: String,
+    },
     /// Start a docker-compose file
     Start {
         /// The name of the docker-compose file alias
@@ -93,6 +99,18 @@ enum Commands {
         #[clap(value_parser)]
         subcommand: String,
     },
+    /// Run a command in a container of a docker-compose file
+    Run {
+        /// The name of the docker-compose file alias
+        #[clap(value_parser)]
+        name: String,
+        /// The name of the service where to exexute the command
+        #[clap(value_parser)]
+        service: String,
+        /// The command to execute
+        #[clap(value_parser)]
+        subcommand: String,
+    },
 }
 
 fn execute_compose_command(
@@ -106,6 +124,7 @@ fn execute_compose_command(
     match name {
         Some(name) => match config.get_compose_item_by_alias(name.to_string()) {
             Some(item) => match command {
+                Commands::Up { .. } => container.start(&item),
                 Commands::Start { .. } => container.start(&item),
                 Commands::Stop { .. } => container.stop(&item),
                 Commands::Down { .. } => container.down(&item),
@@ -114,6 +133,7 @@ fn execute_compose_command(
                 Commands::Logs { .. } => container.logs(&item, service),
                 Commands::Ps { .. } => container.ps(&item),
                 Commands::Exec { .. } => container.exec(&item, service, subcommand),
+                Commands::Run { .. } => container.exec(&item, service, subcommand),
                 Commands::Cd { .. } => {
                     let system = System::init();
                     println!("{}", system.cd(&item).unwrap());
@@ -150,6 +170,14 @@ impl Cli {
                 execute_compose_command(config, container, &cli.command, None, None, None)
             }
             Commands::Cd { name } => execute_compose_command(
+                config,
+                container,
+                &cli.command,
+                Some(name.to_string()),
+                None,
+                None,
+            ),
+            Commands::Up { name } => execute_compose_command(
                 config,
                 container,
                 &cli.command,
@@ -198,6 +226,18 @@ impl Cli {
                 None,
             ),
             Commands::Exec {
+                name,
+                service,
+                subcommand,
+            } => execute_compose_command(
+                config,
+                container,
+                &cli.command,
+                Some(name.to_string()),
+                Some(service.to_string()),
+                Some(subcommand.to_string()),
+            ),
+            Commands::Run {
                 name,
                 service,
                 subcommand,
@@ -272,6 +312,30 @@ mod tests {
     #[test]
     fn verify_cli() {
         Cli::command().debug_assert();
+    }
+
+    #[test]
+    fn get_test_execute_up_cmd() {
+        // Mocked config
+        let mut mock_config = get_mocked_config();
+        // Mock docker
+        let mut mock_docker = MockDocker::default();
+        mock_docker.expect_start().returning(|_| Ok(()));
+
+        let command = Commands::Up {
+            name: String::from("test"),
+        };
+
+        let result = execute_compose_command(
+            &mut mock_config,
+            &mock_docker,
+            &command,
+            Some(String::from("test")),
+            None,
+            None,
+        );
+
+        assert!(result.is_ok());
     }
 
     #[test]
@@ -453,6 +517,32 @@ mod tests {
         mock_docker.expect_exec().returning(|_, _, _| Ok(()));
 
         let command = Commands::Exec {
+            name: String::from("test"),
+            service: String::from("service"),
+            subcommand: String::from("subcommand"),
+        };
+
+        let result = execute_compose_command(
+            &mut mock_config,
+            &mock_docker,
+            &command,
+            Some(String::from("test")),
+            Some(String::from("service")),
+            Some(String::from("subcommand")),
+        );
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_test_execute_run_cmd() {
+        // Mocked config
+        let mut mock_config = get_mocked_config();
+        // Mock docker
+        let mut mock_docker = MockDocker::default();
+        mock_docker.expect_exec().returning(|_, _, _| Ok(()));
+
+        let command = Commands::Run {
             name: String::from("test"),
             service: String::from("service"),
             subcommand: String::from("subcommand"),

@@ -12,6 +12,7 @@ pub trait Container {
     fn init(bin_path: String) -> Self
     where
         Self: Sized;
+    fn up(&self, item: &ComposeItem) -> Result<()>;
     fn start(&self, item: &ComposeItem) -> Result<()>;
     fn stop(&self, item: &ComposeItem) -> Result<()>;
     fn down(&self, item: &ComposeItem) -> Result<()>;
@@ -25,10 +26,17 @@ pub trait Container {
         service: Option<String>,
         subcommand: Option<String>,
     ) -> Result<()>;
+    fn run(
+        &self,
+        item: &ComposeItem,
+        service: Option<String>,
+        subcommand: Option<String>,
+    ) -> Result<()>;
     fn list(&self, config: &mut dyn CliConfig) -> Result<()>;
 }
 
 pub enum CommandType {
+    Up,
     Start,
     Stop,
     Down,
@@ -38,6 +46,7 @@ pub enum CommandType {
     List,
     Ps,
     Exec,
+    Run,
 }
 
 pub enum CommandOuput {
@@ -84,11 +93,12 @@ pub(crate) fn prepare_command(
     }
 
     match command {
-        CommandType::Start => {
+        CommandType::Up => {
             args.push(OsStr::new("up"));
             args.push(OsStr::new("-d"));
             args.push(OsStr::new("--remove-orphans"));
-        }
+        },
+        CommandType::Start => args.push(OsStr::new("start")),
         CommandType::Stop => args.push(OsStr::new("stop")),
         CommandType::Down => args.push(OsStr::new("down")),
         CommandType::Restart => args.push(OsStr::new("restart")),
@@ -101,6 +111,7 @@ pub(crate) fn prepare_command(
         }
         CommandType::Ps => args.push(OsStr::new("ps")),
         CommandType::Exec => args.push(OsStr::new("exec")),
+        CommandType::Run => args.push(OsStr::new("run")),
     };
 
     match &service {
@@ -164,6 +175,17 @@ impl Container for Docker {
         Self: Sized,
     {
         Docker { bin_path }
+    }
+
+    fn up(&self, item: &ComposeItem) -> Result<()> {
+        let _ = self.execute_command(
+            CommandType::Up,
+            Some(item),
+            None,
+            None,
+            CommandOuput::Status,
+        )?;
+        Ok(())
     }
 
     fn start(&self, item: &ComposeItem) -> Result<()> {
@@ -251,6 +273,22 @@ impl Container for Docker {
     ) -> Result<()> {
         let _ = self.execute_command(
             CommandType::Exec,
+            Some(item),
+            service,
+            subcommand,
+            CommandOuput::Status,
+        )?;
+        Ok(())
+    }
+
+    fn run(
+        &self,
+        item: &ComposeItem,
+        service: Option<String>,
+        subcommand: Option<String>,
+    ) -> Result<()> {
+        let _ = self.execute_command(
+            CommandType::Run,
             Some(item),
             service,
             subcommand,
