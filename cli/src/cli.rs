@@ -124,7 +124,7 @@ fn execute_compose_command(
     match name {
         Some(name) => match config.get_compose_item_by_alias(name.to_string()) {
             Some(item) => match command {
-                Commands::Up { .. } => container.start(&item),
+                Commands::Up { .. } => container.up(&item),
                 Commands::Start { .. } => container.start(&item),
                 Commands::Stop { .. } => container.stop(&item),
                 Commands::Down { .. } => container.down(&item),
@@ -320,7 +320,7 @@ mod tests {
         let mut mock_config = get_mocked_config();
         // Mock docker
         let mut mock_docker = MockDocker::default();
-        mock_docker.expect_start().returning(|_| Ok(()));
+        mock_docker.expect_up().returning(|_| Ok(()));
 
         let command = Commands::Up {
             name: String::from("test"),
