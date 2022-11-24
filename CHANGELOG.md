@@ -1,3 +1,7 @@
+## 0.6.1 (2022-11-24)
+
+* Fix typo for Up command.
+
 ## 0.6.0 (2022-11-19)
 
 * Add support for Run & Up commands. Now Start command do a the compoe start command, not the up one.
