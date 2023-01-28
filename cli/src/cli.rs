@@ -1,9 +1,7 @@
 use crate::utils::docker::Container;
 use crate::parser::config::CliConfig;
-use clap::{Command, CommandFactory, Parser, Subcommand};
-use clap_complete::{generate, Generator, Shell};
+use clap::Command;
 use eyre::{eyre, Result};
-use std::io;
 
 use crate::command::build::compose_build;
 use crate::command::down::compose_down;
@@ -16,12 +14,12 @@ use crate::command::start::compose_start;
 use crate::command::stop::compose_stop;
 use crate::command::top::compose_top;
 use crate::command::up::compose_up;
-use crate::command::cd::cd_project;
-use crate::command::completion::shell_completion;
-use crate::command::list::list_projects;
+use crate::command::cd::{cd_project, exec_cd_project};
+use crate::command::completion::{shell_completion, exec_shell_completion};
+use crate::command::list::{list_projects, exec_list_projects};
 
 
-pub fn cli() -> Command {
+fn cli() -> Command {
     Command::new("dctl")
         .about("A docker-compose missing feature.")
         .long_about("Register docker-compose files, then, play with them whereever you are in the terminal")
@@ -45,119 +43,36 @@ pub fn cli() -> Command {
         .subcommand(list_projects())
 }
 
+pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> {
+    // Get the command name and args
+    let matches = cli().get_matches();
+    let (command_name, args) = matches.subcommand().unwrap();
+    // Get the compose item for the project
+    let compose_item = match args.get_one::<String>("PROJECT") {
+        Some(name) => {
+            match config.get_compose_item_by_alias(name.to_string()) {
+                Some(item) => item,
+                None => return Err(eyre!("No project found with alias: {}", name)),
+            }
+        },
+        None => return Err(eyre!("Not yet implemented")), // Should never happen 
+    };
+    // Run the command
+    match command_name {
+        "completion" => exec_shell_completion(&mut cli(), args)?,
+        "list" => exec_list_projects(config)?,
+        "cd" => exec_cd_project(&compose_item)?,
+        _ => return Err(eyre!("Not yet implemented")),
+    }
 
-
-// fn execute_compose_command(
-//     config: &mut dyn CliConfig,
-//     container: &dyn Container,
-//     project: &String,
-//     command: &Commands,
-// ) -> Result<()> {
-//     println!("Project {:?}", project);
-//     // println!("Args {:?}", &command.contains(&"project".to_string()));
-
-//     Ok(())
-//     /*
-//     match command.project {
-//         Some(name) => match config.get_compose_item_by_alias(name.to_string()) {
-//             Some(item) => match command {
-//                 Commands::Up { .. } => container.up(&item),
-//                 Commands::Start { .. } => container.start(&item),
-//                 Commands::Stop { .. } => container.stop(&item),
-//                 Commands::Down { .. } => container.down(&item),
-//                 Commands::Restart { .. } => container.restart(&item),
-//                 Commands::Build { .. } => container.build(&item, service),
-//                 Commands::Logs { .. } => container.logs(&item, service),
-//                 Commands::Ps { .. } => container.ps(&item),
-//                 Commands::Exec { .. } => container.exec(&item, service, subcommand),
-//                 Commands::Run { .. } => container.exec(&item, service, subcommand),
-//                 Commands::Cd { .. } => {
-//                     let system = System::init();
-//                     println!("{}", system.cd(&item).unwrap());
-//                     Ok(())
-//                 }
-//                 _ => Err(eyre!("Should not happen, unknown command")),
-//             },
-//             None => Err(eyre!("Compose item {name} not found")),
-//         },
-//         None => match command {
-//             Commands::List => container.list(config),
-//             _ => Err(eyre!("Should not happen, no item, but not list command")),
-//         },
-//     }
-//      */
-// }
-
-fn print_completions<G: Generator>(gen: G, cmd: &mut Command) {
-    generate(gen, cmd, cmd.get_name().to_string(), &mut io::stdout());
+    Ok(())
 }
-
-
-// impl Cli {
-//     pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> {
-//         let cli = Cli::parse();
-        
-//         match &cli.command {
-//             // Generate shell completions
-//             Commands::Completion { generator } => {
-//                 let mut cmd = Cli::command();
-//                 eprintln!("Generating completion file for {:?}...", &generator);
-//                 print_completions(generator.unwrap(), &mut cmd);
-//                 std::process::exit(1);
-//             }
-//             Commands::List => {
-//                 // Todo
-//                 print!("Not implemented yet");
-//                 Ok(())
-//             }
-//             Commands::Cd { project } => {
-//                 // Todo
-//                 println!("Not implemented yet {:?}", project);
-//                 Ok(())
-//             }
-//             Commands::Build(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Down(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Exec(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Ps(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Logs(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Restart(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Start(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Stop(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Top(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Run(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             Commands::Up(args) => {
-//                 execute_compose_command(config, container, &args.project, &cli.command)
-//             }
-//             _ => Err(eyre!("Should not happen, unknown command")),
-//         }
-//     }
-// }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::parser::config::ComposeItem;
-    use crate::{command::docker::MockDocker, parser::config::MockDctlConfig};
+    use crate::{utils::docker::MockDocker, parser::config::MockDctlConfig};
 
     fn get_mocked_config() -> MockDctlConfig {
         // Mock config
@@ -195,7 +110,7 @@ mod tests {
 
     #[test]
     fn verify_cli() {
-        Cli::command().debug_assert();
+        cli::command().debug_assert();
     }
 
     #[test]

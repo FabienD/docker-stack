@@ -36,8 +36,8 @@ pub fn compose_build() -> Command {
             Arg::new("PROGRESS")
                 .help("Only display IDs")
                 .long("progress")
-                .short('q')
                 .value_parser(["auto", "tty", "plain", "quiet"])
+                .default_value("auto")
         )
         .arg(
             Arg::new("PULL")

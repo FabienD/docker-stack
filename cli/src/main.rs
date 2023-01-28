@@ -10,7 +10,7 @@ pub mod command;
 pub mod utils;
 pub mod parser;
 
-use cli::cli;
+use cli::run;
 use utils::docker::{Container, Docker};
 use parser::config::{CliConfig, DctlConfig};
 
@@ -38,16 +38,12 @@ fn main() {
 
     // Get container manager
     let docker: Docker = Container::init(config.get_container_bin_path().unwrap());
-    let matches = cli().get_matches();
-
-    let (cmd, args) = matches.subcommand().unwrap();
-    println!("cmd: {:?}", cmd);
-    println!("args: {:?}", args);
-
+    
     // Execute cli command
-    // if let Err(err) = cli::run(&docker, &mut config) {
-    //     println!("Command exection error: {}", err);
-    // }
+    if let Err(err) = cli::run(&docker, &mut config) {
+        println!("Command exection error: {}", err);
+        std::process::exit(1);
+    }
 
 }
 
