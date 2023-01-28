@@ -4,6 +4,13 @@ use serde::Deserialize;
 use std::fs;
 use tabled::Tabled;
 
+#[derive(Debug, Clone, Deserialize, Tabled, PartialEq, Eq)]
+pub enum ComposeStatus {
+    Running,
+    PartialRunning,
+    Stopped,
+}
+
 #[derive(Debug, Clone, Deserialize, Tabled)]
 pub struct ComposeItem {
     #[tabled(rename = " 🐋 Alias", display_with = "display_alias")]
@@ -11,7 +18,7 @@ pub struct ComposeItem {
     #[tabled(rename = " 📃 Description", display_with = "display_description")]
     pub description: Option<String>,
     #[tabled(rename = "⚡Status", display_with = "display_status")]
-    pub status: Option<bool>,
+    pub status: Option<ComposeStatus>,
     #[tabled(skip)]
     pub use_project_name: Option<bool>,
     #[tabled(skip)]
@@ -44,11 +51,13 @@ fn display_alias(alias: &String) -> String {
     alias.to_string()
 }
 
-fn display_status(status: &Option<bool>) -> String {
+fn display_status(status: &Option<ComposeStatus>) -> String {
     match status {
         Some(s) => {
-            if *s {
+            if *s == ComposeStatus::Running {
                 "🟢 Running".to_string()
+            } else if *s == ComposeStatus::PartialRunning {
+                "🟠 Partially running".to_string()
             } else {
                 "🔴 Stopped".to_string()
             }
@@ -65,7 +74,14 @@ fn display_description(o: &Option<String>) -> String {
 }
 
 impl ComposeItem {
-    pub fn set_status(&mut self, status: bool) {
+    pub fn set_status(&mut self, running_container: usize, all_container: usize) {
+        let status = if running_container == all_container {
+            ComposeStatus::Running
+        } else if running_container == 0 {
+            ComposeStatus::Stopped
+        } else {
+            ComposeStatus::PartialRunning
+        };
         self.status = Some(status);
     }
 }
@@ -74,7 +90,7 @@ impl DctlConfig {
     fn load_config_file(config_path_file: String) -> Result<String> {
         // Load config file
         let full_config_path = shellexpand::tilde(&config_path_file).to_string();
-        
+
         // Read the config file
         let config_content = fs::read_to_string(&full_config_path)
             .wrap_err(format!("config file not found in {full_config_path}"))?;
@@ -144,10 +160,13 @@ mod tests {
 
     #[test]
     fn get_display_status() {
-        let status = Some(true);
+        let status = Some(ComposeStatus::Running);
         assert_eq!(display_status(&status), "🟢 Running");
 
-        let status = Some(false);
+        let status = Some(ComposeStatus::PartialRunning);
+        assert_eq!(display_status(&status), "🟠 Partially running");
+
+        let status = Some(ComposeStatus::Stopped);
         assert_eq!(display_status(&status), "🔴 Stopped");
 
         let status = None;

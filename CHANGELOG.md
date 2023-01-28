@@ -1,3 +1,7 @@
+## 0.7.0 (2023-01-xx)
+
+ * List command gives more information about the running containers.
+
 ## 0.6.1 (2022-11-24)
 
 * Fix typo for Up command.

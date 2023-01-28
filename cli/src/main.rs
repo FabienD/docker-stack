@@ -2,12 +2,16 @@ use dotenv::dotenv;
 use eyre::Result;
 use std::env;
 
+#[macro_use]
+extern crate version;
+
 pub mod cli;
 pub mod command;
+pub mod utils;
 pub mod parser;
 
-use cli::Cli;
-use command::docker::{Container, Docker};
+use cli::cli;
+use utils::docker::{Container, Docker};
 use parser::config::{CliConfig, DctlConfig};
 
 fn load_config_path() -> Result<String> {
@@ -34,16 +38,22 @@ fn main() {
 
     // Get container manager
     let docker: Docker = Container::init(config.get_container_bin_path().unwrap());
+    let matches = cli().get_matches();
+
+    let (cmd, args) = matches.subcommand().unwrap();
+    println!("cmd: {:?}", cmd);
+    println!("args: {:?}", args);
 
     // Execute cli command
-    if let Err(err) = Cli::run(&docker, &mut config) {
-        println!("Command exection error: {}", err);
-    }
+    // if let Err(err) = cli::run(&docker, &mut config) {
+    //     println!("Command exection error: {}", err);
+    // }
+
 }
 
 #[cfg(test)]
 mod tests {
-    use std::env::{set_var, remove_var};
+    use std::env::{remove_var, set_var};
 
     use super::*;
 

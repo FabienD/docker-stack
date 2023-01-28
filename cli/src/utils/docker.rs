@@ -97,7 +97,7 @@ pub(crate) fn prepare_command(
             args.push(OsStr::new("up"));
             args.push(OsStr::new("-d"));
             args.push(OsStr::new("--remove-orphans"));
-        },
+        }
         CommandType::Start => args.push(OsStr::new("start")),
         CommandType::Stop => args.push(OsStr::new("stop")),
         CommandType::Down => args.push(OsStr::new("down")),
@@ -309,15 +309,44 @@ impl Container for Docker {
 
         for item in &mut items {
             result.as_array().unwrap().iter().for_each(|project| {
+                // Run compose ps -a -q to get the number of containers
+                let cmd_all_containers = self
+                    .execute_command(
+                        CommandType::Ps,
+                        Some(item),
+                        None,
+                        None,
+                        CommandOuput::Output,
+                    )
+                    .unwrap();
+                print!("{:?}", cmd_all_containers);
+                //let all_containers = cmd_all_containers.stdout.len();
+
+                // Run compose ps -q --status running to get the number of running containers
+                /*
+                let cmd_running_containers = self
+                    .execute_command(
+                        CommandType::Ps,
+                        Some(item),
+                        None,
+                        Some(String::from("-q --status running --format json")),
+                        CommandOuput::Output,
+                    )
+                    .unwrap();
+                let running_containers = cmd_running_containers.stdout.len();
+                */
                 // Relies on at least one compose file full path
+                /*
                 if project["ConfigFiles"]
                     .as_str()
                     .unwrap()
                     .split(',')
                     .any(|x| x == item.compose_files[0].as_str())
                 {
-                    item.set_status(true);
+                    //item.set_status(running_containers, all_containers);
+                    item.set_status(1, 1);
                 }
+                 */
             });
         }
 
