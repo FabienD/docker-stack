@@ -10,7 +10,6 @@ pub mod command;
 pub mod utils;
 pub mod parser;
 
-use cli::run;
 use utils::docker::{Container, Docker};
 use parser::config::{CliConfig, DctlConfig};
 

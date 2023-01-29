@@ -1,4 +1,4 @@
-use crate::utils::docker::Container;
+use crate::utils::docker::{Container, CommandType};
 use crate::parser::config::CliConfig;
 use clap::Command;
 use eyre::{eyre, Result};
@@ -7,6 +7,7 @@ use crate::command::build::compose_build;
 use crate::command::down::compose_down;
 use crate::command::exec::compose_exec;
 use crate::command::logs::compose_logs;
+use crate::command::ls::compose_ls;
 use crate::command::ps::compose_ps;
 use crate::command::restart::compose_restart;
 use crate::command::run::compose_run;
@@ -16,7 +17,7 @@ use crate::command::top::compose_top;
 use crate::command::up::compose_up;
 use crate::command::cd::{cd_project, exec_cd_project};
 use crate::command::completion::{shell_completion, exec_shell_completion};
-use crate::command::list::{list_projects, exec_list_projects};
+use crate::command::infos::{projects_infos, exec_projects_infos};
 
 
 fn cli() -> Command {
@@ -32,6 +33,7 @@ fn cli() -> Command {
         .subcommand(compose_exec())
         .subcommand(compose_ps())
         .subcommand(compose_logs())
+        .subcommand(compose_ls())
         .subcommand(compose_restart())
         .subcommand(compose_run())
         .subcommand(compose_start())
@@ -40,7 +42,7 @@ fn cli() -> Command {
         .subcommand(compose_up())
         .subcommand(shell_completion())
         .subcommand(cd_project())
-        .subcommand(list_projects())
+        .subcommand(projects_infos())
 }
 
 pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> {
@@ -60,8 +62,19 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
     // Run the command
     match command_name {
         "completion" => exec_shell_completion(&mut cli(), args)?,
-        "list" => exec_list_projects(config)?,
+        "list" => exec_projects_infos(config)?,
         "cd" => exec_cd_project(&compose_item)?,
+        "build" => container.compose(CommandType::Build, &compose_item, args)?,
+        "down" => container.compose(CommandType::Down, &compose_item, args)?,
+        "exec" => container.compose(CommandType::Exec, &compose_item, args)?,
+        "logs" => container.compose(CommandType::Logs, &compose_item, args)?,
+        "ps" => container.compose(CommandType::Ps, &compose_item, args)?,
+        "restart" => container.compose(CommandType::Restart, &compose_item, args)?,
+        "run" => container.compose(CommandType::Run, &compose_item, args)?,
+        "start" => container.compose(CommandType::Start, &compose_item, args)?,
+        "stop" => container.compose(CommandType::Stop, &compose_item, args)?,
+        "top" => container.compose(CommandType::Top, &compose_item, args)?,
+        "up" => container.compose(CommandType::Up,  &compose_item, args)?,
         _ => return Err(eyre!("Not yet implemented")),
     }
 

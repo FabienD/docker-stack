@@ -1,4 +1,5 @@
 use crate::parser::config::{CliConfig, ComposeItem};
+use clap::ArgMatches;
 use eyre::{eyre, Result};
 use mockall::automock;
 use serde_json::Value;
@@ -12,41 +13,23 @@ pub trait Container {
     fn init(bin_path: String) -> Self
     where
         Self: Sized;
-    fn up(&self, item: &ComposeItem) -> Result<()>;
-    fn start(&self, item: &ComposeItem) -> Result<()>;
-    fn stop(&self, item: &ComposeItem) -> Result<()>;
-    fn down(&self, item: &ComposeItem) -> Result<()>;
-    fn restart(&self, item: &ComposeItem) -> Result<()>;
-    fn ps(&self, item: &ComposeItem) -> Result<()>;
-    fn build(&self, item: &ComposeItem, service: Option<String>) -> Result<()>;
-    fn logs(&self, item: &ComposeItem, service: Option<String>) -> Result<()>;
-    fn exec(
-        &self,
-        item: &ComposeItem,
-        service: Option<String>,
-        subcommand: Option<String>,
-    ) -> Result<()>;
-    fn run(
-        &self,
-        item: &ComposeItem,
-        service: Option<String>,
-        subcommand: Option<String>,
-    ) -> Result<()>;
-    fn list(&self, config: &mut dyn CliConfig) -> Result<()>;
+    fn compose(&self, command: CommandType, item: &ComposeItem, args: &ArgMatches) -> Result<()>;
 }
 
+#[derive(Debug)]
 pub enum CommandType {
-    Up,
+    Build,
+    Down,
+    Exec,
+    Ls,
+    Logs,
+    Ps,
+    Restart,
+    Run,
     Start,
     Stop,
-    Down,
-    Restart,
-    Build,
-    Logs,
-    List,
-    Ps,
-    Exec,
-    Run,
+    Top,
+    Up,
 }
 
 pub enum CommandOuput {
@@ -104,7 +87,7 @@ pub(crate) fn prepare_command(
         CommandType::Restart => args.push(OsStr::new("restart")),
         CommandType::Build => args.push(OsStr::new("build")),
         CommandType::Logs => args.push(OsStr::new("logs")),
-        CommandType::List => {
+        CommandType::Ls => {
             args.push(OsStr::new("ls"));
             args.push(OsStr::new("--format"));
             args.push(OsStr::new("json"));
@@ -112,6 +95,7 @@ pub(crate) fn prepare_command(
         CommandType::Ps => args.push(OsStr::new("ps")),
         CommandType::Exec => args.push(OsStr::new("exec")),
         CommandType::Run => args.push(OsStr::new("run")),
+        _ => {}
     };
 
     match &service {
@@ -132,39 +116,43 @@ pub(crate) fn prepare_command(
 }
 
 impl Docker {
+
     fn execute_command(
         &self,
         command: CommandType,
-        item: Option<&ComposeItem>,
-        service: Option<String>,
-        subcommand: Option<String>,
-        output: CommandOuput,
-    ) -> Result<Output> {
-        let mut cmd =
-            prepare_command(self.bin_path.to_owned(), command, item, service, subcommand)?;
+        item: &ComposeItem,
+        args: &ArgMatches,
+    ) -> Result<()> {
+        
+        println!("command: {:?}", command);
+        println!("args: {:?}", args.ids());
 
-        match output {
-            CommandOuput::Status => {
-                let status = cmd.status()?;
-                if status.success() {
-                    Ok(Output {
-                        status,
-                        stdout: vec![],
-                        stderr: vec![],
-                    })
-                } else {
-                    Err(eyre!("Command failed"))
-                }
-            }
-            CommandOuput::Output => {
-                let output = cmd.output()?;
-                if output.status.success() {
-                    Ok(output)
-                } else {
-                    Err(eyre!("Command failed"))
-                }
-            }
-        }
+        // let mut cmd =
+        //     prepare_command(self.bin_path.to_owned(), command, item, service, subcommand)?;
+
+        // match output {
+        //     CommandOuput::Status => {
+        //         let status = cmd.status()?;
+        //         if status.success() {
+        //             Ok(Output {
+        //                 status,
+        //                 stdout: vec![],
+        //                 stderr: vec![],
+        //             })
+        //         } else {
+        //             Err(eyre!("Command failed"))
+        //         }
+        //     }
+        //     CommandOuput::Output => {
+        //         let output = cmd.output()?;
+        //         if output.status.success() {
+        //             Ok(output)
+        //         } else {
+        //             Err(eyre!("Command failed"))
+        //         }
+        //     }
+        // }
+        Ok(())
     }
 }
 
@@ -177,185 +165,8 @@ impl Container for Docker {
         Docker { bin_path }
     }
 
-    fn up(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Up,
-            Some(item),
-            None,
-            None,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn start(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Start,
-            Some(item),
-            None,
-            None,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn stop(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Stop,
-            Some(item),
-            None,
-            None,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn down(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Down,
-            Some(item),
-            None,
-            None,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn restart(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Restart,
-            Some(item),
-            None,
-            None,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn build(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Build,
-            Some(item),
-            service,
-            None,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn logs(&self, item: &ComposeItem, service: Option<String>) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Logs,
-            Some(item),
-            service,
-            None,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn ps(&self, item: &ComposeItem) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Ps,
-            Some(item),
-            None,
-            None,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn exec(
-        &self,
-        item: &ComposeItem,
-        service: Option<String>,
-        subcommand: Option<String>,
-    ) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Exec,
-            Some(item),
-            service,
-            subcommand,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn run(
-        &self,
-        item: &ComposeItem,
-        service: Option<String>,
-        subcommand: Option<String>,
-    ) -> Result<()> {
-        let _ = self.execute_command(
-            CommandType::Run,
-            Some(item),
-            service,
-            subcommand,
-            CommandOuput::Status,
-        )?;
-        Ok(())
-    }
-
-    fn list(&self, config: &mut dyn CliConfig) -> Result<()> {
-        let cmd_output = self
-            .execute_command(CommandType::List, None, None, None, CommandOuput::Output)
-            .unwrap();
-        let result: Value =
-            serde_json::from_str(String::from_utf8(cmd_output.stdout).unwrap().as_str())?;
-
-        // Compare with our Dctl config.
-        let mut items = config.get_all_compose_items();
-
-        for item in &mut items {
-            result.as_array().unwrap().iter().for_each(|project| {
-                // Run compose ps -a -q to get the number of containers
-                let cmd_all_containers = self
-                    .execute_command(
-                        CommandType::Ps,
-                        Some(item),
-                        None,
-                        None,
-                        CommandOuput::Output,
-                    )
-                    .unwrap();
-                print!("{:?}", cmd_all_containers);
-                //let all_containers = cmd_all_containers.stdout.len();
-
-                // Run compose ps -q --status running to get the number of running containers
-                /*
-                let cmd_running_containers = self
-                    .execute_command(
-                        CommandType::Ps,
-                        Some(item),
-                        None,
-                        Some(String::from("-q --status running --format json")),
-                        CommandOuput::Output,
-                    )
-                    .unwrap();
-                let running_containers = cmd_running_containers.stdout.len();
-                */
-                // Relies on at least one compose file full path
-                /*
-                if project["ConfigFiles"]
-                    .as_str()
-                    .unwrap()
-                    .split(',')
-                    .any(|x| x == item.compose_files[0].as_str())
-                {
-                    //item.set_status(running_containers, all_containers);
-                    item.set_status(1, 1);
-                }
-                 */
-            });
-        }
-
-        println!(
-            "{}",
-            Table::new(items)
-                .with(Style::modern())
-                .with(Margin::new(0, 0, 1, 1))
-        );
+    fn compose(&self, command: CommandType, item: &ComposeItem, args: &ArgMatches) -> Result<()> {
+        Self::execute_command(&self, command,item,args)?;
         Ok(())
     }
 }

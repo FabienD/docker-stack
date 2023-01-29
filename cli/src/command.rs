@@ -3,6 +3,7 @@ pub mod build;
 pub mod down;
 pub mod exec;
 pub mod logs;
+pub mod ls;
 pub mod ps;
 pub mod restart;
 pub mod run;
@@ -14,4 +15,4 @@ pub mod up;
 // Others commands
 pub mod cd;
 pub mod completion;
-pub mod list;
+pub mod infos;
