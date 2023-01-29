@@ -1,4 +1,6 @@
-use clap::{Command, Arg, ArgAction};
+use clap::{Arg, Command, ArgAction, ArgMatches};
+use std::ffi::OsStr;
+use eyre::Result;
 
 pub fn compose_ls() -> Command {
     Command::new("ls")
@@ -36,4 +38,13 @@ pub fn compose_ls() -> Command {
                 .long("quiet")
                 .action(ArgAction::SetTrue),
         )
+}
+
+pub fn prepare_command_ls<'a>(
+    args_matches: &'a ArgMatches, 
+    config_args: &'a mut Vec<&'a OsStr>
+) -> Result<Vec<&'a OsStr>> {
+    let mut args: Vec<&OsStr> = vec![];
+
+    Ok(args)
 }

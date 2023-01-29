@@ -1,4 +1,6 @@
-use clap::{Arg, Command, ArgAction};
+use clap::{Arg, Command, ArgAction, ArgMatches};
+use std::ffi::OsStr;
+use eyre::Result;
 
 pub fn compose_logs() -> Command {
     Command::new("logs")
@@ -45,4 +47,13 @@ pub fn compose_logs() -> Command {
                 .long("tail")
                 .default_value("all")
         )
+}
+
+pub fn prepare_command_logs<'a>(
+    args_matches: &'a ArgMatches, 
+    config_args: &'a mut Vec<&'a OsStr>
+) -> Result<Vec<&'a OsStr>> {
+    let mut args: Vec<&OsStr> = vec![];
+
+    Ok(args)
 }

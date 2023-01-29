@@ -1,4 +1,6 @@
-use clap::{Arg, Command, ArgAction};
+use clap::{Arg, Command, ArgAction, ArgMatches};
+use std::ffi::OsStr;
+use eyre::Result;
 
 pub fn compose_down() -> Command {
     Command::new("down")
@@ -32,4 +34,13 @@ pub fn compose_down() -> Command {
                 .short('v')
                 .long("volumes")
         )
+}
+
+pub fn prepare_command_down<'a>(
+    args_matches: &'a ArgMatches, 
+    config_args: &'a mut Vec<&'a OsStr>
+) -> Result<Vec<&'a OsStr>> {
+    let mut args: Vec<&OsStr> = vec![];
+
+    Ok(args)
 }

@@ -1,4 +1,6 @@
-use clap::{Arg, Command, ArgAction};
+use clap::{Arg, Command, ArgAction, ArgMatches};
+use std::ffi::OsStr;
+use eyre::Result;
 
 pub fn compose_build() -> Command {
     Command::new("build")
@@ -11,7 +13,8 @@ pub fn compose_build() -> Command {
         .arg(
             Arg::new("SERVICE")
                 .help("The name of the service(s) to build")
-                .num_args(0..20),
+                .num_args(0..20)
+                .action(ArgAction::Append),
         )
         .arg(
             Arg::new("BUILD_ARG")
@@ -58,4 +61,47 @@ pub fn compose_build() -> Command {
                 .long("ssh")
                 .action(ArgAction::SetTrue)
         )
+}
+
+pub fn prepare_command_build<'a>(
+    args_matches: &'a ArgMatches, 
+    config_args: &'a mut Vec<&'a OsStr>
+) -> Result<Vec<&'a OsStr>> {
+    let mut args: Vec<&OsStr> = vec![];
+
+    if args_matches.get_flag("BUILD_ARG") {
+        args.push(OsStr::new("--build-arg"));
+    }
+    if args_matches.get_flag("MEMORY") {
+        args.push(OsStr::new("--memory"));
+    }
+    if args_matches.get_flag("NO_CACHE") {
+        args.push(OsStr::new("--no-cache"));
+    }
+    if let Some(progress) = args_matches.get_one::<String>("PROGRESS") {
+        args.push(OsStr::new("--progress"));
+        args.push(OsStr::new(progress));
+    }
+    if args_matches.get_flag("PULL") {
+        args.push(OsStr::new("--pull"));
+    }
+    if args_matches.get_flag("QUIET") {
+        args.push(OsStr::new("--quiet"));
+    }
+    if args_matches.get_flag("SSH") {
+        args.push(OsStr::new("--ssh"));
+    }
+    
+    args.append(config_args);
+    args.push(OsStr::new("build"));
+
+    if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
+        for service in services {
+            for s in service {
+                args.push(OsStr::new(s));
+            }
+        }
+    }
+
+    Ok(args)
 }

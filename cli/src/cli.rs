@@ -68,13 +68,13 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
         "down" => container.compose(CommandType::Down, &compose_item, args)?,
         "exec" => container.compose(CommandType::Exec, &compose_item, args)?,
         "logs" => container.compose(CommandType::Logs, &compose_item, args)?,
-        "ps" => container.compose(CommandType::Ps, &compose_item, args)?,
+        "ps" => container.compose(CommandType::Ps,  &compose_item, args)?,
         "restart" => container.compose(CommandType::Restart, &compose_item, args)?,
         "run" => container.compose(CommandType::Run, &compose_item, args)?,
         "start" => container.compose(CommandType::Start, &compose_item, args)?,
         "stop" => container.compose(CommandType::Stop, &compose_item, args)?,
         "top" => container.compose(CommandType::Top, &compose_item, args)?,
-        "up" => container.compose(CommandType::Up,  &compose_item, args)?,
+        "up" => container.compose(CommandType::Up, &compose_item, args)?,
         _ => return Err(eyre!("Not yet implemented")),
     }
 

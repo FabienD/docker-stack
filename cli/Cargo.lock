@@ -75,7 +75,7 @@ dependencies = [
 
 [[package]]
 name = "dctl"
-version = "0.7.0"
+version = "1.0.0-beta"
 dependencies = [
  "clap",
  "clap_complete",

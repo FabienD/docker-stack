@@ -1,4 +1,6 @@
-use clap::{Arg, Command, ArgAction};
+use clap::{Arg, Command, ArgAction, ArgMatches};
+use std::ffi::OsStr;
+use eyre::Result;
 
 pub fn compose_up() -> Command {
     Command::new("up")
@@ -143,7 +145,6 @@ pub fn compose_up() -> Command {
             Arg::new("TIMESTAMPS")
                 .help("Show timestamps.")
                 .long("timestamps")
-                .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("WAIT")
@@ -151,4 +152,94 @@ pub fn compose_up() -> Command {
                 .long("wait")
                 .action(ArgAction::SetTrue)
         )
+}
+
+pub fn prepare_command_up<'a>(
+    args_matches: &'a ArgMatches, 
+    config_args: &'a mut Vec<&'a OsStr>
+) -> Result<Vec<&'a OsStr>> {
+    let mut args: Vec<&OsStr> = vec![];
+    
+    if args_matches.get_flag("ABORT_ON_CONTAINER_EXIT") {
+        args.push(OsStr::new("--abort-on-container-exit"));
+    }
+    if args_matches.get_flag("ALWAYS_RECREATE_DEPS") {
+        args.push(OsStr::new("--always-recreate-deps"));
+    }
+    if args_matches.get_flag("ATTACH") {
+        args.push(OsStr::new("--attach"));
+    }
+    if args_matches.get_flag("ATTACH_DEPENDENCIES") {
+        args.push(OsStr::new("--attach-dependencies"));
+    }
+    if args_matches.get_flag("BUILD") {
+        args.push(OsStr::new("--build"));
+    }
+    if args_matches.get_flag("DETACH") {
+        args.push(OsStr::new("--detach"));
+    }
+    if args_matches.get_flag("EXIT_CODE_FROM") {
+        args.push(OsStr::new("--exit-code-from"));
+    }
+    if args_matches.get_flag("FORCE_RECREATE") {
+        args.push(OsStr::new("--force-recreate"));
+    }
+    if args_matches.get_flag("NO_ATTTACH") {
+        args.push(OsStr::new("--no-attach"));
+    }
+    if args_matches.get_flag("NO_BUILD") {
+        args.push(OsStr::new("--no-build"));
+    }
+    if args_matches.get_flag("NO_COLOR") {
+        args.push(OsStr::new("--no-color"));
+    }
+    if *args_matches.get_one::<bool>("NO_DEPS").unwrap() {
+        args.push(OsStr::new("--no-deps"));
+    }
+    if *args_matches.get_one::<bool>("NO_LOG_PREFIX").unwrap() {
+        args.push(OsStr::new("--no-log-prefix"));
+    }
+    if *args_matches.get_one::<bool>("NO_RECREATE").unwrap() {
+        args.push(OsStr::new("--no-recreate"));
+    }
+    if *args_matches.get_one::<bool>("NO_START").unwrap() {
+        args.push(OsStr::new("--no-start"));
+    }
+    if let Some(pull) = args_matches.get_one::<String>("PULL") {
+        args.push(OsStr::new("--pull"));
+        args.push(OsStr::new(pull));
+    }
+    if *args_matches.get_one::<bool>("QUIET_PULL").unwrap() {
+        args.push(OsStr::new("--quiet-pull"));
+    }
+    if *args_matches.get_one::<bool>("REMOVE_ORPHANS").unwrap() {
+        args.push(OsStr::new("--remove-orphans"));
+    }
+    if *args_matches.get_one::<bool>("RENEW_ANON_VOLUMES").unwrap() {
+        args.push(OsStr::new("--renew-anon-volumes"));
+    }
+    if let Some(scale) = args_matches.get_occurrences::<String>("SCALE") {
+        args.push(OsStr::new("--scale"));
+        scale.into_iter().for_each(|s| {
+           s.into_iter().for_each(|s| {
+               args.push(OsStr::new(s));
+           });
+        });
+    }
+    if let Some(timeout) = args_matches.get_one::<String>("TIMEOUT") {
+        args.push(OsStr::new("--timeout"));
+        args.push(OsStr::new(timeout));
+    }
+    if let Some(timestamps)= args_matches.get_one::<String>("TIMESTAMPS") {
+        args.push(OsStr::new("--timestamps"));
+        args.push(OsStr::new(timestamps));
+    }
+    if *args_matches.get_one::<bool>("WAIT").unwrap() {
+        args.push(OsStr::new("--wait"));
+    }
+    
+    args.append(config_args);
+    args.push(OsStr::new("up"));
+
+    Ok(args)
 }

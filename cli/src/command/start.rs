@@ -1,4 +1,6 @@
-use clap::{Command, Arg};
+use clap::{Arg, Command, ArgAction, ArgMatches};
+use std::ffi::OsStr;
+use eyre::Result;
 
 pub fn compose_start() -> Command {
     Command::new("start")
@@ -13,4 +15,13 @@ pub fn compose_start() -> Command {
                 .help("The name of the service(s) to start")
                 .num_args(0..20),
         )
+}
+
+pub fn prepare_command_start<'a>(
+    args_matches: &'a ArgMatches, 
+    config_args: &'a mut Vec<&'a OsStr>
+) -> Result<Vec<&'a OsStr>> {
+    let mut args: Vec<&OsStr> = vec![];
+
+    Ok(args)
 }
