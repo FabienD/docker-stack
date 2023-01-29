@@ -1,4 +1,4 @@
-use clap::{Command, Arg};
+use clap::{Arg, Command};
 use eyre::Result;
 
 use crate::{parser::config::ComposeItem, utils::system::System};

@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_ps() -> Command {
     Command::new("ps")
@@ -45,15 +45,53 @@ pub fn compose_ps() -> Command {
             Arg::new("STATUS")
                 .help("Filter services by status.")
                 .long("status")
-                .value_parser(["paused", "restarting", "removing", "running", "dead", "created", "exited"]),
+                .value_parser([
+                    "paused",
+                    "restarting",
+                    "removing",
+                    "running",
+                    "dead",
+                    "created",
+                    "exited",
+                ]),
         )
 }
 
 pub fn prepare_command_ps<'a>(
-    args_matches: &'a ArgMatches, 
-    config_args: &'a mut Vec<&'a OsStr>
+    args_matches: &'a ArgMatches,
+    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
+
+    if args_matches.get_flag("ALL") {
+        args.push(OsStr::new("--all"));
+    }
+    if let Some(filter) = args_matches.get_one::<String>("FILTER") {
+        args.push(OsStr::new("--filter"));
+        args.push(OsStr::new(filter));
+    }
+    if let Some(format) = args_matches.get_one::<String>("FORMAT") {
+        args.push(OsStr::new("--format"));
+        args.push(OsStr::new(format));
+    }
+    if args_matches.get_flag("QUIET") {
+        args.push(OsStr::new("--quiet"));
+    }
+    if let Some(status) = args_matches.get_one::<String>("STATUS") {
+        args.push(OsStr::new("--status"));
+        args.push(OsStr::new(status));
+    }
+
+    args.append(config_args);
+    args.push(OsStr::new("ps"));
+
+    if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
+        for service in services {
+            for s in service {
+                args.push(OsStr::new(s));
+            }
+        }
+    }
 
     Ok(args)
 }

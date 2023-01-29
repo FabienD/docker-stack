@@ -8,8 +8,8 @@ use std::process::{Command, Output};
 use crate::command::build::prepare_command_build;
 use crate::command::down::prepare_command_down;
 use crate::command::exec::prepare_command_exec;
-use crate::command::ls::prepare_command_ls;
 use crate::command::logs::prepare_command_logs;
+use crate::command::ls::prepare_command_ls;
 use crate::command::ps::prepare_command_ps;
 use crate::command::restart::prepare_command_restart;
 use crate::command::run::prepare_command_run;
@@ -49,7 +49,12 @@ pub trait Container {
     fn init(bin_path: String) -> Self
     where
         Self: Sized;
-    fn compose(&self, command_type: CommandType, item: &ComposeItem, args: &ArgMatches) -> Result<()>;
+    fn compose(
+        &self,
+        command_type: CommandType,
+        item: &ComposeItem,
+        args: &ArgMatches,
+    ) -> Result<()>;
 }
 
 #[automock]
@@ -62,13 +67,12 @@ impl Container for Docker {
     }
 
     fn compose(&self, command: CommandType, item: &ComposeItem, args: &ArgMatches) -> Result<()> {
-        Self::execute_command(&self, command,item,args)?;
+        Self::execute_command(&self, command, item, args)?;
         Ok(())
     }
 }
 
 impl Docker {
-
     fn execute_command(
         &self,
         command_type: CommandType,
@@ -79,7 +83,7 @@ impl Docker {
         let mut docker_commmand_arg = vec![OsStr::new("compose")];
 
         // Build additional arguments from dctl config file (path, env_file, etc.)
-        let mut dctl_args: Vec<&OsStr> = vec![];        
+        let mut dctl_args: Vec<&OsStr> = vec![];
 
         if item.use_project_name.unwrap_or(true) {
             dctl_args.push(OsStr::new("-p"));
@@ -97,7 +101,7 @@ impl Docker {
         item.compose_files.iter().for_each(|compose_file| {
             dctl_args.push(OsStr::new("-f"));
             dctl_args.push(OsStr::new(compose_file));
-        });       
+        });
 
         // Build command arguments from matches args & mix with dctl_args
         let mut args = match command_type {
@@ -113,11 +117,10 @@ impl Docker {
             CommandType::Stop => prepare_command_stop(args, &mut dctl_args)?,
             CommandType::Top => prepare_command_top(args, &mut dctl_args)?,
             CommandType::Up => prepare_command_up(args, &mut dctl_args)?,
-            _ => vec![]
         };
-        
+
         docker_commmand_arg.append(&mut args);
-        
+
         println!("{:?}", docker_commmand_arg);
 
         // Build command

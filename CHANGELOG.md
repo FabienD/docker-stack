@@ -1,6 +1,8 @@
-## 0.7.0 (2023-01-xx)
+## 1.0.0-beta (2023-02-xx)
 
- * List command gives more information about the running containers.
+ * dctl implements all Docker compose command arguments.
+ * Add additional docker compose commands.
+ * Dependencies are updated.
 
 ## 0.6.1 (2022-11-24)
 

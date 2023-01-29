@@ -9,7 +9,7 @@ pub struct System {}
 pub fn builder(bin_command: String, sorted_args: Vec<&OsStr>) -> Command {
     // Build a command with the given arguments
     let mut cmd = Command::new(bin_command);
-    
+
     sorted_args.into_iter().for_each(|arg| {
         cmd.arg(arg);
     });

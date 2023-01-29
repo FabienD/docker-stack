@@ -7,11 +7,11 @@ extern crate version;
 
 pub mod cli;
 pub mod command;
-pub mod utils;
 pub mod parser;
+pub mod utils;
 
-use utils::docker::{Container, Docker};
 use parser::config::{CliConfig, DctlConfig};
+use utils::docker::{Container, Docker};
 
 fn load_config_path() -> Result<String> {
     let config_file_path = env::var("DCTL_CONFIG_FILE_PATH")
@@ -37,13 +37,12 @@ fn main() {
 
     // Get container manager
     let docker: Docker = Container::init(config.get_container_bin_path().unwrap());
-    
+
     // Execute cli command
     if let Err(err) = cli::run(&docker, &mut config) {
         println!("Command exection error: {}", err);
         std::process::exit(1);
     }
-
 }
 
 #[cfg(test)]

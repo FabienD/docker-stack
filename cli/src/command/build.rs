@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_build() -> Command {
     Command::new("build")
@@ -64,8 +64,8 @@ pub fn compose_build() -> Command {
 }
 
 pub fn prepare_command_build<'a>(
-    args_matches: &'a ArgMatches, 
-    config_args: &'a mut Vec<&'a OsStr>
+    args_matches: &'a ArgMatches,
+    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
@@ -91,7 +91,7 @@ pub fn prepare_command_build<'a>(
     if args_matches.get_flag("SSH") {
         args.push(OsStr::new("--ssh"));
     }
-    
+
     args.append(config_args);
     args.push(OsStr::new("build"));
 

@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_down() -> Command {
     Command::new("down")
@@ -33,14 +33,33 @@ pub fn compose_down() -> Command {
                 .help("Remove named volumes declared in the volumes section of the Compose file and anonymous volumes attached to containers.")
                 .short('v')
                 .long("volumes")
+                .action(ArgAction::SetTrue)
         )
 }
 
 pub fn prepare_command_down<'a>(
-    args_matches: &'a ArgMatches, 
-    config_args: &'a mut Vec<&'a OsStr>
+    args_matches: &'a ArgMatches,
+    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
+
+    if args_matches.get_flag("REMOVE_ORPHANS") {
+        args.push(OsStr::new("--remove-orphans"));
+    }
+    if let Some(rmi) = args_matches.get_one::<String>("RMI") {
+        args.push(OsStr::new("--rmi"));
+        args.push(OsStr::new(rmi));
+    }
+    if let Some(timeout) = args_matches.get_one::<String>("TIMEOUT") {
+        args.push(OsStr::new("--timeout"));
+        args.push(OsStr::new(timeout));
+    }
+    if args_matches.get_flag("VOLUMES") {
+        args.push(OsStr::new("--volumes"));
+    }
+
+    args.append(config_args);
+    args.push(OsStr::new("down"));
 
     Ok(args)
 }

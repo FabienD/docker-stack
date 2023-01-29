@@ -1,11 +1,14 @@
-use crate::utils::docker::{Container, CommandType};
 use crate::parser::config::CliConfig;
+use crate::utils::docker::{CommandType, Container};
 use clap::Command;
 use eyre::{eyre, Result};
 
 use crate::command::build::compose_build;
+use crate::command::cd::{cd_project, exec_cd_project};
+use crate::command::completion::{exec_shell_completion, shell_completion};
 use crate::command::down::compose_down;
 use crate::command::exec::compose_exec;
+use crate::command::infos::{exec_projects_infos, projects_infos};
 use crate::command::logs::compose_logs;
 use crate::command::ls::compose_ls;
 use crate::command::ps::compose_ps;
@@ -15,15 +18,13 @@ use crate::command::start::compose_start;
 use crate::command::stop::compose_stop;
 use crate::command::top::compose_top;
 use crate::command::up::compose_up;
-use crate::command::cd::{cd_project, exec_cd_project};
-use crate::command::completion::{shell_completion, exec_shell_completion};
-use crate::command::infos::{projects_infos, exec_projects_infos};
-
 
 fn cli() -> Command {
     Command::new("dctl")
         .about("A docker-compose missing feature.")
-        .long_about("Register docker-compose files, then, play with them whereever you are in the terminal")
+        .long_about(
+            "Register docker-compose files, then, play with them whereever you are in the terminal",
+        )
         .version(version!())
         .author("Fabien D. <fabien@myprod.net>")
         .subcommand_required(true)
@@ -51,13 +52,11 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
     let (command_name, args) = matches.subcommand().unwrap();
     // Get the compose item for the project
     let compose_item = match args.get_one::<String>("PROJECT") {
-        Some(name) => {
-            match config.get_compose_item_by_alias(name.to_string()) {
-                Some(item) => item,
-                None => return Err(eyre!("No project found with alias: {}", name)),
-            }
+        Some(name) => match config.get_compose_item_by_alias(name.to_string()) {
+            Some(item) => item,
+            None => return Err(eyre!("No project found with alias: {}", name)),
         },
-        None => return Err(eyre!("Not yet implemented")), // Should never happen 
+        None => return Err(eyre!("Not yet implemented")), // Should never happen
     };
     // Run the command
     match command_name {
@@ -68,7 +67,7 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
         "down" => container.compose(CommandType::Down, &compose_item, args)?,
         "exec" => container.compose(CommandType::Exec, &compose_item, args)?,
         "logs" => container.compose(CommandType::Logs, &compose_item, args)?,
-        "ps" => container.compose(CommandType::Ps,  &compose_item, args)?,
+        "ps" => container.compose(CommandType::Ps, &compose_item, args)?,
         "restart" => container.compose(CommandType::Restart, &compose_item, args)?,
         "run" => container.compose(CommandType::Run, &compose_item, args)?,
         "start" => container.compose(CommandType::Start, &compose_item, args)?,
@@ -85,7 +84,7 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
 mod tests {
     use super::*;
     use crate::parser::config::ComposeItem;
-    use crate::{utils::docker::MockDocker, parser::config::MockDctlConfig};
+    use crate::{parser::config::MockDctlConfig, utils::docker::MockDocker};
 
     fn get_mocked_config() -> MockDctlConfig {
         // Mock config

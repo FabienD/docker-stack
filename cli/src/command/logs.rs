@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_logs() -> Command {
     Command::new("logs")
@@ -50,10 +50,38 @@ pub fn compose_logs() -> Command {
 }
 
 pub fn prepare_command_logs<'a>(
-    args_matches: &'a ArgMatches, 
-    config_args: &'a mut Vec<&'a OsStr>
+    args_matches: &'a ArgMatches,
+    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
+
+    if args_matches.get_flag("FOLLOW") {
+        args.push(OsStr::new("--follow"));
+    }
+    if args_matches.get_flag("NO_COLOR") {
+        args.push(OsStr::new("--no-color"));
+    }
+    if args_matches.get_flag("NO_LOG_PREFIX") {
+        args.push(OsStr::new("--no-log-prefix"));
+    }
+    if args_matches.get_flag("SINCE") {
+        args.push(OsStr::new("--since"));
+    }
+    if let Some(tail) = args_matches.get_one::<String>("TAIL") {
+        args.push(OsStr::new("--tail"));
+        args.push(OsStr::new(tail));
+    }
+
+    args.append(config_args);
+    args.push(OsStr::new("logs"));
+
+    if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
+        for service in services {
+            for s in service {
+                args.push(OsStr::new(s));
+            }
+        }
+    }
 
     Ok(args)
 }

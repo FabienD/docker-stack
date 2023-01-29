@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_ls() -> Command {
     Command::new("ls")
@@ -41,10 +41,27 @@ pub fn compose_ls() -> Command {
 }
 
 pub fn prepare_command_ls<'a>(
-    args_matches: &'a ArgMatches, 
-    config_args: &'a mut Vec<&'a OsStr>
+    args_matches: &'a ArgMatches,
+    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
+
+    if args_matches.get_flag("ALL") {
+        args.push(OsStr::new("--all"));
+    }
+    if args_matches.get_flag("FILTER") {
+        args.push(OsStr::new("--filter"));
+    }
+    if let Some(format) = args_matches.get_one::<String>("FORMAT") {
+        args.push(OsStr::new("--format"));
+        args.push(OsStr::new(format));
+    }
+    if args_matches.get_flag("QUIET") {
+        args.push(OsStr::new("--quiet"));
+    }
+
+    args.append(config_args);
+    args.push(OsStr::new("ls"));
 
     Ok(args)
 }

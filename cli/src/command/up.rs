@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_up() -> Command {
     Command::new("up")
@@ -155,11 +155,11 @@ pub fn compose_up() -> Command {
 }
 
 pub fn prepare_command_up<'a>(
-    args_matches: &'a ArgMatches, 
-    config_args: &'a mut Vec<&'a OsStr>
+    args_matches: &'a ArgMatches,
+    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
-    
+
     if args_matches.get_flag("ABORT_ON_CONTAINER_EXIT") {
         args.push(OsStr::new("--abort-on-container-exit"));
     }
@@ -221,23 +221,23 @@ pub fn prepare_command_up<'a>(
     if let Some(scale) = args_matches.get_occurrences::<String>("SCALE") {
         args.push(OsStr::new("--scale"));
         scale.into_iter().for_each(|s| {
-           s.into_iter().for_each(|s| {
-               args.push(OsStr::new(s));
-           });
+            s.into_iter().for_each(|s| {
+                args.push(OsStr::new(s));
+            });
         });
     }
     if let Some(timeout) = args_matches.get_one::<String>("TIMEOUT") {
         args.push(OsStr::new("--timeout"));
         args.push(OsStr::new(timeout));
     }
-    if let Some(timestamps)= args_matches.get_one::<String>("TIMESTAMPS") {
+    if let Some(timestamps) = args_matches.get_one::<String>("TIMESTAMPS") {
         args.push(OsStr::new("--timestamps"));
         args.push(OsStr::new(timestamps));
     }
     if *args_matches.get_one::<bool>("WAIT").unwrap() {
         args.push(OsStr::new("--wait"));
     }
-    
+
     args.append(config_args);
     args.push(OsStr::new("up"));
 

@@ -1,8 +1,7 @@
-use clap::{Command, Arg, ArgMatches};
+use clap::{Arg, ArgMatches, Command};
 use clap_complete::{generate, Shell};
 use eyre::{eyre, Result};
 use std::io;
-
 
 pub fn shell_completion() -> Command {
     Command::new("completion")
@@ -25,6 +24,6 @@ pub fn exec_shell_completion(command: &mut Command, args: &ArgMatches) -> Result
         "elvish" => Shell::Elvish,
         _ => return Err(eyre!("Shell not supported")),
     };
-    generate(shell,  command, "dctl", &mut io::stdout());
+    generate(shell, command, "dctl", &mut io::stdout());
     Ok(())
 }
