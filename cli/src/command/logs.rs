@@ -45,7 +45,6 @@ pub fn compose_logs() -> Command {
             Arg::new("TAIL")
                 .help("Number of lines to show from the end of the logs for each container.")
                 .long("tail")
-                .default_value("all")
         )
 }
 
