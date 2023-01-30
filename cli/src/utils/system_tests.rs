@@ -3,7 +3,7 @@ mod tests {
     use std::ffi::OsStr;
 
     use crate::{
-        command::system::{builder, System},
+        utils::system::{builder, System},
         parser::config::ComposeItem,
     };
 
