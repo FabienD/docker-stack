@@ -27,7 +27,7 @@ pub fn compose_exec() -> Command {
         )
         .arg(
             Arg::new("DETACH")
-                .help("Detached mode: Run command in the background.")
+                .help("Detached mode: Run command in the background")
                 .long("detach")
                 .short('d')
                 .action(ArgAction::SetTrue)

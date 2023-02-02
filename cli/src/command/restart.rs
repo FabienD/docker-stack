@@ -12,7 +12,7 @@ pub fn compose_restart() -> Command {
         )
         .arg(
             Arg::new("SERVICE")
-                .help("The name of the service(s) to start")
+                .help("The name of the service(s) to restart")
                 .num_args(0..10),
         )
         .arg(

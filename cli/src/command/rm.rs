@@ -1,3 +1,69 @@
 use clap::{Arg, Command, ArgAction, ArgMatches};
 use std::ffi::OsStr;
 use eyre::Result;
+
+pub fn compose_rm() -> Command {
+    Command::new("rm")
+        .about("Removes stopped service containers")
+        .arg(
+            Arg::new("PROJECT")
+                .help("The name of the docker-compose file alias")
+                .required(true),
+        )
+        .arg(
+            Arg::new("SERVICE")
+                .help("The name of the service(s) to remove")
+                .num_args(0..20)
+                .action(ArgAction::Append),
+        )
+        .arg(
+            Arg::new("force")
+                .short('f')
+                .long("force")
+                .help("Don't ask to confirm removal")
+                .action(ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new("stop")
+                .short('s')
+                .long("stop")
+                .help("Stop the containers, if required, before removing")
+                .action(ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new("volumes")
+                .short('v')
+                .long("volumes")
+                .help("Remove any anonymous volumes attached to containers")
+                .action(ArgAction::SetTrue),
+        )
+}
+
+pub fn prepare_command_rm<'a>(
+    args_matches: &'a ArgMatches,
+    config_args: &'a mut Vec<&'a OsStr>,
+) -> Result<Vec<&'a OsStr>> {
+    let mut args: Vec<&OsStr> = vec![];
+
+    args.append(config_args);
+    args.push(OsStr::new("rm"));
+
+    if args_matches.get_flag("force") {
+        args.push(OsStr::new("--force"));
+    }
+    if args_matches.get_flag("stop") {
+        args.push(OsStr::new("--stop"));
+    }
+    if args_matches.get_flag("volumes") {
+        args.push(OsStr::new("--volumes"));
+    }
+    if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
+        for service in services {
+            for s in service {
+                args.push(OsStr::new(s));
+            }
+        }
+    }
+
+    Ok(args)
+}

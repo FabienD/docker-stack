@@ -6,17 +6,26 @@ use eyre::{eyre, Result};
 use crate::command::build::compose_build;
 use crate::command::cd::{cd_project, exec_cd_project};
 use crate::command::completion::{exec_shell_completion, shell_completion};
+use crate::command::create::compose_create;
 use crate::command::down::compose_down;
+use crate::command::events::compose_events;
 use crate::command::exec::compose_exec;
 use crate::command::infos::{exec_projects_infos, projects_infos};
+use crate::command::images::compose_images;
+use crate::command::kill::compose_kill;
 use crate::command::logs::compose_logs;
 use crate::command::ls::compose_ls;
+use crate::command::pause::compose_pause;
+use crate::command::pull::compose_pull;
+use crate::command::push::compose_push;
 use crate::command::ps::compose_ps;
 use crate::command::restart::compose_restart;
+use crate::command::rm::compose_rm;
 use crate::command::run::compose_run;
 use crate::command::start::compose_start;
 use crate::command::stop::compose_stop;
 use crate::command::top::compose_top;
+use crate::command::unpause::compose_unpause;
 use crate::command::up::compose_up;
 
 fn cli() -> Command {
@@ -30,16 +39,25 @@ fn cli() -> Command {
         .subcommand_required(true)
         .arg_required_else_help(true)
         .subcommand(compose_build())
+        .subcommand(compose_create())
         .subcommand(compose_down())
         .subcommand(compose_exec())
-        .subcommand(compose_ps())
+        .subcommand(compose_events())
+        .subcommand(compose_images())
+        .subcommand(compose_kill())
         .subcommand(compose_logs())
         .subcommand(compose_ls())
+        .subcommand(compose_ps())
+        .subcommand(compose_pause())
+        .subcommand(compose_pull())
+        .subcommand(compose_push())
         .subcommand(compose_restart())
+        .subcommand(compose_rm())
         .subcommand(compose_run())
         .subcommand(compose_start())
         .subcommand(compose_stop())
         .subcommand(compose_top())
+        .subcommand(compose_unpause())
         .subcommand(compose_up())
         .subcommand(shell_completion())
         .subcommand(cd_project())
@@ -70,15 +88,25 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
     match command_name {
         "cd" => exec_cd_project(&compose_item)?,
         "build" => container.compose(CommandType::Build, &compose_item, args)?,
+        "create" => container.compose(CommandType::Create, &compose_item, args)?,
         "down" => container.compose(CommandType::Down, &compose_item, args)?,
         "exec" => container.compose(CommandType::Exec, &compose_item, args)?,
+        "events" => container.compose(CommandType::Events, &compose_item, args)?,
+        "images" => container.compose(CommandType::Images, &compose_item, args)?,
+        "kill" => container.compose(CommandType::Kill, &compose_item, args)?,
         "logs" => container.compose(CommandType::Logs, &compose_item, args)?,
+        "ls" => container.compose(CommandType::Ls, &compose_item, args)?,
+        "pause" => container.compose(CommandType::Pause, &compose_item, args)?,
+        "pull" => container.compose(CommandType::Pull, &compose_item, args)?,
+        "push" => container.compose(CommandType::Push, &compose_item, args)?,
         "ps" => container.compose(CommandType::Ps, &compose_item, args)?,
         "restart" => container.compose(CommandType::Restart, &compose_item, args)?,
+        "rm" => container.compose(CommandType::Rm, &compose_item, args)?,
         "run" => container.compose(CommandType::Run, &compose_item, args)?,
         "start" => container.compose(CommandType::Start, &compose_item, args)?,
         "stop" => container.compose(CommandType::Stop, &compose_item, args)?,
         "top" => container.compose(CommandType::Top, &compose_item, args)?,
+        "unpause" => container.compose(CommandType::Unpause, &compose_item, args)?,
         "up" => container.compose(CommandType::Up, &compose_item, args)?,
         _ => return Err(eyre!("Not yet implemented")),
     }

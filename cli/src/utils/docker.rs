@@ -6,16 +6,25 @@ use std::ffi::OsStr;
 use std::process::{Command, Output};
 
 use crate::command::build::prepare_command_build;
+use crate::command::create::prepare_command_create;
 use crate::command::down::prepare_command_down;
 use crate::command::exec::prepare_command_exec;
+use crate::command::events::prepare_command_events;
+use crate::command::images::prepare_command_images;
+use crate::command::kill::prepare_command_kill;
 use crate::command::logs::prepare_command_logs;
 use crate::command::ls::prepare_command_ls;
+use crate::command::pause::prepare_command_pause;
+use crate::command::pull::prepare_command_pull;
+use crate::command::push::prepare_command_push;
 use crate::command::ps::prepare_command_ps;
 use crate::command::restart::prepare_command_restart;
+use crate::command::rm::prepare_command_rm;
 use crate::command::run::prepare_command_run;
 use crate::command::start::prepare_command_start;
 use crate::command::stop::prepare_command_stop;
 use crate::command::top::prepare_command_top;
+use crate::command::unpause::prepare_command_unpause;
 use crate::command::up::prepare_command_up;
 
 use super::system::builder;
@@ -23,16 +32,25 @@ use super::system::builder;
 #[derive(Debug)]
 pub enum CommandType {
     Build,
+    Create,
     Down,
     Exec,
+    Events,
+    Images,
+    Kill,
     Ls,
     Logs,
+    Pause,
+    Pull,
+    Push,
     Ps,
     Restart,
+    Rm,
     Run,
     Start,
     Stop,
     Top,
+    Unpause,
     Up,
 }
 
@@ -106,21 +124,28 @@ impl Docker {
         // Build command arguments from matches args & mix with dctl_args
         let mut args = match command_type {
             CommandType::Build => prepare_command_build(args, &mut dctl_args)?,
+            CommandType::Create => prepare_command_create(args, &mut dctl_args)?,
             CommandType::Down => prepare_command_down(args, &mut dctl_args)?,
             CommandType::Exec => prepare_command_exec(args, &mut dctl_args)?,
+            CommandType::Events => prepare_command_events(args, &mut dctl_args)?,
+            CommandType::Images => prepare_command_images(args, &mut dctl_args)?,
+            CommandType::Kill => prepare_command_kill(args, &mut dctl_args)?,
             CommandType::Ls => prepare_command_ls(args, &mut dctl_args)?,
             CommandType::Logs => prepare_command_logs(args, &mut dctl_args)?,
+            CommandType::Pause => prepare_command_pause(args, &mut dctl_args)?,
+            CommandType::Pull => prepare_command_pull(args, &mut dctl_args)?,
+            CommandType::Push => prepare_command_push(args, &mut dctl_args)?,
             CommandType::Ps => prepare_command_ps(args, &mut dctl_args)?,
             CommandType::Restart => prepare_command_restart(args, &mut dctl_args)?,
+            CommandType::Rm => prepare_command_rm(args, &mut dctl_args)?,
             CommandType::Run => prepare_command_run(args, &mut dctl_args)?,
             CommandType::Start => prepare_command_start(args, &mut dctl_args)?,
             CommandType::Stop => prepare_command_stop(args, &mut dctl_args)?,
             CommandType::Top => prepare_command_top(args, &mut dctl_args)?,
+            CommandType::Unpause => prepare_command_unpause(args, &mut dctl_args)?,
             CommandType::Up => prepare_command_up(args, &mut dctl_args)?,
         };
         
-        println!("{:?}", args);
-
         docker_commmand_arg.append(&mut args);
 
         // Build command

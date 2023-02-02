@@ -2,9 +2,9 @@ use clap::{Arg, Command, ArgAction, ArgMatches};
 use std::ffi::OsStr;
 use eyre::Result;
 
-pub fn compose_push() -> Command {
-    Command::new("push")
-        .about("Push services")
+pub fn compose_pull() -> Command {
+    Command::new("pull")
+        .about("Pull service images")
         .arg(
             Arg::new("PROJECT")
                 .help("The name of the docker-compose file alias")
@@ -12,10 +12,16 @@ pub fn compose_push() -> Command {
         )
         .arg(
             Arg::new("SERVICE")
-                .help("The name of the service(s) to push")
+                .help("The name of the service(s) to pull")
                 .num_args(0..20)
                 .action(ArgAction::Append),
         )
+        .arg(
+            Arg::new("IGNORE_BUILDABLE")
+                .help("Ignore images that can be built")
+                .long("ignore-buildable")
+                .action(ArgAction::SetTrue),
+        )        
         .arg(
             Arg::new("IGNORE_PUSH_FAILURES")
                 .help("Push what it can and ignores images with push failures")
@@ -37,15 +43,18 @@ pub fn compose_push() -> Command {
         )
 }
 
-pub fn prepare_command_push<'a>(
+pub fn prepare_command_pull<'a>(
     args_matches: &'a ArgMatches,
     config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.append(config_args);
-    args.push(OsStr::new("push"));
+    args.push(OsStr::new("pull"));
 
+    if args_matches.get_flag("IGNORE_BUILDABLE") {
+        args.push(OsStr::new("--ignore-buildable"));
+    }
     if args_matches.get_flag("IGNORE_PUSH_FAILURES") {
         args.push(OsStr::new("--ignore-push-failures"));
     }

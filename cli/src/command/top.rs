@@ -12,7 +12,7 @@ pub fn compose_top() -> Command {
         )
         .arg(
             Arg::new("SERVICE")
-                .help("The name of the service(s) to stop")
+                .help("The name of the service(s) to show top activity for")
                 .num_args(0..20),
         )
 }

@@ -4,7 +4,7 @@ use std::ffi::OsStr;
 
 pub fn compose_ps() -> Command {
     Command::new("ps")
-        .about("List containers for a project or only selected service(s) of the project.")
+        .about("List containers for a project or only selected service(s) of the project")
         .arg(
             Arg::new("PROJECT")
                 .help("The name of the docker-compose file alias")
@@ -19,7 +19,7 @@ pub fn compose_ps() -> Command {
         )
         .arg(
             Arg::new("FILTER")
-                .help("Filter services by a property (supported filters: status).")
+                .help("Filter services by a property (supported filters: status)")
                 .long("filter"),
         )
         .arg(

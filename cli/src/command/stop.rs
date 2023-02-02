@@ -4,7 +4,7 @@ use std::ffi::OsStr;
 
 pub fn compose_stop() -> Command {
     Command::new("stop")
-        .about("Stop all containers for a project or only selected service(s) of the project.")
+        .about("Stop all containers for a project or only selected service(s) of the project")
         .arg(
             Arg::new("PROJECT")
                 .help("The name of the docker-compose file alias")

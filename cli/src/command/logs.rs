@@ -12,13 +12,13 @@ pub fn compose_logs() -> Command {
         )
         .arg(
             Arg::new("SERVICE")
-                .help("The name of the service(s) to start")
+                .help("The name of the service(s) to show logs for")
                 .required(false)
                 .num_args(0..20),
         )
         .arg(
             Arg::new("FOLLOW")
-                .help("Follow log output.")
+                .help("Follow log output")
                 .long("follow")
                 .short('f')
                 .action(ArgAction::SetTrue)
@@ -31,7 +31,7 @@ pub fn compose_logs() -> Command {
         )
         .arg(
             Arg::new("NO_LOG_PREFIX")
-                .help("Don't print prefix in logs.")
+                .help("Don't print prefix in logs")
                 .long("no-log-prefix")
                 .action(ArgAction::SetTrue)
         )
@@ -43,7 +43,7 @@ pub fn compose_logs() -> Command {
         )
         .arg(
             Arg::new("TAIL")
-                .help("Number of lines to show from the end of the logs for each container.")
+                .help("Number of lines to show from the end of the logs for each container")
                 .long("tail")
                 .default_value("all")
         )

@@ -4,7 +4,7 @@ use std::ffi::OsStr;
 
 pub fn compose_start() -> Command {
     Command::new("start")
-        .about("Start all containers for a project or only selected service(s) of the project.")
+        .about("Start all containers for a project or only selected service(s) of the project")
         .arg(
             Arg::new("PROJECT")
                 .help("The name of the docker-compose file alias")

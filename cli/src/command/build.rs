@@ -18,13 +18,13 @@ pub fn compose_build() -> Command {
         )
         .arg(
             Arg::new("BUILD_ARG")
-                .help("Set build-time variables for services.")
+                .help("Set build-time variables for services")
                 .long("build-arg")
                 .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("MEMORY")
-                .help("Set memory limit for the build container. Not supported on buildkit yet.")
+                .help("Set memory limit for the build container. Not supported on buildkit yet")
                 .long("memory")
                 .short('m')
                 .action(ArgAction::SetTrue)
@@ -44,7 +44,7 @@ pub fn compose_build() -> Command {
         )
         .arg(
             Arg::new("PULL")
-                .help("Always attempt to pull a newer version of the image.")
+                .help("Always attempt to pull a newer version of the image")
                 .long("pull")
                 .action(ArgAction::SetTrue)
         )

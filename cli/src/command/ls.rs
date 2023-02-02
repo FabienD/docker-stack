@@ -19,7 +19,7 @@ pub fn compose_ls() -> Command {
         )
         .arg(
             Arg::new("FILTER")
-                .help("Filter output based on conditions provided.")
+                .help("Filter output based on conditions provided")
                 .long("filter")
                 .action(ArgAction::SetTrue),
         )

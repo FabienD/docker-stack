@@ -27,13 +27,13 @@ pub fn compose_run() -> Command {
         )
         .arg(
             Arg::new("build")
-                .help("Build image before starting container.")
+                .help("Build image before starting container")
                 .long("build")
                 .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("detach")
-                .help("Detached mode: Run command in the background.")
+                .help("Detached mode: Run command in the background")
                 .long("detach")
                 .short('d')
                 .action(ArgAction::SetTrue),
@@ -52,7 +52,7 @@ pub fn compose_run() -> Command {
         )
         .arg(
             Arg::new("interactive")
-                .help("Keep STDIN open even if not attached.")
+                .help("Keep STDIN open even if not attached")
                 .long("interactive")
                 .short('I')
                 .action(ArgAction::SetTrue)
@@ -70,14 +70,14 @@ pub fn compose_run() -> Command {
         )
         .arg(
             Arg::new("no_TTY")
-                .help("Disable pseudo-TTY allocation. By default docker compose exec allocates a TTY.")
+                .help("Disable pseudo-TTY allocation. By default docker compose exec allocates a TTY")
                 .long("no_TTY")
                 .short('T')
                 .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("no-deps")
-                .help("Don't start linked services.")
+                .help("Don't start linked services")
                 .long("no-deps")
                 .action(ArgAction::SetTrue)
         )
@@ -95,19 +95,19 @@ pub fn compose_run() -> Command {
         )
         .arg(
             Arg::new("rm")
-                .help("Remove container after run. Ignored in detached mode.")
+                .help("Remove container after run. Ignored in detached mode")
                 .long("rm")
                 .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("service-ports")
-                .help("Run command with the service's ports enabled and mapped to the host.")
+                .help("Run command with the service's ports enabled and mapped to the host")
                 .long("service-ports")
                 .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("use-aliases")
-                .help("Use the service's network aliases in the network(s) the container connects to.")
+                .help("Use the service's network aliases in the network(s) the container connects to")
                 .long("use-aliases")
                 .action(ArgAction::SetTrue)
         )

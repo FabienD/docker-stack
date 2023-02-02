@@ -12,13 +12,13 @@ pub fn compose_down() -> Command {
         )
         .arg(
             Arg::new("REMOVE_ORPHANS")
-                .help("Remove containers for services not defined in the Compose file.")
+                .help("Remove containers for services not defined in the Compose file")
                 .long("remove-orphans")
                 .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("RMI")
-                .help("Remove images used by services. \"local\" remove only images that don't have a custom tag.")
+                .help("Remove images used by services. \"local\" remove only images that don't have a custom tag")
                 .long("rmi")
                 .value_parser(["local", "all"])
         )
@@ -30,7 +30,7 @@ pub fn compose_down() -> Command {
         )
         .arg(
             Arg::new("VOLUMES")
-                .help("Remove named volumes declared in the volumes section of the Compose file and anonymous volumes attached to containers.")
+                .help("Remove named volumes declared in the volumes section of the Compose file and anonymous volumes attached to containers")
                 .short('v')
                 .long("volumes")
                 .action(ArgAction::SetTrue)
