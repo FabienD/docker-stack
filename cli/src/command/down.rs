@@ -43,6 +43,9 @@ pub fn prepare_command_down<'a>(
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
+    args.append(config_args);
+    args.push(OsStr::new("down"));
+
     if args_matches.get_flag("REMOVE_ORPHANS") {
         args.push(OsStr::new("--remove-orphans"));
     }
@@ -57,9 +60,6 @@ pub fn prepare_command_down<'a>(
     if args_matches.get_flag("VOLUMES") {
         args.push(OsStr::new("--volumes"));
     }
-
-    args.append(config_args);
-    args.push(OsStr::new("down"));
 
     Ok(args)
 }

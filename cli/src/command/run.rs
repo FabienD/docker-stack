@@ -135,6 +135,9 @@ pub fn prepare_command_run<'a>(
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
+    args.append(config_args);
+    args.push(OsStr::new("run"));
+
     if args_matches.get_flag("build") {
         args.push(OsStr::new("--build"));
     }
@@ -203,9 +206,6 @@ pub fn prepare_command_run<'a>(
         args.push(OsStr::new(workdir));
     }
 
-    args.append(config_args);
-    args.push(OsStr::new("run"));
-    
     if let Some(service) = args_matches.get_one::<String>("SERVICE") {
         args.push(OsStr::new(service));
     }

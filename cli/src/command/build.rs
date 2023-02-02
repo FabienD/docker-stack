@@ -68,6 +68,10 @@ pub fn prepare_command_build<'a>(
     config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
+    
+    args.append(config_args);
+    args.push(OsStr::new("build"));
+
 
     if args_matches.get_flag("BUILD_ARG") {
         args.push(OsStr::new("--build-arg"));
@@ -91,10 +95,6 @@ pub fn prepare_command_build<'a>(
     if args_matches.get_flag("SSH") {
         args.push(OsStr::new("--ssh"));
     }
-
-    args.append(config_args);
-    args.push(OsStr::new("build"));
-
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {
             for s in service {

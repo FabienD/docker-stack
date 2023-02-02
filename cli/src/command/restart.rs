@@ -29,14 +29,13 @@ pub fn prepare_command_restart<'a>(
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
+    args.append(config_args);
+    args.push(OsStr::new("restart"));
+
     if let Some(timeout) = args_matches.get_one::<String>("TIMEOUT") {
         args.push(OsStr::new("--timeout"));
         args.push(OsStr::new(timeout));
     }
-
-    args.append(config_args);
-    args.push(OsStr::new("restart"));
-
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {
             for s in service {

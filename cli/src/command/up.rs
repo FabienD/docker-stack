@@ -160,6 +160,9 @@ pub fn prepare_command_up<'a>(
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
+    args.append(config_args);
+    args.push(OsStr::new("up"));
+
     if args_matches.get_flag("ABORT_ON_CONTAINER_EXIT") {
         args.push(OsStr::new("--abort-on-container-exit"));
     }
@@ -237,9 +240,6 @@ pub fn prepare_command_up<'a>(
     if *args_matches.get_one::<bool>("WAIT").unwrap() {
         args.push(OsStr::new("--wait"));
     }
-
-    args.append(config_args);
-    args.push(OsStr::new("up"));
 
     Ok(args)
 }

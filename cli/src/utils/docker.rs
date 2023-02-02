@@ -118,6 +118,8 @@ impl Docker {
             CommandType::Top => prepare_command_top(args, &mut dctl_args)?,
             CommandType::Up => prepare_command_up(args, &mut dctl_args)?,
         };
+        
+        println!("{:?}", args);
 
         docker_commmand_arg.append(&mut args);
 

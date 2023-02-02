@@ -63,6 +63,9 @@ pub fn prepare_command_ps<'a>(
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
+    args.append(config_args);
+    args.push(OsStr::new("ps"));
+
     if args_matches.get_flag("ALL") {
         args.push(OsStr::new("--all"));
     }
@@ -81,16 +84,8 @@ pub fn prepare_command_ps<'a>(
         args.push(OsStr::new("--status"));
         args.push(OsStr::new(status));
     }
-
-    args.append(config_args);
-    args.push(OsStr::new("ps"));
-
-    if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
-        for service in services {
-            for s in service {
-                args.push(OsStr::new(s));
-            }
-        }
+    if args_matches.get_flag("SERVICES") {
+        args.push(OsStr::new("--services"));
     }
 
     Ok(args)

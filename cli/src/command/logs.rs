@@ -45,6 +45,7 @@ pub fn compose_logs() -> Command {
             Arg::new("TAIL")
                 .help("Number of lines to show from the end of the logs for each container.")
                 .long("tail")
+                .default_value("all")
         )
 }
 
@@ -53,6 +54,9 @@ pub fn prepare_command_logs<'a>(
     config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
+
+    args.append(config_args);
+    args.push(OsStr::new("logs"));
 
     if args_matches.get_flag("FOLLOW") {
         args.push(OsStr::new("--follow"));
@@ -70,9 +74,6 @@ pub fn prepare_command_logs<'a>(
         args.push(OsStr::new("--tail"));
         args.push(OsStr::new(tail));
     }
-
-    args.append(config_args);
-    args.push(OsStr::new("logs"));
 
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {

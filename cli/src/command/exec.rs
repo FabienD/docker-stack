@@ -94,6 +94,9 @@ pub fn prepare_command_exec<'a>(
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
+    args.append(config_args);
+    args.push(OsStr::new("exec"));
+
     if args_matches.get_flag("DETACH") {
         args.push(OsStr::new("--detach"));
     }
@@ -132,10 +135,6 @@ pub fn prepare_command_exec<'a>(
         args.push(OsStr::new("--workdir"));
         args.push(OsStr::new(workdir));
     }
-
-    args.append(config_args);
-    args.push(OsStr::new("exec"));
-
     if let Some(service) = args_matches.get_one::<String>("SERVICE") {
         args.push(OsStr::new(service));
     }
