@@ -29,7 +29,7 @@ pub fn compose_run() -> Command {
             Arg::new("build")
                 .help("Build image before starting container")
                 .long("build")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("detach")
@@ -41,7 +41,7 @@ pub fn compose_run() -> Command {
         .arg(
             Arg::new("entrypoint")
                 .help("Override the entrypoint of the image")
-                .long("entrypoint")
+                .long("entrypoint"),
         )
         .arg(
             Arg::new("env")
@@ -55,77 +55,81 @@ pub fn compose_run() -> Command {
                 .help("Keep STDIN open even if not attached")
                 .long("interactive")
                 .short('I')
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("label")
                 .help("Add or override a label")
                 .short('l')
-                .long("label")
+                .long("label"),
         )
         .arg(
             Arg::new("name")
                 .help("Assign a name to the container")
-                .long("name")
+                .long("name"),
         )
         .arg(
             Arg::new("no_TTY")
-                .help("Disable pseudo-TTY allocation. By default docker compose exec allocates a TTY")
+                .help(
+                    "Disable pseudo-TTY allocation. By default docker compose exec allocates a TTY",
+                )
                 .long("no_TTY")
                 .short('T')
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("no-deps")
                 .help("Don't start linked services")
                 .long("no-deps")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("publish")
                 .help("Publish a container's port(s) to the host")
                 .long("publish")
-                .short('p')
+                .short('p'),
         )
         .arg(
             Arg::new("quiet-pull")
                 .help("Pull without printing progress information")
                 .long("quiet-pull")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("rm")
                 .help("Remove container after run. Ignored in detached mode")
                 .long("rm")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("service-ports")
                 .help("Run command with the service's ports enabled and mapped to the host")
                 .long("service-ports")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("use-aliases")
-                .help("Use the service's network aliases in the network(s) the container connects to")
+                .help(
+                    "Use the service's network aliases in the network(s) the container connects to",
+                )
                 .long("use-aliases")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("user")
                 .help("Run as specified username or uid")
-                .long("user")
+                .long("user"),
         )
         .arg(
             Arg::new("volume")
                 .help("Bind mount a volume")
                 .long("volume")
-                .short('v')
+                .short('v'),
         )
         .arg(
             Arg::new("workdir")
                 .help("Working directory inside the container")
-                .long("workdir")
+                .long("workdir"),
         )
 }
 

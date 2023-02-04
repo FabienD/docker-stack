@@ -1,4 +1,12 @@
-## 1.0.0-beta (2023-02-xx)
+## next release (xxxx-xx-xx)
+
+
+## 1.0.0-b2 (2023-02-04)
+
+ * dctl infos re-implemented, 3 status now available: running, stopped, partial-running.
+ * **TODO**: rewrite tests and documentation. Add configurable default command arguments by project.
+
+## 1.0.0-b1 (2023-02-03)
 
  * dctl implements all Docker compose command arguments.
  * Add additional docker compose commands.

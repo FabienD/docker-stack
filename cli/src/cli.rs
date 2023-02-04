@@ -1,7 +1,9 @@
-use crate::parser::config::CliConfig;
-use crate::utils::docker::{CommandType, Container};
+use std::process::exit;
 use clap::Command;
 use eyre::{eyre, Result};
+
+use crate::parser::config::CliConfig;
+use crate::utils::docker::{CommandType, Container};
 
 use crate::command::build::compose_build;
 use crate::command::cd::{cd_project, exec_cd_project};
@@ -10,15 +12,15 @@ use crate::command::create::compose_create;
 use crate::command::down::compose_down;
 use crate::command::events::compose_events;
 use crate::command::exec::compose_exec;
-use crate::command::infos::{exec_projects_infos, projects_infos};
 use crate::command::images::compose_images;
+use crate::command::infos::{exec_projects_infos, projects_infos};
 use crate::command::kill::compose_kill;
 use crate::command::logs::compose_logs;
 use crate::command::ls::compose_ls;
 use crate::command::pause::compose_pause;
+use crate::command::ps::compose_ps;
 use crate::command::pull::compose_pull;
 use crate::command::push::compose_push;
-use crate::command::ps::compose_ps;
 use crate::command::restart::compose_restart;
 use crate::command::rm::compose_rm;
 use crate::command::run::compose_run;
@@ -68,11 +70,16 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
     // Get the command name and args
     let matches = cli().get_matches();
     let (command_name, args) = matches.subcommand().unwrap();
-        
+
     match command_name {
-        "infos" => exec_projects_infos(config)?,
+        "infos" => exec_projects_infos(config, container)?,
         "completion" => exec_shell_completion(&mut cli(), args)?,
         _ => {}
+    }
+
+    match args.try_contains_id("PROJECT") {
+        Err(..) => exit(1),
+        Ok(..) => {}
     }
 
     // Get the compose item for the project
@@ -81,35 +88,39 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
             Some(item) => item,
             None => return Err(eyre!("No project found with alias: {}", name)),
         },
-        None => return Err(eyre!("Not yet implemented")), // Should never happen
+        None => exit(1),
     };
 
-    // Run the command
-    match command_name {
-        "cd" => exec_cd_project(&compose_item)?,
-        "build" => container.compose(CommandType::Build, &compose_item, args)?,
-        "create" => container.compose(CommandType::Create, &compose_item, args)?,
-        "down" => container.compose(CommandType::Down, &compose_item, args)?,
-        "exec" => container.compose(CommandType::Exec, &compose_item, args)?,
-        "events" => container.compose(CommandType::Events, &compose_item, args)?,
-        "images" => container.compose(CommandType::Images, &compose_item, args)?,
-        "kill" => container.compose(CommandType::Kill, &compose_item, args)?,
-        "logs" => container.compose(CommandType::Logs, &compose_item, args)?,
-        "ls" => container.compose(CommandType::Ls, &compose_item, args)?,
-        "pause" => container.compose(CommandType::Pause, &compose_item, args)?,
-        "pull" => container.compose(CommandType::Pull, &compose_item, args)?,
-        "push" => container.compose(CommandType::Push, &compose_item, args)?,
-        "ps" => container.compose(CommandType::Ps, &compose_item, args)?,
-        "restart" => container.compose(CommandType::Restart, &compose_item, args)?,
-        "rm" => container.compose(CommandType::Rm, &compose_item, args)?,
-        "run" => container.compose(CommandType::Run, &compose_item, args)?,
-        "start" => container.compose(CommandType::Start, &compose_item, args)?,
-        "stop" => container.compose(CommandType::Stop, &compose_item, args)?,
-        "top" => container.compose(CommandType::Top, &compose_item, args)?,
-        "unpause" => container.compose(CommandType::Unpause, &compose_item, args)?,
-        "up" => container.compose(CommandType::Up, &compose_item, args)?,
-        _ => return Err(eyre!("Not yet implemented")),
+    if command_name == "cd" {
+        exec_cd_project(&compose_item)?;
+        exit(0);
     }
+
+    // Run Docker compose command
+    match command_name {
+        "build" => container.compose(CommandType::Build, &compose_item, args, None)?,
+        "create" => container.compose(CommandType::Create, &compose_item, args, None)?,
+        "down" => container.compose(CommandType::Down, &compose_item, args, None)?,
+        "exec" => container.compose(CommandType::Exec, &compose_item, args, None)?,
+        "events" => container.compose(CommandType::Events, &compose_item, args, None)?,
+        "images" => container.compose(CommandType::Images, &compose_item, args, None)?,
+        "kill" => container.compose(CommandType::Kill, &compose_item, args, None)?,
+        "logs" => container.compose(CommandType::Logs, &compose_item, args, None)?,
+        "ls" => container.compose(CommandType::Ls, &compose_item, args, None)?,
+        "pause" => container.compose(CommandType::Pause, &compose_item, args, None)?,
+        "pull" => container.compose(CommandType::Pull, &compose_item, args, None)?,
+        "push" => container.compose(CommandType::Push, &compose_item, args, None)?,
+        "ps" => container.compose(CommandType::Ps, &compose_item, args, None)?,
+        "restart" => container.compose(CommandType::Restart, &compose_item, args, None)?,
+        "rm" => container.compose(CommandType::Rm, &compose_item, args, None)?,
+        "run" => container.compose(CommandType::Run, &compose_item, args, None)?,
+        "start" => container.compose(CommandType::Start, &compose_item, args, None)?,
+        "stop" => container.compose(CommandType::Stop, &compose_item, args, None)?,
+        "top" => container.compose(CommandType::Top, &compose_item, args, None)?,
+        "unpause" => container.compose(CommandType::Unpause, &compose_item, args, None)?,
+        "up" => container.compose(CommandType::Up, &compose_item, args, None)?,
+        _ => return Err(eyre!("Not yet implemented")),
+    };
 
     Ok(())
 }

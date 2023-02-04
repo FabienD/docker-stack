@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_kill() -> Command {
     Command::new("kill")
@@ -19,7 +19,7 @@ pub fn compose_kill() -> Command {
             Arg::new("REMOVE_ORPHANS")
                 .help("Remove containers for services not defined in the Compose file")
                 .long("remove-orphans")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("signal")
@@ -27,7 +27,7 @@ pub fn compose_kill() -> Command {
                 .long("signal")
                 .help("SIGNAL to send to the container")
                 .default_value("SIGKILL")
-                .value_parser(["SIGKILL", "SIGTERM", "SIGINT"])
+                .value_parser(["SIGKILL", "SIGTERM", "SIGINT"]),
         )
 }
 

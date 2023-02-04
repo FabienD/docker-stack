@@ -75,7 +75,7 @@ fn display_description(o: &Option<String>) -> String {
 
 impl ComposeItem {
     pub fn set_status(&mut self, running_container: usize, all_container: usize) {
-        let status = if running_container == all_container {
+        let status = if (running_container == all_container) && (all_container != 0) {
             ComposeStatus::Running
         } else if running_container == 0 {
             ComposeStatus::Stopped

@@ -1,10 +1,10 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_images() -> Command {
     Command::new("images")
-        .about("List images used by the created containers")        
+        .about("List images used by the created containers")
         .arg(
             Arg::new("PROJECT")
                 .help("The name of the docker-compose file alias")
@@ -28,7 +28,7 @@ pub fn compose_images() -> Command {
                 .long("format")
                 .help("Format the output.")
                 .default_value("table")
-                .value_parser(["table", "json"])
+                .value_parser(["table", "json"]),
         )
 }
 

@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_events() -> Command {
     Command::new("events")
@@ -19,7 +19,7 @@ pub fn compose_events() -> Command {
             Arg::new("JSON")
                 .help("Output events as a stream of json objects")
                 .long("json")
-                .action(ArgAction::SetTrue)
+                .action(ArgAction::SetTrue),
         )
 }
 

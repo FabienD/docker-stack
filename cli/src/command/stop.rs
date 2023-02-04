@@ -35,7 +35,7 @@ pub fn prepare_command_stop<'a>(
     if let Some(timeout) = args_matches.get_one::<String>("TIMEOUT") {
         args.push(OsStr::new("--timeout"));
         args.push(OsStr::new(timeout));
-    }    
+    }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {
             for s in service {

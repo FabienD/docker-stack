@@ -8,16 +8,16 @@ use std::process::{Command, Output};
 use crate::command::build::prepare_command_build;
 use crate::command::create::prepare_command_create;
 use crate::command::down::prepare_command_down;
-use crate::command::exec::prepare_command_exec;
 use crate::command::events::prepare_command_events;
+use crate::command::exec::prepare_command_exec;
 use crate::command::images::prepare_command_images;
 use crate::command::kill::prepare_command_kill;
 use crate::command::logs::prepare_command_logs;
 use crate::command::ls::prepare_command_ls;
 use crate::command::pause::prepare_command_pause;
+use crate::command::ps::prepare_command_ps;
 use crate::command::pull::prepare_command_pull;
 use crate::command::push::prepare_command_push;
-use crate::command::ps::prepare_command_ps;
 use crate::command::restart::prepare_command_restart;
 use crate::command::rm::prepare_command_rm;
 use crate::command::run::prepare_command_run;
@@ -72,7 +72,8 @@ pub trait Container {
         command_type: CommandType,
         item: &ComposeItem,
         args: &ArgMatches,
-    ) -> Result<()>;
+        command_output: Option<CommandOuput>,
+    ) -> Result<Output>;
 }
 
 #[automock]
@@ -84,9 +85,15 @@ impl Container for Docker {
         Docker { bin_path }
     }
 
-    fn compose(&self, command: CommandType, item: &ComposeItem, args: &ArgMatches) -> Result<()> {
-        Self::execute_command(&self, command, item, args)?;
-        Ok(())
+    fn compose(
+        &self,
+        command: CommandType,
+        item: &ComposeItem,
+        args: &ArgMatches,
+        command_output: Option<CommandOuput>,
+    ) -> Result<Output> {
+        let output = Self::execute_command(&self, command, item, args, command_output)?;
+        Ok(output)
     }
 }
 
@@ -96,8 +103,14 @@ impl Docker {
         command_type: CommandType,
         item: &ComposeItem,
         args: &ArgMatches,
+        command_output: Option<CommandOuput>,
     ) -> Result<Output> {
-        let output = CommandOuput::Status;
+        let output = if let Some(output) = command_output {
+            output
+        } else {
+            CommandOuput::Status
+        };
+
         let mut docker_commmand_arg = vec![OsStr::new("compose")];
 
         // Build additional arguments from dctl config file (path, env_file, etc.)
@@ -145,7 +158,7 @@ impl Docker {
             CommandType::Unpause => prepare_command_unpause(args, &mut dctl_args)?,
             CommandType::Up => prepare_command_up(args, &mut dctl_args)?,
         };
-        
+
         docker_commmand_arg.append(&mut args);
 
         // Build command

@@ -45,6 +45,9 @@ pub fn prepare_command_ls<'a>(
     config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
+    
+    args.append(config_args);
+    args.push(OsStr::new("ls"));
 
     if args_matches.get_flag("ALL") {
         args.push(OsStr::new("--all"));
@@ -59,9 +62,6 @@ pub fn prepare_command_ls<'a>(
     if args_matches.get_flag("QUIET") {
         args.push(OsStr::new("--quiet"));
     }
-
-    args.append(config_args);
-    args.push(OsStr::new("ls"));
 
     Ok(args)
 }

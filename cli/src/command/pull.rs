@@ -1,6 +1,6 @@
-use clap::{Arg, Command, ArgAction, ArgMatches};
-use std::ffi::OsStr;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use eyre::Result;
+use std::ffi::OsStr;
 
 pub fn compose_pull() -> Command {
     Command::new("pull")
@@ -21,7 +21,7 @@ pub fn compose_pull() -> Command {
                 .help("Ignore images that can be built")
                 .long("ignore-buildable")
                 .action(ArgAction::SetTrue),
-        )        
+        )
         .arg(
             Arg::new("IGNORE_PUSH_FAILURES")
                 .help("Push what it can and ignores images with push failures")
