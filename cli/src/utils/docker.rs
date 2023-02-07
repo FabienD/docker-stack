@@ -2,8 +2,10 @@ use crate::parser::config::ComposeItem;
 use clap::ArgMatches;
 use eyre::{eyre, Result};
 use mockall::automock;
+use tokio::task;
 use std::ffi::OsStr;
 use std::process::{Command, Output};
+use async_trait::async_trait;
 
 use crate::command::build::prepare_command_build;
 use crate::command::create::prepare_command_create;
@@ -63,11 +65,12 @@ pub struct Docker {
     bin_path: String,
 }
 
+#[async_trait]
 pub trait Container {
     fn init(bin_path: String) -> Self
     where
         Self: Sized;
-    fn compose(
+    async fn compose(
         &self,
         command_type: CommandType,
         item: &ComposeItem,
@@ -77,6 +80,7 @@ pub trait Container {
 }
 
 #[automock]
+#[async_trait]
 impl Container for Docker {
     fn init(bin_path: String) -> Self
     where
@@ -85,20 +89,20 @@ impl Container for Docker {
         Docker { bin_path }
     }
 
-    fn compose(
+    async fn compose(
         &self,
         command: CommandType,
         item: &ComposeItem,
         args: &ArgMatches,
         command_output: Option<CommandOuput>,
     ) -> Result<Output> {
-        let output = Self::execute_command(&self, command, item, args, command_output)?;
+        let output = Self::execute_command(&self, command, item, args, command_output).await?;
         Ok(output)
     }
 }
 
 impl Docker {
-    fn execute_command(
+    async fn execute_command(
         &self,
         command_type: CommandType,
         item: &ComposeItem,
@@ -167,7 +171,11 @@ impl Docker {
         // Execute command
         match output {
             CommandOuput::Status => {
-                let status = cmd.status()?;
+                let status = task::spawn(async move {
+                    cmd.status()
+                });
+                let status = status.await??;
+                
                 if status.success() {
                     Ok(Output {
                         status,
@@ -179,7 +187,11 @@ impl Docker {
                 }
             }
             CommandOuput::Output => {
-                let output = cmd.output()?;
+                let output = task::spawn(async move {
+                    cmd.output()
+                });
+                let output = output.await??;
+
                 if output.status.success() {
                     Ok(output)
                 } else {

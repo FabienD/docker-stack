@@ -66,13 +66,14 @@ fn cli() -> Command {
         .subcommand(projects_infos())
 }
 
-pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> {
+pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> {
     // Get the command name and args
     let matches = cli().get_matches();
     let (command_name, args) = matches.subcommand().unwrap();
-
+    let default_args = config.get_default_command_args(&command_name.to_string());
+    
     match command_name {
-        "infos" => exec_projects_infos(config, container)?,
+        "infos" => exec_projects_infos(config, container).await?,
         "completion" => exec_shell_completion(&mut cli(), args)?,
         _ => {}
     }
@@ -98,27 +99,27 @@ pub fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> 
 
     // Run Docker compose command
     match command_name {
-        "build" => container.compose(CommandType::Build, &compose_item, args, None)?,
-        "create" => container.compose(CommandType::Create, &compose_item, args, None)?,
-        "down" => container.compose(CommandType::Down, &compose_item, args, None)?,
-        "exec" => container.compose(CommandType::Exec, &compose_item, args, None)?,
-        "events" => container.compose(CommandType::Events, &compose_item, args, None)?,
-        "images" => container.compose(CommandType::Images, &compose_item, args, None)?,
-        "kill" => container.compose(CommandType::Kill, &compose_item, args, None)?,
-        "logs" => container.compose(CommandType::Logs, &compose_item, args, None)?,
-        "ls" => container.compose(CommandType::Ls, &compose_item, args, None)?,
-        "pause" => container.compose(CommandType::Pause, &compose_item, args, None)?,
-        "pull" => container.compose(CommandType::Pull, &compose_item, args, None)?,
-        "push" => container.compose(CommandType::Push, &compose_item, args, None)?,
-        "ps" => container.compose(CommandType::Ps, &compose_item, args, None)?,
-        "restart" => container.compose(CommandType::Restart, &compose_item, args, None)?,
-        "rm" => container.compose(CommandType::Rm, &compose_item, args, None)?,
-        "run" => container.compose(CommandType::Run, &compose_item, args, None)?,
-        "start" => container.compose(CommandType::Start, &compose_item, args, None)?,
-        "stop" => container.compose(CommandType::Stop, &compose_item, args, None)?,
-        "top" => container.compose(CommandType::Top, &compose_item, args, None)?,
-        "unpause" => container.compose(CommandType::Unpause, &compose_item, args, None)?,
-        "up" => container.compose(CommandType::Up, &compose_item, args, None)?,
+        "build" => container.compose(CommandType::Build, &compose_item, args, None).await?,
+        "create" => container.compose(CommandType::Create, &compose_item, args, None).await?,
+        "down" => container.compose(CommandType::Down, &compose_item, args, None).await?,
+        "exec" => container.compose(CommandType::Exec, &compose_item, args, None).await?,
+        "events" => container.compose(CommandType::Events, &compose_item, args, None).await?,
+        "images" => container.compose(CommandType::Images, &compose_item, args, None).await?,
+        "kill" => container.compose(CommandType::Kill, &compose_item, args, None).await?,
+        "logs" => container.compose(CommandType::Logs, &compose_item, args, None).await?,
+        "ls" => container.compose(CommandType::Ls, &compose_item, args, None).await?,
+        "pause" => container.compose(CommandType::Pause, &compose_item, args, None).await?,
+        "pull" => container.compose(CommandType::Pull, &compose_item, args, None).await?,
+        "push" => container.compose(CommandType::Push, &compose_item, args, None).await?,
+        "ps" => container.compose(CommandType::Ps, &compose_item, args, None).await?,
+        "restart" => container.compose(CommandType::Restart, &compose_item, args, None).await?,
+        "rm" => container.compose(CommandType::Rm, &compose_item, args, None).await?,
+        "run" => container.compose(CommandType::Run, &compose_item, args, None).await?,
+        "start" => container.compose(CommandType::Start, &compose_item, args, None).await?,
+        "stop" => container.compose(CommandType::Stop, &compose_item, args, None).await?,
+        "top" => container.compose(CommandType::Top, &compose_item, args, None).await?,
+        "unpause" => container.compose(CommandType::Unpause, &compose_item, args, None).await?,
+        "up" => container.compose(CommandType::Up, &compose_item, args, None).await?,
         _ => return Err(eyre!("Not yet implemented")),
     };
 

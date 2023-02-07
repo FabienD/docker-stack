@@ -19,7 +19,8 @@ fn load_config_path() -> Result<String> {
     Ok(config_file_path)
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     // Load .env file
     dotenv().ok();
 
@@ -39,7 +40,7 @@ fn main() {
     let docker: Docker = Container::init(config.get_container_bin_path().unwrap());
 
     // Execute cli command
-    if let Err(err) = cli::run(&docker, &mut config) {
+    if let Err(err) = cli::run(&docker, &mut config).await {
         println!("Command exection error: {}", err);
         std::process::exit(1);
     }

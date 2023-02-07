@@ -29,6 +29,7 @@ pub struct ComposeItem {
 
 pub trait CliConfig {
     fn get_container_bin_path(&self) -> Result<String>;
+    fn get_default_command_args(&self, command_name: &String) -> Option<DefaultCommandArgs>;
     fn load(config_path_file: String) -> Result<Self>
     where
         Self: Sized;
@@ -39,6 +40,13 @@ pub trait CliConfig {
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub docker_bin: String,
+    pub default_command_args: Option<Vec<DefaultCommandArgs>>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct DefaultCommandArgs {
+    pub command_name: String,
+    pub command_args: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -111,6 +119,20 @@ impl DctlConfig {
 impl CliConfig for DctlConfig {
     fn get_container_bin_path(&self) -> Result<String> {
         Ok(self.main.docker_bin.to_string())
+    }
+
+    fn get_default_command_args(&self, command_name: &String) -> Option<DefaultCommandArgs> {
+        let mut result: Option<DefaultCommandArgs> = None;
+        if let Some(default_command_args) = &self.main.default_command_args {
+            for default_command_arg in default_command_args {
+                if default_command_arg.command_name == *command_name {
+                    result = Some(default_command_arg.clone());
+                    break;
+                }
+            }
+        }
+
+        result
     }
 
     fn load(config_path_file: String) -> Result<Self> {

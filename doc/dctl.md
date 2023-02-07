@@ -33,6 +33,9 @@ Note that the **use_project_name**, **description** and the **environment file**
 ```toml
 [main]
 docker_bin = "/usr/bin/docker"
+default_command_args = [
+    "up": ["-d", "--remove-orphans"],
+]
 
 [[collections]]
 alias = "stack_web"
