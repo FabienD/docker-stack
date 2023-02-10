@@ -15,6 +15,6 @@ pub fn cd_project() -> Command {
 
 pub fn exec_cd_project(compose_item: &ComposeItem) -> Result<()> {
     let system = System::init();
-    println!("{}", system.cd(&compose_item).unwrap());
+    println!("{}", system.cd(compose_item).unwrap());
     Ok(())
 }

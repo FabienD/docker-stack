@@ -133,7 +133,7 @@ pub fn compose_up() -> Command {
             Arg::new("SCALE")
                 .help("Scale SERVICE to NUM instances. Overrides the scale setting in the Compose file if present")
                 .long("scale")
-                .value_names(&["SERVICE", "NUM"])
+                .value_names(["SERVICE", "NUM"])
         )
         .arg(
             Arg::new("TIMEOUT")

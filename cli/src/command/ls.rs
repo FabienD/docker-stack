@@ -45,7 +45,7 @@ pub fn prepare_command_ls<'a>(
     config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
-    
+
     args.append(config_args);
     args.push(OsStr::new("ls"));
 

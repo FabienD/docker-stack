@@ -29,7 +29,7 @@ pub struct ComposeItem {
 
 pub trait CliConfig {
     fn get_container_bin_path(&self) -> Result<String>;
-    fn get_default_command_args(&self, command_name: &String) -> Option<DefaultCommandArgs>;
+    fn get_default_command_args(&self, command_name: &str) -> Option<DefaultCommandArgs>;
     fn load(config_path_file: String) -> Result<Self>
     where
         Self: Sized;
@@ -121,7 +121,7 @@ impl CliConfig for DctlConfig {
         Ok(self.main.docker_bin.to_string())
     }
 
-    fn get_default_command_args(&self, command_name: &String) -> Option<DefaultCommandArgs> {
+    fn get_default_command_args(&self, command_name: &str) -> Option<DefaultCommandArgs> {
         let mut result: Option<DefaultCommandArgs> = None;
         if let Some(default_command_args) = &self.main.default_command_args {
             for default_command_arg in default_command_args {

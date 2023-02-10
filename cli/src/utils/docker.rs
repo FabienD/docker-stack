@@ -1,11 +1,11 @@
 use crate::parser::config::ComposeItem;
+use async_trait::async_trait;
 use clap::ArgMatches;
 use eyre::{eyre, Result};
 use mockall::automock;
-use tokio::task;
 use std::ffi::OsStr;
 use std::process::{Command, Output};
-use async_trait::async_trait;
+use tokio::task;
 
 use crate::command::build::prepare_command_build;
 use crate::command::create::prepare_command_create;
@@ -96,7 +96,7 @@ impl Container for Docker {
         args: &ArgMatches,
         command_output: Option<CommandOuput>,
     ) -> Result<Output> {
-        let output = Self::execute_command(&self, command, item, args, command_output).await?;
+        let output = Self::execute_command(self, command, item, args, command_output).await?;
         Ok(output)
     }
 }
@@ -171,11 +171,9 @@ impl Docker {
         // Execute command
         match output {
             CommandOuput::Status => {
-                let status = task::spawn(async move {
-                    cmd.status()
-                });
+                let status = task::spawn(async move { cmd.status() });
                 let status = status.await??;
-                
+
                 if status.success() {
                     Ok(Output {
                         status,
@@ -187,9 +185,7 @@ impl Docker {
                 }
             }
             CommandOuput::Output => {
-                let output = task::spawn(async move {
-                    cmd.output()
-                });
+                let output = task::spawn(async move { cmd.output() });
                 let output = output.await??;
 
                 if output.status.success() {

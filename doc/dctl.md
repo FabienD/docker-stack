@@ -41,33 +41,33 @@ default_command_args = [
 alias = "stack_web"
 use_project_name = true # Default value is true
 description = "Docker stack - web components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
+enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/web/docker-compose.yml",
+    "/home/fabien/workspace/infra/docker-stack/collection/web/docker-compose.yml",
 ]
 
 [[collections]]
 alias = "stack_logging"
 description = "Docker stack - logging components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
+enviroment_file = "/home/fabien/workspace/infra/docker-stackcollection/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/logging/docker-compose.yml",
+    "/home/fabien/workspace/infra/docker-stack/collection/logging/docker-compose.yml",
 ]
 
 [[collections]]
 alias = "stack_tools"
 description = "Docker stack - tools components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
+enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/tools/docker-compose.yml",
+    "/home/fabien/workspace/infra/docker-stack/collection/tools/docker-compose.yml",
 ]
 
 [[collections]]
 alias = "stack_data"
 description = "Docker stack - data components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
+enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/data/docker-compose.yml",
+    "/home/fabien/workspace/infra/docker-stack/collection/data/docker-compose.yml",
 ]
 
 [[collections]]
