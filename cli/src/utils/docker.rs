@@ -145,7 +145,6 @@ impl Docker {
         docker_commmand_arg.append(&mut args);
         docker_commmand_arg.append(&mut default_command_args.to_owned());
 
-
         // Build command
         let mut cmd: Command = builder(self.bin_path.to_owned(), docker_commmand_arg);
 

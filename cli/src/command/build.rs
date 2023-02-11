@@ -40,7 +40,6 @@ pub fn compose_build() -> Command {
                 .help("Only display IDs")
                 .long("progress")
                 .value_parser(["auto", "tty", "plain", "quiet"])
-                .default_value("auto")
         )
         .arg(
             Arg::new("PULL")

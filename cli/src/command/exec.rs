@@ -44,21 +44,18 @@ pub fn compose_exec() -> Command {
                 .help("index of the container if there are multiple instances of a service")
                 .long("index")
                 .short('i')
-                .default_value("1")
         )
         .arg(
             Arg::new("INTERACTIVE")
                 .help("Keep STDIN open even if not attached.")
                 .long("interactive")
                 .short('I')
-                .default_value("true")
         )
         .arg(
             Arg::new("NO_TTY")
                 .help("Disable pseudo-TTY allocation. By default docker compose exec allocates a TTY.")
                 .long("no_TTY")
                 .short('T')
-                .default_value("true")
         )
         .arg(
             Arg::new("PRIVILEGED")
@@ -72,7 +69,6 @@ pub fn compose_exec() -> Command {
                 .help("Allocate a pseudo-TTY.")
                 .long("tty")
                 .short('t')
-                .default_value("true")
         )
         .arg(
             Arg::new("USER")

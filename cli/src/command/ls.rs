@@ -29,7 +29,6 @@ pub fn compose_ls() -> Command {
                 .short('f')
                 .long("format")
                 .value_parser(["table", "json"])
-                .default_value("table"),
         )
         .arg(
             Arg::new("QUIET")

@@ -26,7 +26,6 @@ pub fn compose_kill() -> Command {
                 .short('s')
                 .long("signal")
                 .help("SIGNAL to send to the container")
-                .default_value("SIGKILL")
                 .value_parser(["SIGKILL", "SIGTERM", "SIGINT"]),
         )
 }

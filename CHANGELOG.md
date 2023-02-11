@@ -1,10 +1,12 @@
 ## next release (xxxx-xx-xx)
 
+ * default docker compose command arguments are configurable globally.
+ * **TODO**: rewrite tests and documentation. Clean & refactor code.
 
 ## 1.0.0-b2 (2023-02-04)
 
  * dctl infos re-implemented, 3 status now available: running, stopped, partial-running.
- * **TODO**: rewrite tests and documentation. Add configurable default command arguments by project.
+ * **TODO**: rewrite tests and documentation. Add configurable default command arguments.
 
 ## 1.0.0-b1 (2023-02-03)
 
