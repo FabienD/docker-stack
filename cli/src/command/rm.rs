@@ -41,11 +41,9 @@ pub fn compose_rm() -> Command {
 
 pub fn prepare_command_rm<'a>(
     args_matches: &'a ArgMatches,
-    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
-    args.append(config_args);
     args.push(OsStr::new("rm"));
 
     if args_matches.get_flag("force") {

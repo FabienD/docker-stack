@@ -1,24 +1,24 @@
 #[cfg(test)]
 mod tests {
-    use crate::parser::config::ComposeItem;
-    use crate::utils::docker;
-    use std::ffi::OsStr;
+    // use crate::parser::config::ComposeItem;
+    // use crate::utils::docker;
+    // use std::ffi::OsStr;
 
-    fn get_compose_item(use_project_name: bool) -> ComposeItem {
-        let item = ComposeItem {
-            alias: String::from("test"),
-            description: Some(String::from("description")),
-            enviroment_file: Some(String::from("/home/test/.env")),
-            compose_files: vec![
-                String::from("/home/test/docker-compose.yml"),
-                String::from("/home/test/docker-compose2.yml"),
-            ],
-            use_project_name: Some(use_project_name),
-            status: None,
-        };
+    // fn get_compose_item(use_project_name: bool) -> ComposeItem {
+    //     let item = ComposeItem {
+    //         alias: String::from("test"),
+    //         description: Some(String::from("description")),
+    //         enviroment_file: Some(String::from("/home/test/.env")),
+    //         compose_files: vec![
+    //             String::from("/home/test/docker-compose.yml"),
+    //             String::from("/home/test/docker-compose2.yml"),
+    //         ],
+    //         use_project_name: Some(use_project_name),
+    //         status: None,
+    //     };
 
-        item
-    }
+    //     item
+    // }
 
     //#[test]
     // fn prepare_up_command() {

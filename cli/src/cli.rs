@@ -1,8 +1,9 @@
 use clap::Command;
 use eyre::{eyre, Result};
+use std::ffi::OsStr;
 use std::process::exit;
 
-use crate::parser::config::CliConfig;
+use crate::parser::config::{CliConfig, DefaultCommandArgs, ComposeItem};
 use crate::utils::docker::{CommandType, Container};
 
 use crate::command::build::compose_build;
@@ -66,18 +67,22 @@ fn cli() -> Command {
         .subcommand(projects_infos())
 }
 
-pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Result<()> {
+pub async fn run(
+    container: &dyn Container, 
+    config: &mut dyn CliConfig,
+) -> Result<()> {
     // Get the command name and args
     let matches = cli().get_matches();
     let (command_name, args) = matches.subcommand().unwrap();
-    let default_args = config.get_default_command_args(command_name);
-
+    let default_command_args = config.get_default_command_args(command_name);
+    
     match command_name {
         "infos" => exec_projects_infos(config, container).await?,
         "completion" => exec_shell_completion(&mut cli(), args)?,
         _ => {}
     }
 
+    // For next commands, we need a project
     if let Err(..) = args.try_contains_id("PROJECT") {
         exit(1)
     }
@@ -97,110 +102,120 @@ pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Resul
     }
 
     // Run Docker compose command
+    let mut default_arg: Vec<&OsStr> = vec![];
+    // Configuration args
+    default_arg.append(&mut ComposeItem::to_args(&compose_item));
+    // Global command args
+    let command_args = match default_command_args {
+        Some(command_args) => command_args,
+        None => DefaultCommandArgs::default(&command_name),
+    };
+    let default_command_arg = DefaultCommandArgs::to_args(&command_args);
+
     match command_name {
         "build" => {
             container
-                .compose(CommandType::Build, &compose_item, args, None)
+                .compose(CommandType::Build, &default_arg, &default_command_arg, args, None)
                 .await?
         }
         "create" => {
             container
-                .compose(CommandType::Create, &compose_item, args, None)
+                .compose(CommandType::Create, &default_arg, &default_command_arg, args, None)
                 .await?
         }
         "down" => {
             container
-                .compose(CommandType::Down, &compose_item, args, None)
+                .compose(CommandType::Down, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "exec" => {
             container
-                .compose(CommandType::Exec, &compose_item, args, None)
+                .compose(CommandType::Exec, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "events" => {
             container
-                .compose(CommandType::Events, &compose_item, args, None)
+                .compose(CommandType::Events, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "images" => {
             container
-                .compose(CommandType::Images, &compose_item, args, None)
+                .compose(CommandType::Images, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "kill" => {
             container
-                .compose(CommandType::Kill, &compose_item, args, None)
+                .compose(CommandType::Kill, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "logs" => {
             container
-                .compose(CommandType::Logs, &compose_item, args, None)
+                .compose(CommandType::Logs, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "ls" => {
             container
-                .compose(CommandType::Ls, &compose_item, args, None)
+                .compose(CommandType::Ls, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "pause" => {
             container
-                .compose(CommandType::Pause, &compose_item, args, None)
+                .compose(CommandType::Pause, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "pull" => {
             container
-                .compose(CommandType::Pull, &compose_item, args, None)
+                .compose(CommandType::Pull, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "push" => {
             container
-                .compose(CommandType::Push, &compose_item, args, None)
+                .compose(CommandType::Push, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "ps" => {
             container
-                .compose(CommandType::Ps, &compose_item, args, None)
+                .compose(CommandType::Ps, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "restart" => {
             container
-                .compose(CommandType::Restart, &compose_item, args, None)
+                .compose(CommandType::Restart, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "rm" => {
             container
-                .compose(CommandType::Rm, &compose_item, args, None)
+                .compose(CommandType::Rm, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "run" => {
             container
-                .compose(CommandType::Run, &compose_item, args, None)
+                .compose(CommandType::Run, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "start" => {
             container
-                .compose(CommandType::Start, &compose_item, args, None)
+                .compose(CommandType::Start, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "stop" => {
             container
-                .compose(CommandType::Stop, &compose_item, args, None)
+                .compose(CommandType::Stop, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "top" => {
             container
-                .compose(CommandType::Top, &compose_item, args, None)
+                .compose(CommandType::Top, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "unpause" => {
             container
-                .compose(CommandType::Unpause, &compose_item, args, None)
+                .compose(CommandType::Unpause, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         "up" => {
             container
-                .compose(CommandType::Up, &compose_item, args, None)
+                .compose(CommandType::Up, &default_arg, &default_command_arg,args, None)
                 .await?
         }
         _ => return Err(eyre!("Not yet implemented")),

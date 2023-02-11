@@ -1,7 +1,7 @@
 use eyre::{Context, Result};
 use mockall::automock;
 use serde::Deserialize;
-use std::fs;
+use std::{fs, ffi::OsStr};
 use tabled::Tabled;
 
 #[derive(Debug, Clone, Deserialize, Tabled, PartialEq, Eq)]
@@ -91,6 +91,50 @@ impl ComposeItem {
             ComposeStatus::PartialRunning
         };
         self.status = Some(status);
+    }
+
+    pub fn to_args(compose_item: &ComposeItem) -> Vec<&OsStr> {
+        let mut item_args: Vec<&OsStr> = Vec::new();
+        if compose_item.use_project_name.unwrap_or(true) {
+            item_args.push(OsStr::new("-p"));
+            item_args.push(OsStr::new(&compose_item.alias));
+        }
+    
+        match &compose_item.enviroment_file {
+            Some(env_file) => {
+                item_args.push(OsStr::new("--env-file"));
+                item_args.push(OsStr::new(env_file));
+            }
+            None => {}
+        };
+    
+        compose_item.compose_files.iter().for_each(|compose_file| {
+            item_args.push(OsStr::new("-f"));
+            item_args.push(OsStr::new(compose_file));
+        });
+
+        item_args
+    }
+}
+
+impl DefaultCommandArgs {
+    pub fn default(command_name: &str) -> DefaultCommandArgs {
+        DefaultCommandArgs {
+            command_name: command_name.to_string(),
+            command_args: Vec::new(),
+        }
+    }
+
+    pub fn to_args(default_command_args: &DefaultCommandArgs) -> Vec<&OsStr> {
+        let mut default_arg: Vec<&OsStr> = Vec::new();
+        if default_command_args.command_args.len() > 0 {
+            default_command_args.command_args.iter().for_each(
+                |arg| {
+                    default_arg.push(OsStr::new(arg));
+                },
+            )
+        }
+        default_arg
     }
 }
 

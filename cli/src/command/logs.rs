@@ -51,11 +51,9 @@ pub fn compose_logs() -> Command {
 
 pub fn prepare_command_logs<'a>(
     args_matches: &'a ArgMatches,
-    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
-    args.append(config_args);
     args.push(OsStr::new("logs"));
 
     if args_matches.get_flag("FOLLOW") {

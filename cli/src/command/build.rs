@@ -65,11 +65,9 @@ pub fn compose_build() -> Command {
 
 pub fn prepare_command_build<'a>(
     args_matches: &'a ArgMatches,
-    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
-    args.append(config_args);
     args.push(OsStr::new("build"));
 
     if args_matches.get_flag("BUILD_ARG") {

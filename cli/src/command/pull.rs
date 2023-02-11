@@ -45,11 +45,9 @@ pub fn compose_pull() -> Command {
 
 pub fn prepare_command_pull<'a>(
     args_matches: &'a ArgMatches,
-    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
-    args.append(config_args);
     args.push(OsStr::new("pull"));
 
     if args_matches.get_flag("IGNORE_BUILDABLE") {

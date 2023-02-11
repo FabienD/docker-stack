@@ -156,11 +156,9 @@ pub fn compose_up() -> Command {
 
 pub fn prepare_command_up<'a>(
     args_matches: &'a ArgMatches,
-    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
-    args.append(config_args);
     args.push(OsStr::new("up"));
 
     if args_matches.get_flag("ABORT_ON_CONTAINER_EXIT") {

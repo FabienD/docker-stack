@@ -59,11 +59,9 @@ pub fn compose_ps() -> Command {
 
 pub fn prepare_command_ps<'a>(
     args_matches: &'a ArgMatches,
-    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
-    args.append(config_args);
     args.push(OsStr::new("ps"));
 
     if args_matches.get_flag("ALL") {

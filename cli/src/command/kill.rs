@@ -33,11 +33,9 @@ pub fn compose_kill() -> Command {
 
 pub fn prepare_command_kill<'a>(
     args_matches: &'a ArgMatches,
-    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
-    args.append(config_args);
     args.push(OsStr::new("kill"));
 
     if args_matches.get_flag("REMOVE_ORPHANS") {

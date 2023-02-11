@@ -34,11 +34,9 @@ pub fn compose_images() -> Command {
 
 pub fn prepare_command_images<'a>(
     args_matches: &'a ArgMatches,
-    config_args: &'a mut Vec<&'a OsStr>,
 ) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
-    args.append(config_args);
     args.push(OsStr::new("images"));
 
     if args_matches.get_flag("quiet") {
