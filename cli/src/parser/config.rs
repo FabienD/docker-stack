@@ -253,6 +253,27 @@ mod tests {
     }
 
     #[test]
+    fn it_sets_the_compose_item_status() {
+        let mut compose_item = ComposeItem {
+            alias: String::from("test"),
+            use_project_name: Some(false),
+            description: Some(String::from("description")),
+            compose_files: vec![String::from("docker-compose.yml"), String::from("docker-compose.override.yml")],
+            enviroment_file: Some(String::from("test.env")),
+            status: None,
+        };
+
+        compose_item.set_status(0, 0);
+        assert_eq!(compose_item.status, Some(ComposeStatus::Stopped));
+
+        compose_item.set_status(2, 3);
+        assert_eq!(compose_item.status, Some(ComposeStatus::PartialRunning));
+
+        compose_item.set_status(3, 3);
+        assert_eq!(compose_item.status, Some(ComposeStatus::Running));
+    }
+
+    #[test]
     fn it_returns_args_as_str_from_a_complete_compose_item() {
         let compose_item = ComposeItem {
             alias: String::from("test"),
