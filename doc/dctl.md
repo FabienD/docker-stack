@@ -33,38 +33,41 @@ Note that the **use_project_name**, **description** and the **environment file**
 ```toml
 [main]
 docker_bin = "/usr/bin/docker"
+default_command_args = [
+    "up": ["-d", "--remove-orphans"],
+]
 
 [[collections]]
 alias = "stack_web"
 use_project_name = true # Default value is true
 description = "Docker stack - web components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
+enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/web/docker-compose.yml",
+    "/home/fabien/workspace/infra/docker-stack/collection/web/docker-compose.yml",
 ]
 
 [[collections]]
 alias = "stack_logging"
 description = "Docker stack - logging components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
+enviroment_file = "/home/fabien/workspace/infra/docker-stackcollection/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/logging/docker-compose.yml",
+    "/home/fabien/workspace/infra/docker-stack/collection/logging/docker-compose.yml",
 ]
 
 [[collections]]
 alias = "stack_tools"
 description = "Docker stack - tools components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
+enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/tools/docker-compose.yml",
+    "/home/fabien/workspace/infra/docker-stack/collection/tools/docker-compose.yml",
 ]
 
 [[collections]]
 alias = "stack_data"
 description = "Docker stack - data components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/.env"
+enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/data/docker-compose.yml",
+    "/home/fabien/workspace/infra/docker-stack/collection/data/docker-compose.yml",
 ]
 
 [[collections]]
@@ -90,71 +93,43 @@ compose_files = [
 dctl --help
 ```
 
+Since version 1.0.0, dctl cli arguments in option are the same as docker compose arguments. 
+
+Use the "help" command to see the available options by command.
+
+Those following docker compose command are fully supported :
+
+- build: Build all or selected service(s) for a project
+- create: Creates containers for a service of the project
+- down: Stop and remove containers, networks, images, and volumes for a project
+- exec: Execute a command in a running service of the project
+- events: Receive real time events from ontainers
+- images: List images used by the created containers
+- kill: Kill containers
+- logs: View logs output from all containers or from selected services of the project
+- ls: List running compose projects
+- ps: List containers for a project or only selected service(s) of the project
+- pause: Pause services
+- pull: Pull service images
+- push: Push services
+- restart: Restart all containers for a project or only selected service(s) of the project
+- rm: Removes stopped service containers
+- run: Run a one-off command on a service
+- start: Start all containers for a project or only selected service(s) of the project
+- stop: Stop all containers for a project or only selected service(s) of the project
+- top: Top on all containers for a project or only on selected service(s) of the project
+- unpause: Unpause services
+- up: Create and start containers for a project
+
+
 #### List registered docker-compose files
 
 ```bash
-dctl list
+dctl infos
 ```
 
-#### Create and run containers by the project name
-
-```bash
-dctl up <name>
-```
-
-#### Start stopped containers by the project name
-
-```bash
-dctl start <name>
-```
-
-#### Stop containers by the project name
-
-```bash
-dctl stop <name>
-```
-
-#### Stop and remove all containers by the project name
-
-```bash
-dctl down <name>
-```
-
-#### Restart containers by the project name
-
-```bash
-dctl restart <name>
-```
-
-#### Show processus list by the project name
-
-```bash
-dctl ps <name>
-```
-
-#### Show containers logs by the project name
-
-```bash
-dctl logs <name> [service]
-```
-
-#### Build a container (or all buildable) by the project name
-
-```bash
-dctl build <name> [service]
-```
-
-#### Execute a subcommand in a container by the project name
-
-```bash
-dctl exec <name> <service> <subcommand>
-```
-#### Run a subcommand in a container by the project name
-
-```bash
-dctl run <name> <service> <csubommand>
-```
-
+For each registered project, the running status is displayed (running, stopped or partial running).
+*Partial running* means that not all docker compose services of the project are running.
 
 #### Show the path of a docker-compose by the project name
 

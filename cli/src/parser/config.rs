@@ -1,17 +1,24 @@
 use eyre::{Context, Result};
 use mockall::automock;
 use serde::Deserialize;
-use std::fs;
+use std::{ffi::OsStr, fs};
 use tabled::Tabled;
 
-#[derive(Debug, Clone, Deserialize, Tabled)]
+#[derive(Debug, Clone, Deserialize, Tabled, PartialEq, Eq)]
+pub enum ComposeStatus {
+    Running,
+    PartialRunning,
+    Stopped,
+}
+
+#[derive(Debug, Clone, Deserialize, Tabled, PartialEq)]
 pub struct ComposeItem {
     #[tabled(rename = " 🐋 Alias", display_with = "display_alias")]
     pub alias: String,
     #[tabled(rename = " 📃 Description", display_with = "display_description")]
     pub description: Option<String>,
     #[tabled(rename = "⚡Status", display_with = "display_status")]
-    pub status: Option<bool>,
+    pub status: Option<ComposeStatus>,
     #[tabled(skip)]
     pub use_project_name: Option<bool>,
     #[tabled(skip)]
@@ -22,6 +29,7 @@ pub struct ComposeItem {
 
 pub trait CliConfig {
     fn get_container_bin_path(&self) -> Result<String>;
+    fn get_default_command_args(&self, command_name: &str) -> Option<DefaultCommandArgs>;
     fn load(config_path_file: String) -> Result<Self>
     where
         Self: Sized;
@@ -32,6 +40,13 @@ pub trait CliConfig {
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub docker_bin: String,
+    pub default_command_args: Option<Vec<DefaultCommandArgs>>,
+}
+
+#[derive(Debug, Deserialize, Clone, PartialEq)]
+pub struct DefaultCommandArgs {
+    pub command_name: String,
+    pub command_args: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -44,11 +59,13 @@ fn display_alias(alias: &String) -> String {
     alias.to_string()
 }
 
-fn display_status(status: &Option<bool>) -> String {
+fn display_status(status: &Option<ComposeStatus>) -> String {
     match status {
         Some(s) => {
-            if *s {
+            if *s == ComposeStatus::Running {
                 "🟢 Running".to_string()
+            } else if *s == ComposeStatus::PartialRunning {
+                "🟠 Partially running".to_string()
             } else {
                 "🔴 Stopped".to_string()
             }
@@ -65,8 +82,57 @@ fn display_description(o: &Option<String>) -> String {
 }
 
 impl ComposeItem {
-    pub fn set_status(&mut self, status: bool) {
+    pub fn set_status(&mut self, running_container: usize, all_container: usize) {
+        let status = if (running_container == all_container) && (all_container != 0) {
+            ComposeStatus::Running
+        } else if running_container == 0 {
+            ComposeStatus::Stopped
+        } else {
+            ComposeStatus::PartialRunning
+        };
         self.status = Some(status);
+    }
+
+    pub fn to_args(compose_item: &ComposeItem) -> Vec<&OsStr> {
+        let mut item_args: Vec<&OsStr> = Vec::new();
+        if compose_item.use_project_name.unwrap_or(true) {
+            item_args.push(OsStr::new("-p"));
+            item_args.push(OsStr::new(&compose_item.alias));
+        }
+
+        match &compose_item.enviroment_file {
+            Some(env_file) => {
+                item_args.push(OsStr::new("--env-file"));
+                item_args.push(OsStr::new(env_file));
+            }
+            None => {}
+        };
+
+        compose_item.compose_files.iter().for_each(|compose_file| {
+            item_args.push(OsStr::new("-f"));
+            item_args.push(OsStr::new(compose_file));
+        });
+
+        item_args
+    }
+}
+
+impl DefaultCommandArgs {
+    pub fn default(command_name: &str) -> DefaultCommandArgs {
+        DefaultCommandArgs {
+            command_name: command_name.to_string(),
+            command_args: Vec::new(),
+        }
+    }
+
+    pub fn to_args(default_command_args: &DefaultCommandArgs) -> Vec<&OsStr> {
+        let mut default_arg: Vec<&OsStr> = Vec::new();
+        if !default_command_args.command_args.is_empty() {
+            default_command_args.command_args.iter().for_each(|arg| {
+                default_arg.push(OsStr::new(arg));
+            })
+        }
+        default_arg
     }
 }
 
@@ -74,7 +140,7 @@ impl DctlConfig {
     fn load_config_file(config_path_file: String) -> Result<String> {
         // Load config file
         let full_config_path = shellexpand::tilde(&config_path_file).to_string();
-        
+
         // Read the config file
         let config_content = fs::read_to_string(&full_config_path)
             .wrap_err(format!("config file not found in {full_config_path}"))?;
@@ -95,6 +161,20 @@ impl DctlConfig {
 impl CliConfig for DctlConfig {
     fn get_container_bin_path(&self) -> Result<String> {
         Ok(self.main.docker_bin.to_string())
+    }
+
+    fn get_default_command_args(&self, command_name: &str) -> Option<DefaultCommandArgs> {
+        let mut result: Option<DefaultCommandArgs> = None;
+        if let Some(default_command_args) = &self.main.default_command_args {
+            for default_command_arg in default_command_args {
+                if default_command_arg.command_name == *command_name {
+                    result = Some(default_command_arg.clone());
+                    break;
+                }
+            }
+        }
+
+        result
     }
 
     fn load(config_path_file: String) -> Result<Self> {
@@ -128,13 +208,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn get_display_alias() {
+    fn it_returns_the_project_alias() {
         let alias = String::from("test");
         assert_eq!(display_alias(&alias), "test");
     }
 
     #[test]
-    fn get_display_description() {
+    fn it_displays_the_project_description() {
         let description = Some(String::from("description"));
         assert_eq!(display_description(&description), "description");
 
@@ -143,14 +223,129 @@ mod tests {
     }
 
     #[test]
-    fn get_display_status() {
-        let status = Some(true);
+    fn it_displays_the_project_status() {
+        let status = Some(ComposeStatus::Running);
         assert_eq!(display_status(&status), "🟢 Running");
 
-        let status = Some(false);
+        let status = Some(ComposeStatus::PartialRunning);
+        assert_eq!(display_status(&status), "🟠 Partially running");
+
+        let status = Some(ComposeStatus::Stopped);
         assert_eq!(display_status(&status), "🔴 Stopped");
 
         let status = None;
         assert_eq!(display_status(&status), "🔴 Stopped");
+    }
+
+    #[test]
+    fn it_returns_the_docker_bin_path() {
+        let config = DctlConfig {
+            main: Config {
+                docker_bin: String::from("/usr/bin/docker"),
+                default_command_args: None,
+            },
+            collections: Vec::new(),
+        };
+
+        assert_eq!(config.get_container_bin_path().unwrap(), "/usr/bin/docker");
+    }
+
+    #[test]
+    fn it_sets_the_compose_item_status() {
+        let mut compose_item = ComposeItem {
+            alias: String::from("test"),
+            use_project_name: Some(false),
+            description: Some(String::from("description")),
+            compose_files: vec![
+                String::from("docker-compose.yml"),
+                String::from("docker-compose.override.yml"),
+            ],
+            enviroment_file: Some(String::from("test.env")),
+            status: None,
+        };
+
+        compose_item.set_status(0, 0);
+        assert_eq!(compose_item.status, Some(ComposeStatus::Stopped));
+
+        compose_item.set_status(2, 3);
+        assert_eq!(compose_item.status, Some(ComposeStatus::PartialRunning));
+
+        compose_item.set_status(3, 3);
+        assert_eq!(compose_item.status, Some(ComposeStatus::Running));
+    }
+
+    #[test]
+    fn it_returns_args_as_str_from_a_complete_compose_item() {
+        let compose_item = ComposeItem {
+            alias: String::from("test"),
+            use_project_name: Some(false),
+            description: Some(String::from("description")),
+            compose_files: vec![
+                String::from("docker-compose.yml"),
+                String::from("docker-compose.override.yml"),
+            ],
+            enviroment_file: Some(String::from("test.env")),
+            status: None,
+        };
+
+        let args = ComposeItem::to_args(&compose_item);
+
+        assert!(args.len() == 6);
+        assert!(args[0] == OsStr::new("--env-file"));
+        assert!(args[1] == OsStr::new("test.env"));
+        assert!(args[2] == OsStr::new("-f"));
+        assert!(args[3] == OsStr::new("docker-compose.yml"));
+        assert!(args[4] == OsStr::new("-f"));
+        assert!(args[5] == OsStr::new("docker-compose.override.yml"));
+    }
+
+    #[test]
+    fn it_returns_args_as_str_from_a_minimal_compose_item() {
+        let compose_item = ComposeItem {
+            alias: String::from("test"),
+            use_project_name: None,
+            description: Some(String::from("description")),
+            compose_files: vec![String::from("docker-compose.yml")],
+            enviroment_file: None,
+            status: None,
+        };
+
+        let args = ComposeItem::to_args(&compose_item);
+
+        assert!(args.len() == 4);
+        assert!(args[0] == OsStr::new("-p"));
+        assert!(args[1] == OsStr::new("test"));
+        assert!(args[2] == OsStr::new("-f"));
+        assert!(args[3] == OsStr::new("docker-compose.yml"));
+    }
+
+    #[test]
+    fn it_build_a_undefined_default_command_args() {
+        let command_args = DefaultCommandArgs::default("down");
+
+        assert!(command_args.command_name == "down");
+        assert!(command_args.command_args.len() == 0);
+    }
+
+    #[test]
+    fn it_returns_args_as_str_from_an_undefined_default_command_args() {
+        let command_args = DefaultCommandArgs::default("down");
+        let args = DefaultCommandArgs::to_args(&command_args);
+
+        assert!(args.len() == 0);
+    }
+
+    #[test]
+    fn it_returns_args_as_str_from_a_defined_default_command_args() {
+        let command_args = DefaultCommandArgs {
+            command_name: String::from("down"),
+            command_args: vec![String::from("--volumes"), String::from("--remove-orphans")],
+        };
+
+        let args = DefaultCommandArgs::to_args(&command_args);
+
+        assert!(args.len() == 2);
+        assert!(args[0] == OsStr::new("--volumes"));
+        assert!(args[1] == OsStr::new("--remove-orphans"));
     }
 }

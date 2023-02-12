@@ -1,3 +1,19 @@
+## next release (xxxx-xx-xx)
+
+ * default docker compose command arguments are configurable globally.
+ * **TODO**: rewrite tests and documentation. Clean & refactor code.
+
+## 1.0.0-b2 (2023-02-04)
+
+ * dctl infos re-implemented, 3 status now available: running, stopped, partial-running.
+ * **TODO**: rewrite tests and documentation. Add configurable default command arguments.
+
+## 1.0.0-b1 (2023-02-03)
+
+ * dctl implements all Docker compose command arguments.
+ * Add additional docker compose commands.
+ * Dependencies are updated.
+
 ## 0.6.1 (2022-11-24)
 
 * Fix typo for Up command.

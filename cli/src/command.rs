@@ -1,7 +1,27 @@
-pub mod docker;
-pub mod system;
+// Docker compose commands
+pub mod build;
+pub mod create;
+pub mod down;
+pub mod events;
+pub mod exec;
+pub mod images;
+pub mod kill;
+pub mod logs;
+pub mod ls;
+pub mod pause;
+pub mod ps;
+pub mod pull;
+pub mod push;
+pub mod restart;
+pub mod rm;
+pub mod run;
+pub mod start;
+pub mod stop;
+pub mod top;
+pub mod unpause;
+pub mod up;
 
-#[cfg(test)]
-pub mod docker_tests;
-#[cfg(test)]
-pub mod system_tests;
+// Others commands
+pub mod cd;
+pub mod completion;
+pub mod infos;

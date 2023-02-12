@@ -3,18 +3,18 @@ mod tests {
     use std::ffi::OsStr;
 
     use crate::{
-        command::system::{builder, System},
         parser::config::ComposeItem,
+        utils::system::{builder, System},
     };
 
     #[test]
-    pub fn test_init() {
+    pub fn it_inits_system() {
         let system = System::init();
         assert!(system == System {});
     }
 
     #[test]
-    pub fn test_cd() {
+    pub fn it_returns_the_path_from_cd_command() {
         let item = ComposeItem {
             alias: String::from("test"),
             description: None,
@@ -29,7 +29,7 @@ mod tests {
     }
 
     #[test]
-    fn test_builder() {
+    fn it_builds_a_system_command_process() {
         let bin_command = "ls".to_string();
         let args = vec![OsStr::new("-l"), OsStr::new("-a")];
 
