@@ -11,7 +11,7 @@ pub enum ComposeStatus {
     Stopped,
 }
 
-#[derive(Debug, Clone, Deserialize, Tabled)]
+#[derive(Debug, Clone, Deserialize, Tabled, PartialEq)]
 pub struct ComposeItem {
     #[tabled(rename = " 🐋 Alias", display_with = "display_alias")]
     pub alias: String,
@@ -43,7 +43,7 @@ pub struct Config {
     pub default_command_args: Option<Vec<DefaultCommandArgs>>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, PartialEq)]
 pub struct DefaultCommandArgs {
     pub command_name: String,
     pub command_args: Vec<String>,
@@ -237,5 +237,48 @@ mod tests {
 
         let status = None;
         assert_eq!(display_status(&status), "🔴 Stopped");
+    }
+
+    #[test]
+    fn get_docker_bin_path() {
+        let config = DctlConfig {
+            main: Config { 
+                docker_bin: String::from("/usr/bin/docker"),
+                default_command_args: None,
+            },
+            collections: Vec::new(),
+        };
+
+        assert_eq!(config.get_container_bin_path().unwrap(), "/usr/bin/docker");
+    }
+
+    #[test]
+    fn get_a_default_command_args() {
+        let command_args = DefaultCommandArgs::default("down");
+
+        assert!(command_args.command_name == "down");
+        assert!(command_args.command_args.len() == 0);
+    }
+
+    #[test]
+    fn get_args_as_str_for_a_default_command_args() {
+        let command_args = DefaultCommandArgs::default("down");
+        let args = DefaultCommandArgs::to_args(&command_args);
+
+        assert!(args.len() == 0);
+    }
+
+    #[test]
+    fn get_args_as_str_for_defined_default_command_args() {
+        let command_args = DefaultCommandArgs {
+            command_name: String::from("down"),
+            command_args: vec![String::from("--volumes"), String::from("--remove-orphans")],
+        };
+
+        let args = DefaultCommandArgs::to_args(&command_args);
+
+        assert!(args.len() == 2);
+        assert!(args[0] == OsStr::new("--volumes"));
+        assert!(args[1] == OsStr::new("--remove-orphans"));
     }
 }

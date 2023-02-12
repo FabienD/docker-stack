@@ -6,6 +6,10 @@ mod tests {
         let config = r#"
         [main]
         docker_bin = "docker"
+        default_command_args = [
+            { command_name = "up", command_args = ["-d", "--remove-orphan"] },
+            { command_name = "down", command_args = ["-v"] },
+        ]
         [[collections]]
         alias = "test1"
         description = "description 1"
@@ -104,4 +108,25 @@ mod tests {
         assert!(item.compose_files.len() == 1);
         assert!(item.compose_files[0] == "/home/test/test3/docker-compose.yml");
     }
+
+    #[test]
+    fn get_defautlt_command_args() {
+        let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
+
+        let args = config.get_default_command_args("up");
+        assert!(args.is_some());
+        let args = args.unwrap();
+        assert!(args.command_args.len() == 2);
+        assert!(args.command_args[0] == "-d");
+        assert!(args.command_args[1] == "--remove-orphan");
+
+        let args = config.get_default_command_args("down");
+        assert!(args.is_some());
+        let args = args.unwrap();
+        assert!(args.command_args.len() == 1);
+        assert!(args.command_args[0] == "-v");
+
+        let args = config.get_default_command_args("other");
+        assert!(args.is_none());
+    }       
 }
