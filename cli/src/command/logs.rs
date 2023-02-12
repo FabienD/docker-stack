@@ -48,7 +48,7 @@ pub fn compose_logs() -> Command {
         )
 }
 
-pub fn prepare_command_logs<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_logs(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("logs"));

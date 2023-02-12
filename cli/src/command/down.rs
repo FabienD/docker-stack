@@ -37,7 +37,7 @@ pub fn compose_down() -> Command {
         )
 }
 
-pub fn prepare_command_down<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_down(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("down"));

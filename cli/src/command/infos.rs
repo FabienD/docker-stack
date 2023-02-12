@@ -20,7 +20,7 @@ pub async fn exec_projects_infos(
     let mut items = config.get_all_compose_items();
 
     for item in &mut items {
-        let config_args = ComposeItem::to_args(&item);
+        let config_args = ComposeItem::to_args(item);
 
         // Get all containers for this project
         let args_all = compose_ps().try_get_matches_from(vec!["ps", "-a", "-q", &item.alias])?;

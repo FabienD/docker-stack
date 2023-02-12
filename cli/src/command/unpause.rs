@@ -18,7 +18,7 @@ pub fn compose_unpause() -> Command {
         )
 }
 
-pub fn prepare_command_unpause<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_unpause(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("unpause"));

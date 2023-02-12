@@ -37,7 +37,7 @@ pub fn compose_push() -> Command {
         )
 }
 
-pub fn prepare_command_push<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_push(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("push"));

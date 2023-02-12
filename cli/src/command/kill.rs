@@ -30,7 +30,7 @@ pub fn compose_kill() -> Command {
         )
 }
 
-pub fn prepare_command_kill<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_kill(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("kill"));

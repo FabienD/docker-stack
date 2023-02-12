@@ -43,7 +43,7 @@ pub fn compose_pull() -> Command {
         )
 }
 
-pub fn prepare_command_pull<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_pull(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("pull"));

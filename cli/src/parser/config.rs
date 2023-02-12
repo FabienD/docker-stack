@@ -127,7 +127,7 @@ impl DefaultCommandArgs {
 
     pub fn to_args(default_command_args: &DefaultCommandArgs) -> Vec<&OsStr> {
         let mut default_arg: Vec<&OsStr> = Vec::new();
-        if default_command_args.command_args.len() > 0 {
+        if !default_command_args.command_args.is_empty() {
             default_command_args.command_args.iter().for_each(|arg| {
                 default_arg.push(OsStr::new(arg));
             })

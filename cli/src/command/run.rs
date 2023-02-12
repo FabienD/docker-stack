@@ -134,7 +134,7 @@ pub fn compose_run() -> Command {
         )
 }
 
-pub fn prepare_command_run<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_run(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("run"));

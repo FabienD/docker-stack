@@ -88,7 +88,7 @@ pub fn compose_exec() -> Command {
         )
 }
 
-pub fn prepare_command_exec<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_exec(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("exec"));

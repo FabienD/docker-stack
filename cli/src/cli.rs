@@ -105,7 +105,7 @@ pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Resul
     // Global command args
     let command_args = match default_command_args {
         Some(command_args) => command_args,
-        None => DefaultCommandArgs::default(&command_name),
+        None => DefaultCommandArgs::default(command_name),
     };
     let default_command_arg = DefaultCommandArgs::to_args(&command_args);
 
