@@ -73,3 +73,34 @@ pub fn prepare_command_create<'a>(
 
     Ok(args)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_compose_create() {
+        let args_matches = compose_create().get_matches_from(vec![
+            "OPTIONS",
+            "--build",
+            "--force-recreate",
+            "--no-recreate",
+            "--pull",
+            "missing",
+            "SERVICE",
+            "service1",
+            "service2",
+        ]);
+        let args = prepare_command_create(&args_matches).unwrap();
+        assert_eq!(args, vec![
+            OsStr::new("create"),
+            OsStr::new("--build"),
+            OsStr::new("--force-recreate"),
+            OsStr::new("--no-recreate"),
+            OsStr::new("--pull"),
+            OsStr::new("missing"),
+            OsStr::new("service1"),
+            OsStr::new("service2"),
+        ]);
+    }
+}

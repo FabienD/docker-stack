@@ -101,3 +101,40 @@ pub fn prepare_command_build<'a>(
 
     Ok(args)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_compose_build() {
+        let args_matches = compose_build().get_matches_from(vec![
+            "OPTIONS",
+            "--build-arg",
+            "--memory",
+            "--no-cache",
+            "--progress",
+            "auto",
+            "--pull",
+            "--quiet",
+            "--ssh",
+            "SERVICE",
+            "service1",
+            "service2",
+        ]);
+        let args = prepare_command_build(&args_matches).unwrap();
+        assert_eq!(args, vec![
+            OsStr::new("build"),
+            OsStr::new("--build-arg"),
+            OsStr::new("--memory"),
+            OsStr::new("--no-cache"),
+            OsStr::new("--progress"),
+            OsStr::new("auto"),
+            OsStr::new("--pull"),
+            OsStr::new("--quiet"),
+            OsStr::new("--ssh"),
+            OsStr::new("service1"),
+            OsStr::new("service2"),
+        ]);
+    }
+}
