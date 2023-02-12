@@ -29,6 +29,7 @@ Note that the **use_project_name**, **description** and the **environment file**
 
 **use_project_name** is true by default, docker compose will use the alias as project name. For a full compatibilty with project running without setting a [project name](https://github.com/compose-spec/compose-spec/blob/master/spec.md#name-top-level-element), set it to false, docker compose will use the directory name as project name.
 
+Since 1.0.0, the **default_command_args** is a map of docker compose command and arguments. It's used as default arguments for all docker compose command.
 
 ```toml
 [main]

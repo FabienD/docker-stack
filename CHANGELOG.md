@@ -1,7 +1,8 @@
-## next release (xxxx-xx-xx)
+## 1.0.0-rc.1 release (2023-02-12)
 
- * default docker compose command arguments are configurable globally.
- * **TODO**: rewrite tests and documentation. Clean & refactor code.
+ * Default docker compose command arguments are configurable globally.
+ * Rewrite tests and documentation.
+ * Clean & refactor code (need to do more).
 
 ## 1.0.0-b2 (2023-02-04)
 
