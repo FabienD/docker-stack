@@ -128,5 +128,5 @@ mod tests {
 
         let args = config.get_default_command_args("other");
         assert!(args.is_none());
-    }       
+    }
 }

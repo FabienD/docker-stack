@@ -39,9 +39,7 @@ pub fn compose_rm() -> Command {
         )
 }
 
-pub fn prepare_command_rm<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_rm<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("rm"));
@@ -64,4 +62,34 @@ pub fn prepare_command_rm<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_rm() {
+        let args_matches = compose_rm().get_matches_from(vec![
+            "rm",
+            "--force",
+            "--stop",
+            "--volumes",
+            "PROJECT",
+            "service1",
+            "service2",
+        ]);
+        let args = prepare_command_rm(&args_matches).unwrap();
+        assert_eq!(
+            args,
+            vec![
+                "rm",
+                "--force",
+                "--stop",
+                "--volumes",
+                "service1",
+                "service2"
+            ]
+        );
+    }
 }

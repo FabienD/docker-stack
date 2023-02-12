@@ -32,9 +32,7 @@ pub fn compose_images() -> Command {
         )
 }
 
-pub fn prepare_command_images<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_images<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("images"));
@@ -55,4 +53,29 @@ pub fn prepare_command_images<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_images() {
+        let args_matches = compose_images().get_matches_from(vec![
+            "images", "--quiet", "--format", "json", "PROJECT", "service1", "service2",
+        ]);
+        let args = prepare_command_images(&args_matches).unwrap();
+
+        assert_eq!(
+            args,
+            vec![
+                OsStr::new("images"),
+                OsStr::new("--quiet"),
+                OsStr::new("--format"),
+                OsStr::new("json"),
+                OsStr::new("service1"),
+                OsStr::new("service2"),
+            ]
+        );
+    }
 }

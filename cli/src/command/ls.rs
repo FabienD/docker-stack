@@ -28,7 +28,7 @@ pub fn compose_ls() -> Command {
                 .help("Pretty-print services using a Go template")
                 .short('f')
                 .long("format")
-                .value_parser(["table", "json"])
+                .value_parser(["table", "json"]),
         )
         .arg(
             Arg::new("QUIET")
@@ -39,9 +39,7 @@ pub fn compose_ls() -> Command {
         )
 }
 
-pub fn prepare_command_ls<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_ls<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("ls"));
@@ -61,4 +59,30 @@ pub fn prepare_command_ls<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_ls() {
+        let args_matches = compose_ls().get_matches_from(vec![
+            "ls", "--all", "--filter", "--format", "json", "--quiet", "PROJECT",
+        ]);
+
+        let args = prepare_command_ls(&args_matches).unwrap();
+
+        assert_eq!(
+            args,
+            vec![
+                OsStr::new("ls"),
+                OsStr::new("--all"),
+                OsStr::new("--filter"),
+                OsStr::new("--format"),
+                OsStr::new("json"),
+                OsStr::new("--quiet"),
+            ]
+        );
+    }
 }

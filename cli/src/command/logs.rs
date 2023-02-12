@@ -48,9 +48,7 @@ pub fn compose_logs() -> Command {
         )
 }
 
-pub fn prepare_command_logs<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_logs<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("logs"));
@@ -81,4 +79,40 @@ pub fn prepare_command_logs<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_logs() {
+        let args_matches = compose_logs().get_matches_from(vec![
+            "logs",
+            "--follow",
+            "--no-color",
+            "--no-log-prefix",
+            "--since",
+            "--tail",
+            "5",
+            "PROJECT",
+            "service1",
+        ]);
+
+        let args = prepare_command_logs(&args_matches).unwrap();
+
+        assert_eq!(
+            args,
+            vec![
+                OsStr::new("logs"),
+                OsStr::new("--follow"),
+                OsStr::new("--no-color"),
+                OsStr::new("--no-log-prefix"),
+                OsStr::new("--since"),
+                OsStr::new("--tail"),
+                OsStr::new("5"),
+                OsStr::new("service1"),
+            ]
+        );
+    }
 }

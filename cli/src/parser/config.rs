@@ -1,7 +1,7 @@
 use eyre::{Context, Result};
 use mockall::automock;
 use serde::Deserialize;
-use std::{fs, ffi::OsStr};
+use std::{ffi::OsStr, fs};
 use tabled::Tabled;
 
 #[derive(Debug, Clone, Deserialize, Tabled, PartialEq, Eq)]
@@ -99,7 +99,7 @@ impl ComposeItem {
             item_args.push(OsStr::new("-p"));
             item_args.push(OsStr::new(&compose_item.alias));
         }
-    
+
         match &compose_item.enviroment_file {
             Some(env_file) => {
                 item_args.push(OsStr::new("--env-file"));
@@ -107,7 +107,7 @@ impl ComposeItem {
             }
             None => {}
         };
-    
+
         compose_item.compose_files.iter().for_each(|compose_file| {
             item_args.push(OsStr::new("-f"));
             item_args.push(OsStr::new(compose_file));
@@ -128,11 +128,9 @@ impl DefaultCommandArgs {
     pub fn to_args(default_command_args: &DefaultCommandArgs) -> Vec<&OsStr> {
         let mut default_arg: Vec<&OsStr> = Vec::new();
         if default_command_args.command_args.len() > 0 {
-            default_command_args.command_args.iter().for_each(
-                |arg| {
-                    default_arg.push(OsStr::new(arg));
-                },
-            )
+            default_command_args.command_args.iter().for_each(|arg| {
+                default_arg.push(OsStr::new(arg));
+            })
         }
         default_arg
     }
@@ -242,7 +240,7 @@ mod tests {
     #[test]
     fn it_returns_the_docker_bin_path() {
         let config = DctlConfig {
-            main: Config { 
+            main: Config {
                 docker_bin: String::from("/usr/bin/docker"),
                 default_command_args: None,
             },
@@ -258,7 +256,10 @@ mod tests {
             alias: String::from("test"),
             use_project_name: Some(false),
             description: Some(String::from("description")),
-            compose_files: vec![String::from("docker-compose.yml"), String::from("docker-compose.override.yml")],
+            compose_files: vec![
+                String::from("docker-compose.yml"),
+                String::from("docker-compose.override.yml"),
+            ],
             enviroment_file: Some(String::from("test.env")),
             status: None,
         };
@@ -279,7 +280,10 @@ mod tests {
             alias: String::from("test"),
             use_project_name: Some(false),
             description: Some(String::from("description")),
-            compose_files: vec![String::from("docker-compose.yml"), String::from("docker-compose.override.yml")],
+            compose_files: vec![
+                String::from("docker-compose.yml"),
+                String::from("docker-compose.override.yml"),
+            ],
             enviroment_file: Some(String::from("test.env")),
             status: None,
         };

@@ -43,9 +43,7 @@ pub fn compose_create() -> Command {
         )
 }
 
-pub fn prepare_command_create<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_create<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("create"));
@@ -81,26 +79,29 @@ mod tests {
     #[test]
     fn it_returns_a_complete_vec_of_osstr_for_compose_create() {
         let args_matches = compose_create().get_matches_from(vec![
-            "OPTIONS",
+            "create",
             "--build",
             "--force-recreate",
             "--no-recreate",
             "--pull",
             "missing",
-            "SERVICE",
+            "PROJECT",
             "service1",
             "service2",
         ]);
         let args = prepare_command_create(&args_matches).unwrap();
-        assert_eq!(args, vec![
-            OsStr::new("create"),
-            OsStr::new("--build"),
-            OsStr::new("--force-recreate"),
-            OsStr::new("--no-recreate"),
-            OsStr::new("--pull"),
-            OsStr::new("missing"),
-            OsStr::new("service1"),
-            OsStr::new("service2"),
-        ]);
+        assert_eq!(
+            args,
+            vec![
+                OsStr::new("create"),
+                OsStr::new("--build"),
+                OsStr::new("--force-recreate"),
+                OsStr::new("--no-recreate"),
+                OsStr::new("--pull"),
+                OsStr::new("missing"),
+                OsStr::new("service1"),
+                OsStr::new("service2"),
+            ]
+        );
     }
 }

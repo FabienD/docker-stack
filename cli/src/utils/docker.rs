@@ -73,7 +73,7 @@ pub trait Container {
         command_type: CommandType,
         config_args: &Vec<&OsStr>,
         default_command_args: &Vec<&OsStr>,
-        match_args:&ArgMatches,
+        match_args: &ArgMatches,
         command_output: Option<CommandOuput>,
     ) -> Result<Output>;
 }
@@ -95,7 +95,15 @@ impl Container for Docker {
         match_args: &ArgMatches,
         command_output: Option<CommandOuput>,
     ) -> Result<Output> {
-        let output = Self::execute_command(self, command, config_args, default_command_args, match_args, command_output).await?;
+        let output = Self::execute_command(
+            self,
+            command,
+            config_args,
+            default_command_args,
+            match_args,
+            command_output,
+        )
+        .await?;
         Ok(output)
     }
 }
@@ -113,7 +121,7 @@ impl Docker {
             output
         } else {
             CommandOuput::Status
-        };     
+        };
 
         // Build command arguments from matches args & mix with dctl_args
         let mut args = match command_type {

@@ -21,11 +21,17 @@ pub async fn exec_projects_infos(
 
     for item in &mut items {
         let config_args = ComposeItem::to_args(&item);
-        
+
         // Get all containers for this project
         let args_all = compose_ps().try_get_matches_from(vec!["ps", "-a", "-q", &item.alias])?;
         let ps_all = container
-            .compose(CommandType::Ps, &config_args, &vec![], &args_all, Some(CommandOuput::Output))
+            .compose(
+                CommandType::Ps,
+                &config_args,
+                &vec![],
+                &args_all,
+                Some(CommandOuput::Output),
+            )
             .await?;
         let output_all = from_utf8(&ps_all.stdout).unwrap();
         let all_containers_count = output_all.lines().count();
@@ -33,7 +39,13 @@ pub async fn exec_projects_infos(
         // Get running containers for this project
         let args_run = compose_ps().try_get_matches_from(vec!["ps", "-q", &item.alias])?;
         let ps_run = container
-            .compose(CommandType::Ps, &config_args, &vec![], &args_run, Some(CommandOuput::Output))
+            .compose(
+                CommandType::Ps,
+                &config_args,
+                &vec![],
+                &args_run,
+                Some(CommandOuput::Output),
+            )
             .await?;
         let output_running = from_utf8(&ps_run.stdout).unwrap();
         let running_containers_count = output_running.lines().count();

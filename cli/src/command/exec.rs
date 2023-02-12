@@ -23,7 +23,7 @@ pub fn compose_exec() -> Command {
         .arg(
             Arg::new("ARGS")
                 .help("The command arguments")
-                .num_args(0..20),
+                .num_args(0..20)
         )
         .arg(
             Arg::new("DETACH")
@@ -37,7 +37,8 @@ pub fn compose_exec() -> Command {
                 .help("Set environment variables")
                 .long("env")
                 .short('e')
-                .num_args(0..20),
+                .num_args(0..20)
+                .action(ArgAction::Append)
         )
         .arg(
             Arg::new("INDEX")
@@ -50,12 +51,14 @@ pub fn compose_exec() -> Command {
                 .help("Keep STDIN open even if not attached.")
                 .long("interactive")
                 .short('I')
+                .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("NO_TTY")
                 .help("Disable pseudo-TTY allocation. By default docker compose exec allocates a TTY.")
                 .long("no_TTY")
                 .short('T')
+                .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("PRIVILEGED")
@@ -69,6 +72,7 @@ pub fn compose_exec() -> Command {
                 .help("Allocate a pseudo-TTY.")
                 .long("tty")
                 .short('t')
+                .action(ArgAction::SetTrue)
         )
         .arg(
             Arg::new("USER")
@@ -84,9 +88,7 @@ pub fn compose_exec() -> Command {
         )
 }
 
-pub fn prepare_command_exec<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_exec<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("exec"));
@@ -109,17 +111,14 @@ pub fn prepare_command_exec<'a>(
         args.push(OsStr::new("--index"));
         args.push(OsStr::new(index));
     }
-    if let Some(interactive) = args_matches.get_one::<String>("INTERACTIVE") {
+    if args_matches.get_flag("INTERACTIVE") {
         args.push(OsStr::new("--interactive"));
-        args.push(OsStr::new(interactive));
     }
-    if let Some(no_tty) = args_matches.get_one::<String>("NO_TTY") {
+    if args_matches.get_flag("NO_TTY") {
         args.push(OsStr::new("--no_TTY"));
-        args.push(OsStr::new(no_tty));
     }
-    if let Some(tty) = args_matches.get_one::<String>("TTY") {
+    if args_matches.get_flag("TTY") {
         args.push(OsStr::new("--tty"));
-        args.push(OsStr::new(tty));
     }
     if let Some(user) = args_matches.get_one::<String>("USER") {
         args.push(OsStr::new("--user"));
@@ -144,4 +143,46 @@ pub fn prepare_command_exec<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_exec() {
+        let args = compose_exec().get_matches_from(vec![
+            "COMMAND",
+            "--detach",
+            "--privileged",
+            "--index",
+            "1",
+            "--env",
+            "env1",
+            "env2",
+            "--interactive",
+            "--tty",
+            "PROJECT",
+            "python",
+            "bash",
+        ]);
+        assert_eq!(
+            prepare_command_exec(&args).unwrap(),
+            vec![
+                OsStr::new("exec"),
+                OsStr::new("--detach"),
+                OsStr::new("--privileged"),
+                OsStr::new("--env"),
+                OsStr::new("env1"),
+                OsStr::new("--env"),
+                OsStr::new("env2"),
+                OsStr::new("--index"),
+                OsStr::new("1"),
+                OsStr::new("--interactive"),
+                OsStr::new("--tty"),
+                OsStr::new("python"),
+                OsStr::new("bash"),
+            ]
+        )
+    }
 }

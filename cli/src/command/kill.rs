@@ -30,9 +30,7 @@ pub fn compose_kill() -> Command {
         )
 }
 
-pub fn prepare_command_kill<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_kill<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("kill"));
@@ -53,4 +51,35 @@ pub fn prepare_command_kill<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_kill() {
+        let args_matches = compose_kill().get_matches_from(vec![
+            "kill",
+            "--remove-orphans",
+            "--signal",
+            "SIGKILL",
+            "PROJECT",
+            "service1",
+            "service2",
+        ]);
+        let args = prepare_command_kill(&args_matches).unwrap();
+
+        assert_eq!(
+            args,
+            vec![
+                "kill",
+                "--remove-orphans",
+                "--signal",
+                "SIGKILL",
+                "service1",
+                "service2"
+            ]
+        );
+    }
 }

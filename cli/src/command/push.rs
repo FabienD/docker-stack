@@ -37,9 +37,7 @@ pub fn compose_push() -> Command {
         )
 }
 
-pub fn prepare_command_push<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_push<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("push"));
@@ -62,4 +60,34 @@ pub fn prepare_command_push<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_push() {
+        let args_matches = compose_push().get_matches_from(vec![
+            "push",
+            "--ignore-push-failures",
+            "--include-deps",
+            "--quiet",
+            "PROJECT",
+            "service1",
+        ]);
+
+        let args = prepare_command_push(&args_matches).unwrap();
+
+        assert_eq!(
+            args,
+            vec![
+                OsStr::new("push"),
+                OsStr::new("--ignore-push-failures"),
+                OsStr::new("--include-deps"),
+                OsStr::new("--quiet"),
+                OsStr::new("service1"),
+            ]
+        );
+    }
 }

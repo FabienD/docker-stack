@@ -18,9 +18,7 @@ pub fn compose_pause() -> Command {
         )
 }
 
-pub fn prepare_command_pause<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_pause<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("pause"));
@@ -34,4 +32,17 @@ pub fn prepare_command_pause<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_pause() {
+        let args_matches =
+            compose_pause().get_matches_from(vec!["pause", "PROJECT", "service1", "service2"]);
+        let args = prepare_command_pause(&args_matches).unwrap();
+        assert_eq!(args, vec!["pause", "service1", "service2"]);
+    }
 }

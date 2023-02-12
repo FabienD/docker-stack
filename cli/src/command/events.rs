@@ -23,9 +23,7 @@ pub fn compose_events() -> Command {
         )
 }
 
-pub fn prepare_command_events<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_events<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("events"));
@@ -42,4 +40,17 @@ pub fn prepare_command_events<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_events() {
+        let args_matches = compose_events()
+            .get_matches_from(vec!["events", "--json", "PROJECT", "service1", "service2"]);
+        let args = prepare_command_events(&args_matches).unwrap();
+        assert_eq!(args, vec!["events", "--json", "service1", "service2"]);
+    }
 }

@@ -17,9 +17,7 @@ pub fn compose_top() -> Command {
         )
 }
 
-pub fn prepare_command_top<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_top<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("top"));
@@ -33,4 +31,17 @@ pub fn prepare_command_top<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_top() {
+        let args_matches =
+            compose_top().get_matches_from(vec!["top", "PROJECT", "service1", "service2"]);
+        let args = prepare_command_top(&args_matches).unwrap();
+        assert_eq!(args, vec!["top", "service1", "service2"]);
+    }
 }

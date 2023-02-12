@@ -23,9 +23,7 @@ pub fn compose_restart() -> Command {
         )
 }
 
-pub fn prepare_command_restart<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_restart<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("restart"));
@@ -43,4 +41,17 @@ pub fn prepare_command_restart<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_restart() {
+        let args_matches =
+            compose_restart().get_matches_from(vec!["restart", "PROJECT", "service1", "service2"]);
+        let args = prepare_command_restart(&args_matches).unwrap();
+        assert_eq!(args, vec!["restart", "service1", "service2"]);
+    }
 }

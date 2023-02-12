@@ -154,9 +154,7 @@ pub fn compose_up() -> Command {
         )
 }
 
-pub fn prepare_command_up<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_up<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("up"));
@@ -240,4 +238,77 @@ pub fn prepare_command_up<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_up() {
+        let args_matches = compose_up().get_matches_from(vec![
+            "up",
+            "--always-recreate-deps",
+            "--attach",
+            "--attach-dependencies",
+            "--build",
+            "--detach",
+            "--exit-code-from",
+            "--force-recreate",
+            "--no-attach",
+            "--no-build",
+            "--no-color",
+            "--no-deps",
+            "--no-log-prefix",
+            "--no-start",
+            "--pull",
+            "always",
+            "--quiet-pull",
+            "--remove-orphans",
+            "--renew-anon-volumes",
+            "--scale",
+            "service1",
+            "2",
+            "--timeout",
+            "10",
+            "--timestamps",
+            "6540",
+            "--wait",
+            "PROJECT_NAME",
+        ]);
+        let args = prepare_command_up(&args_matches).unwrap();
+
+        assert_eq!(
+            args,
+            vec![
+                OsStr::new("up"),
+                OsStr::new("--always-recreate-deps"),
+                OsStr::new("--attach"),
+                OsStr::new("--attach-dependencies"),
+                OsStr::new("--build"),
+                OsStr::new("--detach"),
+                OsStr::new("--exit-code-from"),
+                OsStr::new("--force-recreate"),
+                OsStr::new("--no-attach"),
+                OsStr::new("--no-build"),
+                OsStr::new("--no-color"),
+                OsStr::new("--no-deps"),
+                OsStr::new("--no-log-prefix"),
+                OsStr::new("--no-start"),
+                OsStr::new("--pull"),
+                OsStr::new("always"),
+                OsStr::new("--quiet-pull"),
+                OsStr::new("--remove-orphans"),
+                OsStr::new("--renew-anon-volumes"),
+                OsStr::new("--scale"),
+                OsStr::new("service1"),
+                OsStr::new("2"),
+                OsStr::new("--timeout"),
+                OsStr::new("10"),
+                OsStr::new("--timestamps"),
+                OsStr::new("6540"),
+                OsStr::new("--wait"),
+            ]
+        );
+    }
 }

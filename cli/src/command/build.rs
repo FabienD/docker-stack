@@ -62,9 +62,7 @@ pub fn compose_build() -> Command {
         )
 }
 
-pub fn prepare_command_build<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_build<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("build"));
@@ -109,7 +107,7 @@ mod tests {
     #[test]
     fn it_returns_a_complete_vec_of_osstr_for_compose_build() {
         let args_matches = compose_build().get_matches_from(vec![
-            "OPTIONS",
+            "build",
             "--build-arg",
             "--memory",
             "--no-cache",
@@ -118,23 +116,26 @@ mod tests {
             "--pull",
             "--quiet",
             "--ssh",
-            "SERVICE",
+            "PROJECT",
             "service1",
             "service2",
         ]);
         let args = prepare_command_build(&args_matches).unwrap();
-        assert_eq!(args, vec![
-            OsStr::new("build"),
-            OsStr::new("--build-arg"),
-            OsStr::new("--memory"),
-            OsStr::new("--no-cache"),
-            OsStr::new("--progress"),
-            OsStr::new("auto"),
-            OsStr::new("--pull"),
-            OsStr::new("--quiet"),
-            OsStr::new("--ssh"),
-            OsStr::new("service1"),
-            OsStr::new("service2"),
-        ]);
+        assert_eq!(
+            args,
+            vec![
+                OsStr::new("build"),
+                OsStr::new("--build-arg"),
+                OsStr::new("--memory"),
+                OsStr::new("--no-cache"),
+                OsStr::new("--progress"),
+                OsStr::new("auto"),
+                OsStr::new("--pull"),
+                OsStr::new("--quiet"),
+                OsStr::new("--ssh"),
+                OsStr::new("service1"),
+                OsStr::new("service2"),
+            ]
+        );
     }
 }

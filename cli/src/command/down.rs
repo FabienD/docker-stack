@@ -37,9 +37,7 @@ pub fn compose_down() -> Command {
         )
 }
 
-pub fn prepare_command_down<'a>(
-    args_matches: &'a ArgMatches,
-) -> Result<Vec<&'a OsStr>> {
+pub fn prepare_command_down<'a>(args_matches: &'a ArgMatches) -> Result<Vec<&'a OsStr>> {
     let mut args: Vec<&OsStr> = vec![];
 
     args.push(OsStr::new("down"));
@@ -60,4 +58,37 @@ pub fn prepare_command_down<'a>(
     }
 
     Ok(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_returns_a_complete_vec_of_osstr_for_command_down() {
+        let args_matches = compose_down().get_matches_from(vec![
+            "down",
+            "test",
+            "--remove-orphans",
+            "--rmi",
+            "local",
+            "--timeout",
+            "10",
+            "--volumes",
+        ]);
+        let args = prepare_command_down(&args_matches).unwrap();
+
+        assert_eq!(
+            args,
+            vec![
+                OsStr::new("down"),
+                OsStr::new("--remove-orphans"),
+                OsStr::new("--rmi"),
+                OsStr::new("local"),
+                OsStr::new("--timeout"),
+                OsStr::new("10"),
+                OsStr::new("--volumes"),
+            ]
+        );
+    }
 }
