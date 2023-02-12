@@ -210,13 +210,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn get_display_alias() {
+    fn it_returns_the_project_alias() {
         let alias = String::from("test");
         assert_eq!(display_alias(&alias), "test");
     }
 
     #[test]
-    fn get_display_description() {
+    fn it_displays_the_project_description() {
         let description = Some(String::from("description"));
         assert_eq!(display_description(&description), "description");
 
@@ -225,7 +225,7 @@ mod tests {
     }
 
     #[test]
-    fn get_display_status() {
+    fn it_displays_the_project_status() {
         let status = Some(ComposeStatus::Running);
         assert_eq!(display_status(&status), "🟢 Running");
 
@@ -240,7 +240,7 @@ mod tests {
     }
 
     #[test]
-    fn get_docker_bin_path() {
+    fn it_returns_the_docker_bin_path() {
         let config = DctlConfig {
             main: Config { 
                 docker_bin: String::from("/usr/bin/docker"),
@@ -253,7 +253,49 @@ mod tests {
     }
 
     #[test]
-    fn get_a_default_command_args() {
+    fn it_returns_args_as_str_from_a_complete_compose_item() {
+        let compose_item = ComposeItem {
+            alias: String::from("test"),
+            use_project_name: Some(false),
+            description: Some(String::from("description")),
+            compose_files: vec![String::from("docker-compose.yml"), String::from("docker-compose.override.yml")],
+            enviroment_file: Some(String::from("test.env")),
+            status: None,
+        };
+
+        let args = ComposeItem::to_args(&compose_item);
+
+        assert!(args.len() == 6);
+        assert!(args[0] == OsStr::new("--env-file"));
+        assert!(args[1] == OsStr::new("test.env"));
+        assert!(args[2] == OsStr::new("-f"));
+        assert!(args[3] == OsStr::new("docker-compose.yml"));
+        assert!(args[4] == OsStr::new("-f"));
+        assert!(args[5] == OsStr::new("docker-compose.override.yml"));
+    }
+
+    #[test]
+    fn it_returns_args_as_str_from_a_minimal_compose_item() {
+        let compose_item = ComposeItem {
+            alias: String::from("test"),
+            use_project_name: None,
+            description: Some(String::from("description")),
+            compose_files: vec![String::from("docker-compose.yml")],
+            enviroment_file: None,
+            status: None,
+        };
+
+        let args = ComposeItem::to_args(&compose_item);
+
+        assert!(args.len() == 4);
+        assert!(args[0] == OsStr::new("-p"));
+        assert!(args[1] == OsStr::new("test"));
+        assert!(args[2] == OsStr::new("-f"));
+        assert!(args[3] == OsStr::new("docker-compose.yml"));
+    }
+
+    #[test]
+    fn it_build_a_undefined_default_command_args() {
         let command_args = DefaultCommandArgs::default("down");
 
         assert!(command_args.command_name == "down");
@@ -261,7 +303,7 @@ mod tests {
     }
 
     #[test]
-    fn get_args_as_str_for_a_default_command_args() {
+    fn it_returns_args_as_str_from_an_undefined_default_command_args() {
         let command_args = DefaultCommandArgs::default("down");
         let args = DefaultCommandArgs::to_args(&command_args);
 
@@ -269,7 +311,7 @@ mod tests {
     }
 
     #[test]
-    fn get_args_as_str_for_defined_default_command_args() {
+    fn it_returns_args_as_str_from_a_defined_default_command_args() {
         let command_args = DefaultCommandArgs {
             command_name: String::from("down"),
             command_args: vec![String::from("--volumes"), String::from("--remove-orphans")],

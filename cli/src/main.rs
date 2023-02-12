@@ -53,14 +53,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn get_default_load_config_path() {
+    fn it_returns_the_default_config_path() {
         remove_var("DCTL_CONFIG_FILE_PATH");
         let config_file_path = load_config_path().unwrap();
         assert_eq!(config_file_path, "~/.config/dctl/config.toml");
     }
 
     #[test]
-    fn get_env_load_config_path() {
+    fn it_returns_the_config_path_from_env() {
         set_var("DCTL_CONFIG_FILE_PATH", "../tests/config.toml");
         let config_file_path = load_config_path().unwrap();
         assert_eq!(config_file_path, "../tests/config.toml");

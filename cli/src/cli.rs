@@ -226,7 +226,13 @@ pub async fn run(
 
 #[cfg(test)]
 mod tests {
-    // use super::*;
+     use super::*;
+
+    #[test]
+    fn it_verifies_the_cli() {
+        cli().debug_assert();
+    }
+
     // use crate::parser::config::ComposeItem;
     // use crate::{parser::config::MockDctlConfig, utils::docker::MockDocker};
 
@@ -264,10 +270,6 @@ mod tests {
     //     mock_config
     // }
 
-    // #[test]
-    // fn verify_cli() {
-    //     cli().debug_assert();
-    // }
 
     // #[test]
     // fn get_test_execute_up_cmd() {

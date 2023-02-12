@@ -37,40 +37,40 @@ mod tests {
     }
 
     #[test]
-    fn load_a_valid_config() {
+    fn it_loads_a_valid_config() {
         let config = DctlConfig::load("tests/valid_config.toml".to_string());
         assert!(config.is_ok());
     }
 
     #[test]
-    fn load_a_unvalid_config() {
+    fn it_loads_a_unvalid_config() {
         let config = DctlConfig::load("tests/bad_config.toml".to_string());
         assert!(config.is_err());
     }
 
     #[test]
-    fn get_a_valid_alias_item() {
+    fn it_returns_a_valid_alias_item() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
         let item = config.get_compose_item_by_alias(String::from("test1"));
         assert!(item.is_some());
     }
 
     #[test]
-    fn get_a_unvalid_alias_item() {
+    fn it_returns_an_unvalid_alias_item() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
         let item = config.get_compose_item_by_alias(String::from("test"));
         assert!(item.is_none());
     }
 
     #[test]
-    fn get_compose_items() {
+    fn it_returns_all_compose_items() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
         let items = config.get_all_compose_items();
         assert!(3 == items.len());
     }
 
     #[test]
-    fn get_item_attributes_values_for_test1() {
+    fn it_returns_item_attributes_values_for_test1() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
         let item = config
             .get_compose_item_by_alias(String::from("test1"))
@@ -83,7 +83,7 @@ mod tests {
     }
 
     #[test]
-    fn get_item_attributes_values_for_test2() {
+    fn it_returns_item_attributes_values_for_test2() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
         let item = config
             .get_compose_item_by_alias(String::from("test2"))
@@ -97,7 +97,7 @@ mod tests {
     }
 
     #[test]
-    fn get_item_attributes_values_for_test3() {
+    fn it_returns_item_attributes_values_for_test3() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
         let item = config
             .get_compose_item_by_alias(String::from("test3"))
@@ -110,7 +110,7 @@ mod tests {
     }
 
     #[test]
-    fn get_defautlt_command_args() {
+    fn it_returns_declared_defautlt_command_args() {
         let config: DctlConfig = toml::from_str(get_valid_config().as_str()).unwrap();
 
         let args = config.get_default_command_args("up");
