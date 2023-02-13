@@ -34,8 +34,8 @@ Since 1.0.0, the **default_command_args** is a map of docker compose command and
 ```toml
 [main]
 docker_bin = "/usr/bin/docker"
-default_command_args = [
-    "up": ["-d", "--remove-orphans"],
+default_command_args = [ 
+    { command_name = "up", command_args = ["-d", "--remove-orphans"]} 
 ]
 
 [[collections]]
