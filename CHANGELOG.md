@@ -1,3 +1,7 @@
+## 1.0.0 release (2023-02-14)
+
+ * Update documentation.
+
 ## 1.0.0-rc.1 release (2023-02-12)
 
  * Default docker compose command arguments are configurable globally.
