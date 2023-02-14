@@ -129,8 +129,8 @@ Those following docker compose command are fully supported :
 dctl infos
 ```
 
-For each registered project, the running status is displayed (running, stopped or partial running).
-*Partial running* means that not all docker compose services of the project are running.
+For each registered project, the running status is displayed (running, stopped or partially running).
+*Partially running* means that not all docker compose services of the project are running (It may be normal, depending of your compose file).
 
 #### Show the path of a docker-compose by the project name
 
