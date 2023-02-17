@@ -27,7 +27,7 @@ use crate::command::top::prepare_command_top;
 use crate::command::unpause::prepare_command_unpause;
 use crate::command::up::prepare_command_up;
 
-use super::system::builder;
+use super::system::System;
 
 #[derive(Debug)]
 pub enum CommandType {
@@ -154,7 +154,7 @@ impl Docker {
         docker_commmand_arg.append(&mut default_command_args.to_owned());
 
         // Build command
-        let mut cmd: Command = builder(self.bin_path.to_owned(), docker_commmand_arg);
+        let mut cmd: Command = System::builder(self.bin_path.to_owned(), docker_commmand_arg);
 
         // Execute command
         match output {

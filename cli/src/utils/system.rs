@@ -1,28 +1,23 @@
-use eyre::Result;
-
 use crate::parser::config::ComposeItem;
+use eyre::Result;
 use std::{ffi::OsStr, path::Path, process::Command};
 
 #[derive(PartialEq, Eq)]
 pub struct System {}
 
-pub fn builder(bin_command: String, sorted_args: Vec<&OsStr>) -> Command {
-    // Build a command with the given arguments
-    let mut cmd = Command::new(bin_command);
-
-    sorted_args.into_iter().for_each(|arg| {
-        cmd.arg(arg);
-    });
-
-    cmd
-}
-
 impl System {
-    pub fn init() -> Self {
-        System {}
+    pub fn builder<'a>(bin_command: String, sorted_args: Vec<&'a OsStr>) -> Command {
+        // Build a command with the given arguments
+        let mut cmd = Command::new(bin_command);
+
+        sorted_args.into_iter().for_each(|arg| {
+            cmd.arg(arg);
+        });
+
+        cmd
     }
 
-    pub fn cd<'a>(&'a self, item: &'a ComposeItem) -> Result<&str> {
+    pub fn cd(item: &ComposeItem) -> Result<&str> {
         // Get path from a compose item
         let path = Path::new(OsStr::new(&item.compose_files[0]))
             .parent()

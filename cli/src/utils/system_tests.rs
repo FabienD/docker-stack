@@ -2,16 +2,7 @@
 mod tests {
     use std::ffi::OsStr;
 
-    use crate::{
-        parser::config::ComposeItem,
-        utils::system::{builder, System},
-    };
-
-    #[test]
-    pub fn it_inits_system() {
-        let system = System::init();
-        assert!(system == System {});
-    }
+    use crate::{parser::config::ComposeItem, utils::system::System};
 
     #[test]
     pub fn it_returns_the_path_from_cd_command() {
@@ -24,8 +15,7 @@ mod tests {
             status: None,
         };
 
-        let system = System::init();
-        assert!(system.cd(&item).unwrap() == "/home/test/test");
+        assert!(System::cd(&item).unwrap() == "/home/test/test");
     }
 
     #[test]
@@ -33,7 +23,7 @@ mod tests {
         let bin_command = "ls".to_string();
         let args = vec![OsStr::new("-l"), OsStr::new("-a")];
 
-        let cmd = builder(bin_command.to_owned(), args.to_owned());
+        let cmd = System::builder(bin_command.to_owned(), args.to_owned());
         let cmd_args: Vec<&OsStr> = cmd.get_args().collect();
 
         assert_eq!(cmd.get_program(), OsStr::new(&bin_command));
