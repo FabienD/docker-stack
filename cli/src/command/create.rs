@@ -38,7 +38,6 @@ pub fn compose_create() -> Command {
             Arg::new("PULL")
                 .help("Pull images before starting containers")
                 .long("pull")
-                .default_value("missing")
                 .value_parser(["missing", "always", "never"])
         )
 }

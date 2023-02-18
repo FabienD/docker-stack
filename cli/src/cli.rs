@@ -94,7 +94,7 @@ pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Resul
     };
 
     if command_name == "cd" {
-        exec_cd_project(&compose_item)?;
+        let _result = exec_cd_project(&compose_item);
         exit(0);
     }
 

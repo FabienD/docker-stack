@@ -2,21 +2,7 @@
 mod tests {
     use std::ffi::OsStr;
 
-    use crate::{parser::config::ComposeItem, utils::system::System};
-
-    #[test]
-    pub fn it_returns_the_path_from_cd_command() {
-        let item = ComposeItem {
-            alias: String::from("test"),
-            description: None,
-            compose_files: vec![String::from("/home/test/test/docker-compose.yml")],
-            enviroment_file: None,
-            use_project_name: None,
-            status: None,
-        };
-
-        assert!(System::cd(&item).unwrap() == "/home/test/test");
-    }
+    use crate::utils::system::System;
 
     #[test]
     fn it_builds_a_system_command_process() {

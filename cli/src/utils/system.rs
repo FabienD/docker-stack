@@ -1,10 +1,17 @@
-use crate::parser::config::ComposeItem;
-use eyre::Result;
-use std::{ffi::OsStr, path::Path, process::Command};
+use eyre::{eyre, Result};
+use mockall::automock;
+use std::{
+    ffi::OsStr,
+    process::{Command, Output},
+};
+use tokio::task;
+
+use super::docker::CommandOuput;
 
 #[derive(PartialEq, Eq)]
 pub struct System {}
 
+#[automock]
 impl System {
     pub fn builder<'a>(bin_command: String, sorted_args: Vec<&'a OsStr>) -> Command {
         // Build a command with the given arguments
@@ -17,14 +24,40 @@ impl System {
         cmd
     }
 
-    pub fn cd(item: &ComposeItem) -> Result<&str> {
-        // Get path from a compose item
-        let path = Path::new(OsStr::new(&item.compose_files[0]))
-            .parent()
-            .unwrap();
+    pub async fn execute<'a>(
+        bin_command_path: String,
+        commmand_arg: &Vec<&'a OsStr>,
+        output: &CommandOuput,
+    ) -> Result<Output> {
+        // Build command
+        let mut cmd: Command = System::builder(bin_command_path, commmand_arg.clone());
 
-        let path_str = path.to_str().unwrap();
+        // Execute command
+        match output {
+            CommandOuput::Status => {
+                let status = task::spawn(async move { cmd.status() });
+                let status = status.await??;
 
-        Ok(path_str)
+                if status.success() {
+                    Ok(Output {
+                        status,
+                        stdout: vec![],
+                        stderr: vec![],
+                    })
+                } else {
+                    Err(eyre!("Command failed"))
+                }
+            }
+            CommandOuput::Output => {
+                let output = task::spawn(async move { cmd.output() });
+                let output = output.await??;
+
+                if output.status.success() {
+                    Ok(output)
+                } else {
+                    Err(eyre!("Command failed"))
+                }
+            }
+        }
     }
 }

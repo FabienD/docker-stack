@@ -27,7 +27,6 @@ pub fn compose_images() -> Command {
             Arg::new("format")
                 .long("format")
                 .help("Format the output.")
-                .default_value("table")
                 .value_parser(["table", "json"]),
         )
 }
