@@ -1,5 +1,4 @@
 use eyre::{Context, Result};
-use mockall::automock;
 use serde::Deserialize;
 use std::{ffi::OsStr, fs};
 use tabled::Tabled;
@@ -157,7 +156,6 @@ impl DctlConfig {
     }
 }
 
-#[automock]
 impl CliConfig for DctlConfig {
     fn get_container_bin_path(&self) -> Result<String> {
         Ok(self.main.docker_bin.to_string())

@@ -1,3 +1,7 @@
+## 1.0.1 release (2023-02-18)
+
+ * Update deps.
+
 ## 1.0.0 release (2023-02-14)
 
  * Update documentation.
