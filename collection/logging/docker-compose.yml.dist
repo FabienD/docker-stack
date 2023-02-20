@@ -16,6 +16,11 @@ services:
    volumes:
      - ./docker/loki:/etc/loki
 
+  promtail:
+    image: grafana/promtail:${PROMTAIL_VERSION}
+    volumes:
+      - ./var/docker/promtail/config.yml:/etc/promtail/config.yml:ro
+      - ./var/logs:/var/logs
 
 networks:
   default:
