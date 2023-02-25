@@ -24,4 +24,5 @@ pub mod up;
 // Others commands
 pub mod cd;
 pub mod completion;
+pub mod config;
 pub mod infos;

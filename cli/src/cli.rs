@@ -9,6 +9,7 @@ use crate::utils::docker::{CommandType, Container};
 use crate::command::build::compose_build;
 use crate::command::cd::{cd_project, exec_cd_project};
 use crate::command::completion::{exec_shell_completion, shell_completion};
+use crate::command::config::{check_config, exec_check_config};
 use crate::command::create::compose_create;
 use crate::command::down::compose_down;
 use crate::command::events::compose_events;
@@ -64,6 +65,7 @@ fn cli() -> Command {
         .subcommand(compose_up())
         .subcommand(shell_completion())
         .subcommand(cd_project())
+        .subcommand(check_config())
         .subcommand(projects_infos())
 }
 
@@ -75,6 +77,7 @@ pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Resul
 
     match command_name {
         "infos" => exec_projects_infos(config, container).await?,
+        "check-config" => exec_check_config(config)?,
         "completion" => exec_shell_completion(&mut cli(), args)?,
         _ => {}
     }
