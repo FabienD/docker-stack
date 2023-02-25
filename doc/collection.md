@@ -18,6 +18,7 @@ The collection is composed of five categories (web, data, logging, tools, monito
 | RabbitMQ| The message broker | data | stack.data.rabbitmq | [⤴](https://hub.docker.com/_/rabbitmq) | [⤴](https://www.rabbitmq.com/documentation.html) |
 | Rsyslog | A log aggregator | logging | stack.logging.rsyslog | [⤴]() | [⤴]() |
 | Loki | A log aggregator | logging | stack.logging.loki | [⤴](https://hub.docker.com/r/grafana/loki) | [⤴](https://grafana.com/docs/loki/latest/?pg=oss-graf&plcmt=quick-links) |
+| Promtail | A log aggregator | logging | stack.logging.promtail | [⤴](https://hub.docker.com/r/grafana/promtail) | [⤴](https://grafana.com/docs/loki/latest/clients/promtail/?pg=oss-graf&plcmt=quick-links) |
 | Grafana | The dashboard | tools | stack.tools.grafana | [⤴](https://hub.docker.com/r/grafana/grafana) | [⤴](https://grafana.com/docs/grafana/latest/?pg=oss-graf&plcmt=quick-links) |
 | Portainer CE | The container manager | tools | stack.tools.portainer | [⤴](https://hub.docker.com/r/portainer/portainer.ce) | [⤴](https://docs.portainer.io/) |
 
@@ -148,7 +149,16 @@ services:
         loki-url: http://loki.stack.local/loki/api/v1/push
 ```
 
-#### 3.2. Rsyslog
+#### 3.2. Promtail
+
+Promtail is a service that provides a log collector. It is used to collect logs from the host machine.
+
+Promtail use the Loki API to send logs to Loki. The provided configuration file is ```logging/docker/promtail/config.yml.dist``` is given as example.
+You can see, in the ```config.yml.dist``` file, that the logs are collected from the ```/var/log``` directory, mounted in the container from docker-compose.
+
+Rename the file ```config.yml.dist``` to ```config.yml``` and edit it to match your needs.
+
+#### 3.3. Rsyslog
 
 WIP, not yet provided.
 

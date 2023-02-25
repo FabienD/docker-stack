@@ -1,3 +1,9 @@
+## 1.1.0 release (2023-02-25)
+ 
+ * Add command "check-config" to validate files in the configuration.
+ * Update libraries (deps).
+ * Update documentation.
+
 ## 1.0.1 release (2023-02-18)
 
  * Update deps.

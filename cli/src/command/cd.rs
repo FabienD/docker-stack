@@ -32,7 +32,7 @@ fn extract_path_from_cd_command(compose_item: &ComposeItem) -> Result<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     pub fn it_returns_the_path_from_cd_command() {
         let item = ComposeItem {
