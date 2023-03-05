@@ -21,3 +21,13 @@ This project is composed of a collection of usefull docker-compose files for web
 With **dctl**, we relies on **a config file**, no need to have started or stopped containers of a docker-compose file to see and manage them, they are known. dctl use docker compose internaly.
 
 Docker compose command need to have started or stopped containers to know and manage them with their project name.
+
+## Roadmap / next steps
+
+- [ ] Build - Plublish the cli tool for multiples platforms (Windows, Mac, Linux), different architectures (x86, arm, arm64).
+- [ ] Config - Add the possibility to automatically add env variables in the command line when execute docker compose.
+- [ ] Cli - Add a "dctl" command to register/update a project using docker-compose.yml file.
+- [ ] Cli - Add a "dctl" command to unregister a project using docker-compose.yaml file.
+- [ ] Cli - improve check-config cli command, better presentation.
+- [ ] Documentation - give cli examples, screenshots.
+- [ ] Documentation - add examples of docker-compose files for local development.
