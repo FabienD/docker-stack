@@ -12,9 +12,10 @@ This project is composed of a collection of usefull docker-compose files for web
 
 ## Documentation
 
-- [The cli tool : dctl](doc/dctl.md)
-- [A collection of docker-compose files](doc/collection.md)
-- [Change log](CHANGELOG.md)
+- Manage your local docker compose projects easilly with [the cli tool : dctl](doc/dctl.md)
+- Your local stack for web development. [A collection of docker-compose files](doc/collection.md)
+
+- The project [change log](CHANGELOG.md)
 
 ## "dctl" cli vs "docker compose" ?
 
