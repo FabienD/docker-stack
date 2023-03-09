@@ -55,7 +55,7 @@ pub fn compose_run() -> Command {
             Arg::new("INTERACTIVE")
                 .help("Keep STDIN open even if not attached")
                 .long("interactive")
-                .short('I')
+                .short('i')
                 .action(ArgAction::SetTrue),
         )
         .arg(

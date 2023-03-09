@@ -1,3 +1,8 @@
+## 1.1.1 release (2023-03-09)
+ 
+ * Fix default cli commands arguments.
+ * Update libraries (deps).
+
 ## 1.1.0 release (2023-02-25)
  
  * Add command "check-config" to validate files in the configuration.
