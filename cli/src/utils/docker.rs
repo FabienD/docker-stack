@@ -144,9 +144,12 @@ impl Docker {
         };
 
         let mut docker_commmand_arg = vec![OsStr::new("compose")];
+        let mut only_args = args.split_off(1); // Remove first arg (command name)
+
         docker_commmand_arg.append(&mut config_args.to_owned());
         docker_commmand_arg.append(&mut args);
         docker_commmand_arg.append(&mut default_command_args.to_owned());
+        docker_commmand_arg.append(&mut only_args);
 
         docker_commmand_arg
     }
@@ -592,7 +595,7 @@ mod tests {
         let docker: Docker = Container::init(bin_path.to_owned());
 
         let config_args = vec![OsStr::new("-f"), OsStr::new("docker-compose.yml")];
-        let default_command_args = vec![];
+        let default_command_args = vec![OsStr::new("-i"), OsStr::new("--rm")];
 
         let matches =
             compose_run().get_matches_from(vec!["run", "PROJECT_NAME", "SERVICE", "COMMAND"]);
@@ -609,6 +612,8 @@ mod tests {
             OsStr::new("-f"),
             OsStr::new("docker-compose.yml"),
             OsStr::new("run"),
+            OsStr::new("-i"),
+            OsStr::new("--rm"),
             OsStr::new("SERVICE"),
             OsStr::new("COMMAND"),
         ];
