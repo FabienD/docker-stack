@@ -13,7 +13,7 @@ clap = { version = "4.1.8", features = ["cargo"] }
 clap_complete = { version = "4.1.4" }
 toml = { version =  "0.7.2" }
 dotenv = { version = "0.15.0" }
-serde = { version = "1.0.152", features = ["derive"] }
+serde = { version = "1.0.154", features = ["derive"] }
 serde_json = { version = "1.0.94" }
 shellexpand = { version = "3.0.0" }
 tabled = { version = "0.10.0" }
