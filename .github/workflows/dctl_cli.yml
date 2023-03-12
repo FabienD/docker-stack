@@ -1,6 +1,6 @@
 name: dctl tests
 run-name: ${{ github.actor }} launch dctl tests
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
   test:
