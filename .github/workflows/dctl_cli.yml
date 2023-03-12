@@ -35,6 +35,10 @@ jobs:
 
   build:
     runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        #os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
     needs: tests
     steps:
       - if: startsWith(github.ref, 'refs/tags/')
