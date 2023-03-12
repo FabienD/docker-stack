@@ -1,0 +1,35 @@
+name: dctl tests
+run-name: ${{ github.actor }} launch dctl tests
+on: [workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        #os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: run tests
+        run: cd cli && cargo test
+
+      - if : matrix.os == 'ubuntu-latest'
+        name: run build --release
+        run: cd cli && cargo build --release
+  
