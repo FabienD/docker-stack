@@ -53,13 +53,14 @@ jobs:
       # Save build
       - name: Tar files
         working-directory: cli
-        run: tar -cvf dctl-${{ matrix.os }}-${{ matrix.target }}.tar target/${{ matrix.target }}/release/dctl
+        run: tar -cvf dctl-${{ runner.os }}-${{ matrix.target }}.tar target/${{ matrix.target }}/release/dctl
       - name: save compressed build
         uses: actions/upload-artifact@v3
         with:
           name: dctl-artifact
-          path: cli/dctl-${{ matrix.os }}-${{ matrix.target }}.tar
+          path: cli/dctl-${{ runner.os }}-${{ matrix.target }}.tar
           retention-days: 1
+          on-error: fail-fast
   
   release:
     name: Create Release
@@ -87,8 +88,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dctl-artifact
-      - name: find dctl-artifact
-        run: find . -name dctl*.tar
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
         env:
