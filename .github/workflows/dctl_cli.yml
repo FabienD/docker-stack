@@ -65,8 +65,6 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     needs: tests_and_build
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v3
       - name: Create Release
@@ -80,6 +78,7 @@ jobs:
           draft: if ${{ github.event_name == 'pull_request' }} then true else false
           prerelease: if ${{ startsWith(github.ref, 'refs/tags/rc*') }} then true else false
       - name: Outpur upload_url
+        id: release-upload-url
         run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_OUTPUT
 
   upload_artifacts:
@@ -103,7 +102,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{steps.release.outputs.UPLOAD_URL}}
+          upload_url: ${{ steps.release-upload-url.outputs.UPLOAD_URL }}
           asset_name: dctl-${{ matrix.os }}-${{ matrix.target }}.tar
           asset_path: ./dctl-${{ matrix.os }}-${{ matrix.target }}.tar
           asset_content_type: application/octet-stream
