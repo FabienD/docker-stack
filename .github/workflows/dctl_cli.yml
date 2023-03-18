@@ -13,8 +13,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    
+        include:
+          - os: "ubuntu-latest"
+            target: [ x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl ]
+          # - os: "macos-latest"
+          #   target: [ x86_64-apple-darwin, aarch64-apple-darwin ]
+          # - os: "windows-latest"
+          #   target: [ x86_64-pc-windows-msvc, x86_64-pc-windows-gnu ]
     steps:
       - uses: actions/checkout@v3
       - name: install rust
@@ -33,21 +38,21 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       # Test
-      - name: run tests
+      - name: run tests --release
         working-directory: cli
-        run: cargo test
+        run: cargo test --release
       # Build only on tag
-      - name: run build --release
+      - name: run build --release on {{ matrix.target }}
         working-directory: cli
-        run: cargo build --release
+        run: cargo build --release --target ${{ matrix.target }}
       # Save build
       - name: Tar files
         working-directory: cli
-        run: tar -cvf dctl-${{ matrix.os }}.tar target/release/dctl
-      - name: save build
+        run: tar -cvf dctl-${{ matrix.os }}.tar target/release/${{ matrix.target }}/dctl*
+      - name: save compressed build
         uses: actions/upload-artifact@v3
         with:
-          name: dct-${{ matrix.os }}
+          name: dctl-${{ matrix.os }}-${{ matrix.target }}
           path: cli/target/release/dctl*.tar
   
   release:
