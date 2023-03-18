@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dctl-artifact
-          path: dctl.*.tar
+          path: cli/dctl.*.tar
           retention-days: 1
   
   release:
@@ -95,5 +95,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: dctl.*.tar
+          asset_path: cli/dctl.*.tar
           asset_content_type: application/octet-stream
