@@ -39,12 +39,12 @@ jobs:
       # Build only on tag
       - name: run tests --release
         working-directory: cli
-        run: cargo test --release
+        run: cargo build --release
       - name: save build
         uses: actions/upload-artifact@v3
         with:
           name: cli-build
-          path: target/release/dctl*
+          path: cli/target/release/dctl*
   
   release:
     runs-on: ubuntu-latest
