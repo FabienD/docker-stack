@@ -18,10 +18,14 @@ jobs:
             target: x86_64-unknown-linux-gnu
           - os: "ubuntu-latest"
             target: x86_64-unknown-linux-musl
-          # - os: "macos-latest"
-          #   target: [ x86_64-apple-darwin, aarch64-apple-darwin ]
-          # - os: "windows-latest"
-          #   target: [ x86_64-pc-windows-msvc, x86_64-pc-windows-gnu ]
+          - os: "macos-latest"
+            target: x86_64-apple-darwin
+          - os: "macos-latest"
+            target: aarch64-apple-darwin
+          - os: "windows-latest"
+            target: x86_64-pc-windows-msvc
+          - os: "windows-latest"
+            target: x86_64-pc-windows-gnu
     steps:
       - uses: actions/checkout@v3
       - name: install rust
@@ -90,6 +94,14 @@ jobs:
             target: x86_64-unknown-linux-gnu
           - os: "ubuntu-latest"
             target: x86_64-unknown-linux-musl
+          - os: "macos-latest"
+            target: x86_64-apple-darwin
+          - os: "macos-latest"
+            target: aarch64-apple-darwin
+          - os: "windows-latest"
+            target: x86_64-pc-windows-msvc
+          - os: "windows-latest"
+            target: x86_64-pc-windows-gnu
     needs: release
     steps:
       - name: Download Release Asset
