@@ -55,9 +55,14 @@ jobs:
         working-directory: cli
         run: cargo build --release --target ${{ matrix.target }}
       # Save build
-      - name: Tar files
+      - if: runner.os != 'Windows'
+        name: Tar files
         working-directory: cli
         run: tar cvf dctl-${{ matrix.os }}-${{ matrix.target }}.tar ./target/${{ matrix.target }}/release/dctl
+      - if: runner.os == 'Windows'
+        name: Tar files
+        working-directory: cli
+        run: tar cvf dctl-${{ matrix.os }}-${{ matrix.target }}.tar ./target/${{ matrix.target }}/release/dctl.exe
       - name: save compressed build
         uses: actions/upload-artifact@v3
         with:
