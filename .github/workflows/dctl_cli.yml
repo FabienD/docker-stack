@@ -57,8 +57,9 @@ jobs:
       - name: save compressed build
         uses: actions/upload-artifact@v3
         with:
-          name: dctl-${{ matrix.os }}-${{ matrix.target }}
+          name: dctl-artifact
           path: cli/target/${{ matrix.target }}/release/dctl*.tar
+          retention-days: 1
   
   release:
     name: Create Release
@@ -92,7 +93,9 @@ jobs:
       - name: Download Release Asset
         uses: actions/download-artifact@v3
         with:
-          name: dctl-${{ matrix.os }}-${{ matrix.target }}
+          name: dctl-artifact
+      - name: find dctl-artifact
+        run: find . -name dctl*.tar
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
         env:
@@ -100,5 +103,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: cli/target/${{ matrix.target }}/release/dctl*.tar
-          asset_name: dctl-${{ matrix.os }}-${{ matrix.target }}
+          asset_name: dctl-${{ runner.os }}-${{ matrix.target }}
           asset_content_type: application/octet-stream
