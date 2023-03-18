@@ -42,13 +42,17 @@ jobs:
         working-directory: cli
         run: cargo test --release
       # Build only on tag
-      - name: run build --release on {{ matrix.target }}
+      - name: run build --release
         working-directory: cli
-        run: cargo build --release --target ${{ matrix.target }}
+        with:
+          target: ${{ matrix.target }}
+        run: cargo build --release --target ${{ target }}
       # Save build
       - name: Tar files
+        with:
+          target: ${{ matrix.target }}
         working-directory: cli
-        run: tar -cvf dctl-${{ matrix.os }}.tar target/release/${{ matrix.target }}/dctl*
+        run: tar -cvf dctl-${{ matrix.os }}.tar target/release/${{ target }}/dctl*
       - name: save compressed build
         uses: actions/upload-artifact@v3
         with:
