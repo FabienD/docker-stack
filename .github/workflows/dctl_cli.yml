@@ -77,10 +77,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: if ${{ github.event_name == 'pull_request' }} then true else false
           prerelease: if ${{ startsWith(github.ref, 'refs/tags/rc*') }} then true else false
-      - name: Outpur upload_url
-        id: release-upload-url
-        run: echo "UPLOAD_URL=${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_OUTPUT
-
+      
   upload_artifacts:
     name: Upload Release Assets
     runs-on: ${{ matrix.os }}
@@ -102,7 +99,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ job.release.steps.release-upload-url.outputs.UPLOAD_URL }}
+          upload_url: ${{ job.release.steps.create_release.outputs.upload_url }}
           asset_name: dctl-${{ matrix.os }}-${{ matrix.target }}.tar
           asset_path: ./dctl-${{ matrix.os }}-${{ matrix.target }}.tar
           asset_content_type: application/octet-stream
