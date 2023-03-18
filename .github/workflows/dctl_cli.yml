@@ -9,11 +9,11 @@ on:
       - '*.*.*'
 jobs:
   tests_and_build:
+    name: Test and Build dctl
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        #os: [ubuntu-latest]
     
     steps:
       - uses: actions/checkout@v3
@@ -40,19 +40,22 @@ jobs:
       - name: run build --release
         working-directory: cli
         run: cargo build --release
+      # Save build
       - name: Tar files
         working-directory: cli
-        run: tar -cvf dctl-${{ runner.os }}.tar target/release/dctl*
+        run: tar -cvf dctl-${{ matrix.os }}.tar target/release/dctl
       - name: save build
         uses: actions/upload-artifact@v3
         with:
-          name: dct-${{ runner.os }}
+          name: dct-${{ matrix.os }}
           path: cli/target/release/dctl*.tar
   
   release:
+    name: Create Release
     runs-on: ubuntu-latest
     needs: tests_and_build
     steps:
+      - uses: actions/checkout@v3
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -65,6 +68,7 @@ jobs:
           prerelease: if ${{ startsWith(github.ref, 'refs/tags/rc*') }} then true else false
 
   upload_artifacts:
+    name: Upload Release Assets
     runs-on: ubuntu-latest
     needs: release
     steps:
