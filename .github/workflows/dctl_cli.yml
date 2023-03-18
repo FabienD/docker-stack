@@ -102,7 +102,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release-upload-url.outputs.UPLOAD_URL }}
+          upload_url: ${{ job.release.steps.release-upload-url.outputs.UPLOAD_URL }}
           asset_name: dctl-${{ matrix.os }}-${{ matrix.target }}.tar
           asset_path: ./dctl-${{ matrix.os }}-${{ matrix.target }}.tar
           asset_content_type: application/octet-stream
