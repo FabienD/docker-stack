@@ -1,56 +1,59 @@
-name: dctl tests
+name: dctl CI
 run-name: ${{ github.actor }} launch dctl tests
-on: [push, workflow_dispatch]
-
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - '*.*.*'
 jobs:
   tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #os: [ubuntu-latest, macos-latest, windows-latest]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        #os: [ubuntu-latest]
     
     steps:
       - uses: actions/checkout@v3
       - name: install rust
-        # uses: actions-rs/toolchain@v1
-        # with:
-        #   toolchain: stable
-        #   override: true
-        run: echo "install rust"
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
       - name: "Prepare cache"
-        # uses: actions/cache@v3
-        # with:
-        #   path: |
-        #     ~/.cargo/bin/
-        #     ~/.cargo/registry/index/
-        #     ~/.cargo/registry/cache/
-        #     ~/.cargo/git/db/
-        #     target/
-        #   key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-        run: echo "Prepare cache"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: run tests
-        #run: cd cli && cargo test
-        run: echo "cargo test"
+        working-directory: cli
+        run: cargo test
 
   build:
-    if: github.ref.name == 'tag'
+    # if: github.ref.name == 'tag'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #os: [ubuntu-latest, macos-latest, windows-latest]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        #os: [ubuntu-latest]
     needs: tests
     steps:  
       - name: run build --release
-        #run: cd cli && cargo build --release
-        run: echo "cargo build --release ${{ github.ref }}"
+        working-directory: cli
+        run: cargo build --release
+        #run: echo "cargo build --release ${{ github.ref }}"
       - name: save build
-        # uses: actions/upload-artifact@v3
-        # with:
-        #   name: cli-build
-        #   path: target/release/dctl*
-        run: echo "Save build"
+        uses: actions/upload-artifact@v3
+        with:
+          name: cli-build
+          path: target/release/dctl*
   
   release:
     runs-on: ubuntu-latest
@@ -67,3 +70,18 @@ jobs:
         #   release_name: Release ${{ github.ref }}
         #   draft: false
         #   prerelease: false
+      - name: Download Release Asset
+        run: echo "Download Release Asset"
+        # uses: actions/download-artifact@v3
+        # with:
+        #   name: cli-build
+      - name: Upload Release Asset
+        run: echo "Upload Release Asset"
+        # uses: actions/upload-release-asset@v1
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # with:
+        #   upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        #   asset_path: ./target/release/dctl*
+        #   asset_name: dctl
+        #   asset_content_type: application/octet-stream
