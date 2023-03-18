@@ -54,10 +54,10 @@ jobs:
       - name: Tar files
         working-directory: cli
         run: tar -cvf dctl-${{ runner.os }}-${{ matrix.target }}.tar target/${{ matrix.target }}/release/dctl
-      - name: save compressed build
+      - name: Save artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: dctl-${{ runner.os }}-${{ matrix.target }}.tar
+          name: dctl-artifact
           path: cli/dctl-${{ runner.os }}-${{ matrix.target }}.tar
           retention-days: 1
           on-error: fail-fast
@@ -78,23 +78,10 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: if ${{ github.event_name == 'pull_request' }} then true else false
           prerelease: if ${{ startsWith(github.ref, 'refs/tags/rc*') }} then true else false
-
-  upload_artifacts:
-    name: Upload Release Assets
-    runs-on: "ubuntu-latest"
-    strategy:
-      matrix:
-        include:
-          - os: "ubuntu-latest"
-            target: x86_64-unknown-linux-gnu
-          - os: "ubuntu-latest"
-            target: x86_64-unknown-linux-musl
-    needs: release
-    steps:
       - name: Download Release Asset
         uses: actions/download-artifact@v3
         with:
-          name: dctl-${{ runner.os }}-${{ matrix.target }}.tar
+          name: dctl-artifact
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
         env:
