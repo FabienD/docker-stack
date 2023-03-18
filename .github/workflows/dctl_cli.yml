@@ -53,12 +53,12 @@ jobs:
       # Save build
       - name: Tar files
         working-directory: cli
-        run: tar -cvf dctl-${{ matrix.os }}.tar target/${{ matrix.target }}/release/dctl*
+        run: tar -cvf dctl-${{ matrix.os }}-${{ matrix.target }}.tar target/${{ matrix.target }}/release/dctl*
       - name: save compressed build
         uses: actions/upload-artifact@v3
         with:
           name: dctl-artifact
-          path: cli/target/${{ matrix.target }}/release/dctl*.tar
+          path: ./*.tar
           retention-days: 1
   
   release:
