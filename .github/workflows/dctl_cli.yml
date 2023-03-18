@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dctl-${{ matrix.os }}-${{ matrix.target }}
-          path: cli/target/release/dctl*.tar
+          path: cli/target/${{ matrix.target }}/release/dctl*.tar
   
   release:
     name: Create Release
@@ -79,19 +79,26 @@ jobs:
 
   upload_artifacts:
     name: Upload Release Assets
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: "ubuntu-latest"
+            target: x86_64-unknown-linux-gnu
+          - os: "ubuntu-latest"
+            target: x86_64-unknown-linux-musl
     needs: release
     steps:
       - name: Download Release Asset
         uses: actions/download-artifact@v3
         with:
-          name: cli-${{ runner.os }}
+          name: dctl-${{ matrix.os }}-${{ matrix.target }}
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./target/release/dctl*.tar
-          asset_name: dctl
+          asset_path: cli/target/${{ matrix.target }}/release/dctl*.tar
+          asset_name: dctl-${{ matrix.os }}-${{ matrix.target }}
           asset_content_type: application/octet-stream
