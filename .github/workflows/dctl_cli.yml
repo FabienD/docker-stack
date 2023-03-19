@@ -22,6 +22,8 @@ jobs:
         with:
           toolchain: stable
           override: true
+      - name: Install grcov
+        run: rustup component add llvm-tools-preview && cargo install grcov
       - name: "Prepare cache"
         uses: actions/cache@v3
         with:
@@ -35,14 +37,13 @@ jobs:
       - name: run tests 
         run: cargo test
         env:
-          CARGO_INCREMENTAL: '0'
           RUSTFLAGS: '-Cinstrument-coverage'
-      - uses: actions-rs/grcov@v0.1
-        id: coverage 
+      - name: Run grcov
+        run: grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing --ignore "/*" -o lcov.info 
       - name: upload coverage
         uses: codecov/codecov-action@v3
         with:
-          files: ${{ steps.coverage.outputs.report }}
+          files: lcov.info
           flags: unittests
           name: codecov-dctl
           fail_ci_if_error: true
