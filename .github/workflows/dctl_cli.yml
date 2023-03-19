@@ -12,6 +12,9 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     name: Codecov
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cli
     steps:
       - uses: actions/checkout@v3
       - name: install rust
@@ -27,7 +30,7 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            ./cli/target/
+            ./target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/cargo@v1
         with:
@@ -67,6 +70,9 @@ jobs:
             target: x86_64-pc-windows-msvc
           - os: "windows-latest"
             target: x86_64-pc-windows-gnu
+    defaults:
+      run:
+        working-directory: cli
     steps:
       - uses: actions/checkout@v3
       - name: install rust
@@ -82,33 +88,29 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            ./cli/target/
+            ./target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       # Install target
       - name: install target
         run: rustup target add ${{ matrix.target }}
       # Test
       - name: run tests --release
-        working-directory: cli
         run: cargo test --release
       # Build only on tag
       - name: run build --release
-        working-directory: cli
         run: cargo build --release --target ${{ matrix.target }}
       # Save build
       - if: runner.os != 'Windows'
         name: Tar files
-        working-directory: cli
         run: tar cvf dctl-${{ matrix.os }}-${{ matrix.target }}.tar ./target/${{ matrix.target }}/release/dctl
       - if: runner.os == 'Windows'
         name: Tar files
-        working-directory: cli
         run: tar cvf dctl-${{ matrix.os }}-${{ matrix.target }}.tar ./target/${{ matrix.target }}/release/dctl.exe
       - name: save compressed build
         uses: actions/upload-artifact@v3
         with:
           name: dctl-${{ matrix.os }}-${{ matrix.target }}.tar
-          path: cli/dctl-${{ matrix.os }}-${{ matrix.target }}.tar
+          path: dctl-${{ matrix.os }}-${{ matrix.target }}.tar
           retention-days: 1
   
   release:
