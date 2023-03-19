@@ -10,7 +10,7 @@ on:
 jobs:
   tests:
     if: github.event_name == 'push' || github.event_name == 'pull_request'
-    name: Codecov
+    name: Test and Code coverage
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -32,10 +32,8 @@ jobs:
             ~/.cargo/git/db/
             ./target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --all-features --no-fail-fast
+      - name: run tests 
+        run: cargo test
         env:
           CARGO_INCREMENTAL: '0'
           RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
