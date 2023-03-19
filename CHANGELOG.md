@@ -1,3 +1,9 @@
+## 1.1.2 release (2023-03-19)
+ 
+ * New dclt CI workflow (Github Actions).
+ * Provide dctl for Windows, Linux and MacOS (6 binaries).
+ * Update libraries (deps). 
+  
 ## 1.1.1 release (2023-03-09)
  
  * Fix default cli commands arguments.
