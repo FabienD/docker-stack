@@ -92,7 +92,7 @@ compose_files = [
 #### Check that all files in configuration are valid
 
 ```bash
-dctl check
+dctl check-config
 ```
 
 ### dctl cli usage
