@@ -6,16 +6,16 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = { version = "1.27.0", features = ["full"] }
+tokio = { version = "1.28.1", features = ["full"] }
 async-trait = { version = "0.1.68" }
 eyre = { version = "0.6.8" }
-clap = { version = "4.2.4", features = ["cargo"] }
-clap_complete = { version = "4.2.0" }
+clap = { version = "4.2.7", features = ["cargo"] }
+clap_complete = { version = "4.2.3" }
 toml = { version =  "0.7.3" }
 dotenv = { version = "0.15.0" }
-serde = { version = "1.0.160", features = ["derive"] }
+serde = { version = "1.0.163", features = ["derive"] }
 serde_json = { version = "1.0.96" }
 shellexpand = { version = "3.1.0" }
-tabled = { version = "0.11.1" }
+tabled = { version = "0.12.0" }
 mockall = { version = "0.11.4" }
 version = { version = "3.0.0" }
