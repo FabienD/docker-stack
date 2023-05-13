@@ -1,6 +1,7 @@
 [![Github Actions](https://github.com/FabienD/docker-stack/actions/workflows/dctl_cli.yml/badge.svg)](https://github.com/FabienD/docker-stack/actions)
-[![Codecov](https://codecov.io/github/FabienD/docker-stack/branch/main/graph/badge.svg?token=IH5NLYP8K4)](https://codecov.io/github/FabienD/docker-stack)
 [![GitHub release](https://img.shields.io/github/release/FabienD/docker-stack.svg)](https://github.com/FabienD/docker-stack/releases)
+[![Codecov](https://codecov.io/github/FabienD/docker-stack/branch/main/graph/badge.svg?token=IH5NLYP8K4)](https://codecov.io/github/FabienD/docker-stack)
+[![dependency status](https://deps.rs/repo/github/FabienD/docker-stack/status.svg?path=cli)](https://deps.rs/repo/github/FabienD/docker-stack?path=cli)
 [![GitHub license](https://img.shields.io/github/license/FabienD/docker-stack.svg)](https://github.com/FabienD/docker-stack/blob/main/LICENSE)
 
 
