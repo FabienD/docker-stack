@@ -2,7 +2,7 @@ use std::str::from_utf8;
 
 use clap::Command;
 use eyre::Result;
-use tabled::{Margin, Style, Table};
+use tabled::{Table, settings::{Margin, Style}};
 
 use crate::command::ps::compose_ps;
 use crate::parser::config::{CliConfig, ComposeItem};

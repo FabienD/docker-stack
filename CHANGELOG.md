@@ -1,3 +1,6 @@
+## 1.1.3 release (xxxx-xx-xx)
+ 
+ * Update libraries (deps).
 ## 1.1.2 release (2023-03-19)
  
  * New dclt CI workflow (Github Actions).
