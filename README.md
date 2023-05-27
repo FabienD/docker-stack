@@ -24,6 +24,10 @@ With **dctl**, we relies on **a config file**, no need to have started or stoppe
 
 Docker compose command need to have started or stopped containers to know and manage them with their project name.
 
+
+[![asciicast](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e.svg)](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e)
+
+
 ## Roadmap / next steps
 
 - [x] Build - Plublish the cli tool for multiples platforms (Windows, Mac, Linux), different architectures (x86, arm, arm64).
