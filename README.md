@@ -20,13 +20,14 @@ This project is composed of a collection of usefull docker-compose files for web
 
 ## "dctl" cli vs "docker compose" ?
 
-With **dctl**, we relies on **a config file**, no need to have started or stopped containers of a docker-compose file to see and manage them, they are known. dctl use docker compose internaly.
-
-Docker compose command need to have started or stopped containers to know and manage them with their project name.
+With **dctl**, we relies on **a config file**, no need to have started or stopped containers of a docker-compose file to see and manage them, they are known. dctl use docker compose internaly, it's a wrapper around docker compose, so you can use all docker compose commands and arguments.
 
 
 [![asciicast](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e.svg)](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e)
 
+The cli tool can "manage" multiple docker-compose files (start, stop, down, restart, build and more) from **everywhere in your terminal**. With this tools, you can **avoid declaring multiple aliases** in your shell, and you can use the same command to start/stop/restart/ and so on for all your projects. The tools offer an **easy way to override default docker-compose** file for a project, you can also define **default arguments for all docker-compose commands** to avoid repeating them in the command line.
+
+[See more](doc/dctl.md)
 
 ## Roadmap / next steps
 
@@ -37,5 +38,5 @@ Docker compose command need to have started or stopped containers to know and ma
 - [ ] Cli - Add a "dctl" command to register/update a project using docker-compose.yml file.
 - [ ] Cli - Add a "dctl" command to unregister a project using docker-compose.yaml file.
 - [ ] Cli - improve check-config cli command, better presentation.
-- [ ] Documentation - give cli examples, screenshots.
+- [x] Documentation - give cli examples, screenshots.
 - [ ] Documentation - add examples of docker-compose files for local development.
