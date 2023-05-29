@@ -25,18 +25,23 @@ With **dctl**, we relies on **a config file**, no need to have started or stoppe
 
 [![asciicast](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e.svg)](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e)
 
-The cli tool can "manage" multiple docker-compose files (start, stop, down, restart, build and more) from **everywhere in your terminal**. With this tools, you can **avoid declaring multiple aliases** in your shell, and you can use the same command to start/stop/restart/ and so on for all your projects. The tools offer an **easy way to override default docker-compose** file for a project, you can also define **default arguments for all docker-compose commands** to avoid repeating them in the command line.
+The cli can "manage" multiple docker-compose files (start, stop, down, restart, build and more) from **everywhere in your terminal**. With this tool, you can **avoid declaring multiple aliases** in your shell, and you can use the same command to start/stop/restart/ and so on for all your projects. The cli offers an **easy way to override default docker-compose** file for a project, you can also define **default arguments for all docker-compose commands** to avoid repeating them in the command line.
 
 [See more](doc/dctl.md)
 
 ## Roadmap / next steps
 
-- [x] Build - Plublish the cli tool for multiples platforms (Windows, Mac, Linux), different architectures (x86, arm, arm64).
+- [x] ~~Build - Plublish the cli tool for multiples platforms (Windows, Mac, Linux), different architectures (x86, arm, arm64).~~
 - [ ] Config - Add the possibility to automatically add env variables in the command line when execute docker compose.
 - [ ] Default arguments - make it disablable by specifying a special argument.
 - [ ] Default arguments - merge default arguments with the ones specified in the command line.
 - [ ] Cli - Add a "dctl" command to register/update a project using docker-compose.yml file.
 - [ ] Cli - Add a "dctl" command to unregister a project using docker-compose.yaml file.
 - [ ] Cli - improve check-config cli command, better presentation.
-- [x] Documentation - give cli examples, screenshots.
+- [x] ~~Documentation - give cli examples, screenshots.~~
 - [ ] Documentation - add examples of docker-compose files for local development.
+
+
+## Contributing
+
+Contributions are welcome, feel free to open an issue or a pull request.

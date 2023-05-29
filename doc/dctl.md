@@ -10,8 +10,8 @@ The dctl sources can be found in the [cli](./cli/) path, written in Rust.
 
 The cli tool can "manage" multiple docker-compose files (start, stop, down, restart, build and more) from everywhere in your terminal.
 All registered docker-compose files project are stored in a configuration file (config.toml), by default in your home directory (~/.config/dctl/config.toml).
-With this tools, you can avoid declaring multiple aliases in your shell, and you can use the same command to start/stop/restart/ and so on for all your projects.
-The tools offer an easy way to override default docker-compose file for a project, you can also define default arguments for all docker-compose commands to avoid repeating them in the command line.
+With the cli, you can avoid declaring multiple aliases in your shell, and you can use the same command to start/stop/restart/ and so on for all your projects.
+The cli offers an easy way to override default docker-compose file for a project, you can also define default arguments for all docker-compose commands to avoid repeating them in the command line.
 
 
 ### Installation
