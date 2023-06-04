@@ -37,6 +37,12 @@ pub fn compose_ls() -> Command {
                 .long("quiet")
                 .action(ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_ls(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -57,7 +63,9 @@ pub fn prepare_command_ls(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     if args_matches.get_flag("QUIET") {
         args.push(OsStr::new("--quiet"));
     }
-
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
+    }
     Ok(args)
 }
 

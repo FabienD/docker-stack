@@ -29,6 +29,12 @@ pub fn compose_images() -> Command {
                 .help("Format the output.")
                 .value_parser(["table", "json"]),
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_images(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -42,6 +48,9 @@ pub fn prepare_command_images(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> 
     if let Some(format) = args_matches.get_one::<String>("format") {
         args.push(OsStr::new("--format"));
         args.push(OsStr::new(format));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {

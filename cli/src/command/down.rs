@@ -35,6 +35,12 @@ pub fn compose_down() -> Command {
                 .long("volumes")
                 .action(ArgAction::SetTrue)
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_down(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -56,7 +62,9 @@ pub fn prepare_command_down(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     if args_matches.get_flag("VOLUMES") {
         args.push(OsStr::new("--volumes"));
     }
-
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
+    }
     Ok(args)
 }
 

@@ -55,6 +55,12 @@ pub fn compose_ps() -> Command {
                     "exited",
                 ]),
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_ps(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -79,6 +85,9 @@ pub fn prepare_command_ps(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     if let Some(status) = args_matches.get_one::<String>("STATUS") {
         args.push(OsStr::new("--status"));
         args.push(OsStr::new(status));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if args_matches.get_flag("SERVICES") {
         args.push(OsStr::new("--services"));
