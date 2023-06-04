@@ -79,6 +79,7 @@ alias = "project_name1"
 enviroment_file = "/home/fabien/workspace/apps/project1/.env"
 compose_files = [
     "/home/fabien/workspace/apps/project1/docker-compose.yml",
+    "/home/fabien/workspace/apps/project1/docker-compose.dev.yml",
 ]
 
 [[collections]]

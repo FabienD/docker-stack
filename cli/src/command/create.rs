@@ -40,6 +40,12 @@ pub fn compose_create() -> Command {
                 .long("pull")
                 .value_parser(["missing", "always", "never"])
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_create(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -59,6 +65,9 @@ pub fn prepare_command_create(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> 
     if let Some(pull) = args_matches.get_one::<String>("PULL") {
         args.push(OsStr::new("--pull"));
         args.push(OsStr::new(pull));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {

@@ -1,3 +1,9 @@
+## 1.2.0 release (2023-06-04)
+ 
+ * Add dctl "dry-run" command option.
+ * Update documentation.
+ * Update libraries (deps).
+
 ## 1.1.4 release (2023-05-27)
  
  * Update libraries (deps).

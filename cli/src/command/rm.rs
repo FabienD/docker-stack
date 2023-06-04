@@ -37,6 +37,12 @@ pub fn compose_rm() -> Command {
                 .help("Remove any anonymous volumes attached to containers")
                 .action(ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_rm(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -52,6 +58,9 @@ pub fn prepare_command_rm(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     }
     if args_matches.get_flag("volumes") {
         args.push(OsStr::new("--volumes"));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {

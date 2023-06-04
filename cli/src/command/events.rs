@@ -21,6 +21,12 @@ pub fn compose_events() -> Command {
                 .long("json")
                 .action(ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_events(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -30,6 +36,9 @@ pub fn prepare_command_events(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> 
 
     if args_matches.get_flag("JSON") {
         args.push(OsStr::new("--json"));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {

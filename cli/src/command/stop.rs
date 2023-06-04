@@ -1,4 +1,4 @@
-use clap::{Arg, ArgMatches, Command};
+use clap::{Arg, ArgMatches, Command, ArgAction};
 use eyre::Result;
 use std::ffi::OsStr;
 
@@ -21,6 +21,12 @@ pub fn compose_stop() -> Command {
                 .short('t')
                 .long("timeout"),
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_stop(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -30,7 +36,11 @@ pub fn prepare_command_stop(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
 
     if let Some(timeout) = args_matches.get_one::<String>("TIMEOUT") {
         args.push(OsStr::new("--timeout"));
-        args.push(OsStr::new(timeout));
+        args
+        .push(OsStr::new(timeout));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {

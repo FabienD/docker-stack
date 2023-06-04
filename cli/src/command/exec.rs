@@ -86,6 +86,12 @@ pub fn compose_exec() -> Command {
                 .long("workdir")
                 .short('w')
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_exec(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -127,6 +133,9 @@ pub fn prepare_command_exec(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     if let Some(workdir) = args_matches.get_one::<String>("WORKDIR") {
         args.push(OsStr::new("--workdir"));
         args.push(OsStr::new(workdir));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if let Some(service) = args_matches.get_one::<String>("SERVICE") {
         args.push(OsStr::new(service));

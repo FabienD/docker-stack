@@ -46,6 +46,12 @@ pub fn compose_logs() -> Command {
                 .help("Number of lines to show from the end of the logs for each container")
                 .long("tail")
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_logs(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -69,7 +75,9 @@ pub fn prepare_command_logs(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
         args.push(OsStr::new("--tail"));
         args.push(OsStr::new(tail));
     }
-
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
+    }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {
             for s in service {

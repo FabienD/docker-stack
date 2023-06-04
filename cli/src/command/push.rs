@@ -35,6 +35,12 @@ pub fn compose_push() -> Command {
                 .short('q')
                 .action(ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_push(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -50,6 +56,9 @@ pub fn prepare_command_push(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     }
     if args_matches.get_flag("QUIET") {
         args.push(OsStr::new("--quiet"));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {

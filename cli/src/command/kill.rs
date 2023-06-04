@@ -28,6 +28,12 @@ pub fn compose_kill() -> Command {
                 .help("SIGNAL to send to the container")
                 .value_parser(["SIGKILL", "SIGTERM", "SIGINT"]),
         )
+        .arg(
+            Arg::new("DRY_RUN")
+                .help("Execute command in dry run mode")
+                .long("dry-run")
+                .action(ArgAction::SetTrue)
+        )
 }
 
 pub fn prepare_command_kill(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
@@ -41,6 +47,9 @@ pub fn prepare_command_kill(args_matches: &ArgMatches) -> Result<Vec<&OsStr>> {
     if let Some(signal) = args_matches.get_one::<String>("signal") {
         args.push(OsStr::new("--signal"));
         args.push(OsStr::new(signal));
+    }
+    if args_matches.get_flag("DRY_RUN") {
+        args.push(OsStr::new("--dry-run"));
     }
     if let Some(services) = args_matches.get_occurrences::<String>("SERVICE") {
         for service in services {
