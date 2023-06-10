@@ -1,3 +1,9 @@
+## 1.3.0 release (2023-06-xx)
+ 
+ * dctl "infos" command check config for each item.
+ * dctl "check-config" refactoring.
+ * Update libraries (deps).
+  
 ## 1.2.0 release (2023-06-04)
  
  * Add dctl "dry-run" command option.
