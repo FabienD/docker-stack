@@ -34,10 +34,11 @@ The cli can "manage" multiple docker-compose files (start, stop, down, restart, 
 - [x] ~~Build - Plublish the cli tool for multiples platforms (Windows, Mac, Linux), different architectures (x86, arm, arm64).~~
 - [ ] Config - Add the possibility to automatically add env variables in the command line when execute docker compose.
 - [ ] Default arguments - make it disablable by specifying a special argument.
-- [ ] Default arguments - merge default arguments with the ones specified in the command line.
+- [ ] Default arguments - by project.
+- [ ] Default arguments - clever merge default arguments with the ones specified in the command line.
 - [ ] Cli - Add a "dctl" command to register/update a project using docker-compose.yml file.
 - [ ] Cli - Add a "dctl" command to unregister a project using docker-compose.yaml file.
-- [ ] Cli - improve check-config cli command, better presentation.
+- [x] ~~Cli - improve check-config cli command, better presentation.~~
 - [x] ~~Documentation - give cli examples, screenshots.~~
 - [ ] Documentation - add examples of docker-compose files for local development.
 

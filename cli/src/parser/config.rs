@@ -8,6 +8,7 @@ pub enum ComposeStatus {
     Running,
     PartialRunning,
     Stopped,
+    ConfigError,
 }
 
 #[derive(Debug, Clone, Deserialize, Tabled, PartialEq)]
@@ -65,8 +66,10 @@ fn display_status(status: &Option<ComposeStatus>) -> String {
                 "🟢 Running".to_string()
             } else if *s == ComposeStatus::PartialRunning {
                 "🟠 Partially running".to_string()
-            } else {
+            } else if *s == ComposeStatus::Stopped {
                 "🔴 Stopped".to_string()
+            } else {
+                "🟣 Error, check your config".to_string()
             }
         }
         None => "🔴 Stopped".to_string(),
@@ -81,11 +84,13 @@ fn display_description(o: &Option<String>) -> String {
 }
 
 impl ComposeItem {
-    pub fn set_status(&mut self, running_container: usize, all_container: usize) {
-        let status = if (running_container == all_container) && (all_container != 0) {
+    pub fn set_status(&mut self, running_container: isize, all_container: isize) {
+        let status = if (running_container == all_container) && (all_container > 0) {
             ComposeStatus::Running
-        } else if running_container == 0 {
+        } else if  (running_container == all_container) && (all_container == 0){
             ComposeStatus::Stopped
+        } else if (running_container == all_container) && (all_container == -1)  {
+            ComposeStatus::ConfigError
         } else {
             ComposeStatus::PartialRunning
         };
@@ -231,6 +236,9 @@ mod tests {
         let status = Some(ComposeStatus::Stopped);
         assert_eq!(display_status(&status), "🔴 Stopped");
 
+        let status = Some(ComposeStatus::ConfigError);
+        assert_eq!(display_status(&status), "🟣 Error, check your config");
+
         let status = None;
         assert_eq!(display_status(&status), "🔴 Stopped");
     }
@@ -270,6 +278,9 @@ mod tests {
 
         compose_item.set_status(3, 3);
         assert_eq!(compose_item.status, Some(ComposeStatus::Running));
+
+        compose_item.set_status(-1, -1);
+        assert_eq!(compose_item.status, Some(ComposeStatus::ConfigError));
     }
 
     #[test]
