@@ -1,4 +1,8 @@
-## 1.3.0 release (2023-06-xx)
+## 1.3.1 release (2023-06-26)
+ 
+ * Fix dctl "infos" status for stopped containers.
+
+## 1.3.0 release (2023-06-11)
  
  * dctl "infos" command check config for each item.
  * dctl "check-config" refactoring.

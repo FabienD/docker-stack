@@ -87,7 +87,7 @@ impl ComposeItem {
     pub fn set_status(&mut self, running_container: isize, all_container: isize) {
         let status = if (running_container == all_container) && (all_container > 0) {
             ComposeStatus::Running
-        } else if  (running_container == all_container) && (all_container == 0){
+        } else if  running_container == 0 {
             ComposeStatus::Stopped
         } else if (running_container == all_container) && (all_container == -1)  {
             ComposeStatus::ConfigError
@@ -271,6 +271,9 @@ mod tests {
         };
 
         compose_item.set_status(0, 0);
+        assert_eq!(compose_item.status, Some(ComposeStatus::Stopped));
+
+        compose_item.set_status(0, 6);
         assert_eq!(compose_item.status, Some(ComposeStatus::Stopped));
 
         compose_item.set_status(2, 3);
