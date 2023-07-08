@@ -1,3 +1,7 @@
+## 1.3.2 release (2023-07-08)
+ 
+ * Update libraries (deps).
+
 ## 1.3.1 release (2023-06-26)
  
  * Fix dctl "infos" status for stopped containers.
