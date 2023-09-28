@@ -1,3 +1,7 @@
+## 1.3.5 release (2023-09-28)
+ 
+ * Update libraries (deps).
+
 ## 1.3.4 release (2023-09-01)
  
  * Update libraries (deps).
