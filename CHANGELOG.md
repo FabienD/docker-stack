@@ -1,3 +1,8 @@
+## 1.4.0 release (2023-10-13)
+ 
+ * Add docker compose **watch** command support.
+ * Update libraries (deps).
+
 ## 1.3.5 release (2023-09-28)
  
  * Update libraries (deps).

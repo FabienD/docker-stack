@@ -20,6 +20,7 @@ pub mod stop;
 pub mod top;
 pub mod unpause;
 pub mod up;
+pub mod watch;
 
 // Others commands
 pub mod cd;
