@@ -31,6 +31,7 @@ use crate::command::stop::compose_stop;
 use crate::command::top::compose_top;
 use crate::command::unpause::compose_unpause;
 use crate::command::up::compose_up;
+use crate::command::watch::compose_watch;
 
 fn cli() -> Command {
     Command::new("dctl")
@@ -63,6 +64,7 @@ fn cli() -> Command {
         .subcommand(compose_top())
         .subcommand(compose_unpause())
         .subcommand(compose_up())
+        .subcommand(compose_watch())
         .subcommand(shell_completion())
         .subcommand(cd_project())
         .subcommand(check_config())
@@ -337,6 +339,17 @@ pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Resul
             container
                 .compose(
                     CommandType::Up,
+                    &default_arg,
+                    &default_command_arg,
+                    args,
+                    None,
+                )
+                .await?
+        }
+        "watch" => {
+            container
+                .compose(
+                    CommandType::Watch,
                     &default_arg,
                     &default_command_arg,
                     args,

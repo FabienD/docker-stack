@@ -25,6 +25,7 @@ use crate::command::stop::prepare_command_stop;
 use crate::command::top::prepare_command_top;
 use crate::command::unpause::prepare_command_unpause;
 use crate::command::up::prepare_command_up;
+use crate::command::watch::prepare_command_watch;
 
 use super::system::System;
 
@@ -51,6 +52,7 @@ pub enum CommandType {
     Top,
     Unpause,
     Up,
+    Watch
 }
 
 pub enum CommandOuput {
@@ -141,6 +143,7 @@ impl Docker {
             CommandType::Top => prepare_command_top(match_args).unwrap(),
             CommandType::Unpause => prepare_command_unpause(match_args).unwrap(),
             CommandType::Up => prepare_command_up(match_args).unwrap(),
+            CommandType::Watch => prepare_command_watch(match_args).unwrap(),
         };
 
         let mut docker_commmand_arg = vec![OsStr::new("compose")];
@@ -181,6 +184,7 @@ mod tests {
     use crate::command::top::compose_top;
     use crate::command::unpause::compose_unpause;
     use crate::command::up::compose_up;
+    use crate::command::watch::compose_watch;
 
     #[test]
     fn it_prepares_docker_compose_down() {
@@ -752,6 +756,33 @@ mod tests {
             OsStr::new("docker-compose.yml"),
             OsStr::new("up"),
             OsStr::new("-d"),
+        ];
+
+        assert_eq!(cmd_args, expected_args);
+    }
+
+    #[test]
+    fn it_prepares_docker_compose_watch() {
+        let bin_path = "docker".to_string();
+        let docker: Docker = Container::init(bin_path.to_owned());
+
+        let config_args = vec![OsStr::new("-f"), OsStr::new("docker-compose.yml")];
+        let default_command_args = vec![];
+        
+        let matches = compose_watch().get_matches_from(vec!["watch", "PROJECT_NAME"]);
+
+        let cmd_args = docker.prepare_command(
+            CommandType::Watch,
+            &config_args,
+            &default_command_args,
+            &matches,
+        );
+
+        let expected_args = vec![
+            OsStr::new("compose"),
+            OsStr::new("-f"),
+            OsStr::new("docker-compose.yml"),
+            OsStr::new("watch"),
         ];
 
         assert_eq!(cmd_args, expected_args);
