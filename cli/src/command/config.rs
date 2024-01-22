@@ -1,10 +1,18 @@
 use crate::parser::config::{CliConfig, ComposeItem};
 use clap::Command;
 use eyre::Result;
-use std::{path::Path};
+use std::path::Path;
 
 pub fn check_config() -> Command {
-    Command::new("check-config").about("Check configuration files existance")
+    Command::new("check-config").about("Check the configuration file resources")
+}
+
+pub fn register_config()-> Command {
+    Command::new("register").about("Add a Docker Composer project item in the configuration file")
+}
+
+pub fn unregister_config()-> Command {
+    Command::new("unregister").about("Remove a Docker Composer project item from the configuration file")
 }
 
 pub fn exec_check_config(config: &mut dyn CliConfig) -> Result<()> {
@@ -71,6 +79,14 @@ pub fn check_item_config(item: &ComposeItem) -> Result<Vec<String>> {
 
     Ok(error_list)
 
+}
+
+pub fn exec_register_config(config: &mut dyn CliConfig) -> Result<()> {
+    Ok(())
+}
+
+pub fn exec_unregister_config(config: &mut dyn CliConfig) -> Result<()> {
+    Ok(())
 }
 
 fn check_docker_bin_path(config_docker_bin_path: &str) -> Result<bool> {

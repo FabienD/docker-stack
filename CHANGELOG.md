@@ -1,3 +1,10 @@
+## 1.5.0 release (2024-xx-xx)
+
+ * Register / Unregister docker compose folder project.
+ * Update Github Actions.
+ * Update version of docker image use in Collection.
+ * Update libraries (deps).
+
 ## 1.4.3 release (2023-12-23)
 
  * Update libraries (deps).
