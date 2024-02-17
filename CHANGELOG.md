@@ -1,3 +1,8 @@
+## 1.4.3 release (2024-02-17)
+
+ * Update libraries (deps).
+ * Update version of docker image use in Collection.
+
 ## 1.4.3 release (2023-12-23)
 
  * Update libraries (deps).
