@@ -46,9 +46,9 @@ The cli can "manage" multiple docker-compose files (start, stop, down, restart, 
 ### Improvements
 
 - [ ] Documentation - add examples of docker-compose files for local development.
+- [ ] Default arguments - clever merge default arguments with the ones specified in the command line.
 - [ ] Default arguments - make it disablable by specifying a special argument.
 - [ ] Default arguments - by project.
-- [ ] Default arguments - clever merge default arguments with the ones specified in the command line.
 
 ## Contributing
 

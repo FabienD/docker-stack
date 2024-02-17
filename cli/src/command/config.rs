@@ -1,5 +1,6 @@
 use crate::parser::config::{CliConfig, ComposeItem};
 use clap::Command;
+use cliclack::{input, outro, select};
 use eyre::Result;
 use std::path::Path;
 
@@ -82,6 +83,14 @@ pub fn check_item_config(item: &ComposeItem) -> Result<Vec<String>> {
 }
 
 pub fn exec_register_config(config: &mut dyn CliConfig) -> Result<()> {
+    let create: bool = select("Register a new project?")
+        .item(true, "yes", "")
+        .item(false, "no", "")
+        .interact()?;
+    if create {
+        //
+    }
+
     Ok(())
 }
 
