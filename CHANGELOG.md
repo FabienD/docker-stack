@@ -1,4 +1,8 @@
-## 1.4.3 release (2024-02-17)
+## 1.4.5 release (2024-03-06)
+
+ * Update libraries (deps). Security advisories
+
+## 1.4.4 release (2024-02-17)
 
  * Update libraries (deps).
  * Update version of docker image use in Collection.
