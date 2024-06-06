@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.7 release (2024-06-06)
+
+* Update libraries (deps).
+* Update version of docker image use in Collection :
+  * Grafana 11.0.0
+  * Loki 3.0.0 -> need to update the configuration, and loki docker plugin at the same version.
+  * Promtail 3.0.0
+
 ## 1.4.6 release (2024-04-05)
 
 * Update libraries (deps).
