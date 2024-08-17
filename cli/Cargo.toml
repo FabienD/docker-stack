@@ -1,21 +1,21 @@
 [package]
 name = "dctl"
-version = "1.4.7"
+version = "1.4.8"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = { version = "1.38.0", features = ["full"] }
-async-trait = { version = "0.1.80" }
+tokio = { version = "1.39.2", features = ["full"] }
+async-trait = { version = "0.1.81" }
 eyre = { version = "0.6.12" }
-clap = { version = "4.5.4", features = ["cargo"] }
-clap_complete = { version = "4.5.2" }
-toml = { version =  "0.8.14" }
+clap = { version = "4.5.16", features = ["cargo"] }
+clap_complete = { version = "4.5.18" }
+toml = { version =  "0.8.19" }
 dotenv = { version = "0.15.0" }
-serde = { version = "1.0.203", features = ["derive"] }
-serde_json = { version = "1.0.117" }
+serde = { version = "1.0.208", features = ["derive"] }
+serde_json = { version = "1.0.125" }
 shellexpand = { version = "3.1.0" }
-tabled = { version = "0.15.0" }
-mockall = { version = "0.12.1" }
+tabled = { version = "0.16.0" }
+mockall = { version = "0.13.0" }
 version = { version = "3.0.0" }
