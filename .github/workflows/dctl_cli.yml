@@ -16,7 +16,7 @@ jobs:
       run:
         working-directory: cli
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: install rust
         uses: dtolnay/rust-toolchain@master
         with:
@@ -24,7 +24,7 @@ jobs:
       - name: Install grcov
         run: rustup component add llvm-tools-preview && cargo install grcov
       - name: "Prepare cache"
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
@@ -72,13 +72,13 @@ jobs:
       run:
         working-directory: cli
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: install rust
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
       - name: "Prepare cache"
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
@@ -104,7 +104,7 @@ jobs:
         name: Tar files
         run: tar cvf dctl-${{ runner.os }}-${{ matrix.target }}.tar ./target/${{ matrix.target }}/release/dctl.exe
       - name: save compressed build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dctl-${{ runner.os }}-${{ matrix.target }}.tar
           path: cli/dctl-${{ runner.os }}-${{ matrix.target }}.tar
@@ -117,7 +117,7 @@ jobs:
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -150,7 +150,7 @@ jobs:
     needs: release
     steps:
       - name: Download Release Asset
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dctl-${{ runner.os }}-${{ matrix.target }}.tar
       - name: Upload Release Assets
