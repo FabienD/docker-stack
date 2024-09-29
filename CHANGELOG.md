@@ -1,9 +1,20 @@
 # Changelog
 
+## 1.4.9 release (2024-09-29)
+
+* Update libraries (deps).
+* Update version of docker image used in Collection :
+  * Traefik 3.1
+  * Grafana 11.2.1
+  * Loki 3.2.0
+  * Promtail 3.2.0
+  * Postgres 17
+  * RabbitMq 4
+
 ## 1.4.8 release (2024-08-17)
 
 * Update libraries (deps).
-* Update version of docker image use in Collection :
+* Update version of docker image used in Collection :
   * Traefik 3.1
   * Grafana 11.1.4
   * Loki 3.0.1
@@ -20,7 +31,7 @@
 ## 1.4.6 release (2024-04-05)
 
 * Update libraries (deps).
-* Update version of docker image use in Collection.
+* Update version of docker image used in Collection.
 
 ## 1.4.5 release (2024-03-06)
 
@@ -29,17 +40,17 @@
 ## 1.4.4 release (2024-02-17)
 
 * Update libraries (deps).
-* Update version of docker image use in Collection.
+* Update version of docker image used in Collection.
 
 ## 1.4.3 release (2023-12-23)
 
 * Update libraries (deps).
-* Update version of docker image use in Collection.
+* Update version of docker image used in Collection.
 
 ## 1.4.2 release (2023-12-01)
 
 * Update libraries (deps).
-* Update version of docker image use in Collection.
+* Update version of docker image used in Collection.
   
 ## 1.4.1 release (2023-11-03)
 
