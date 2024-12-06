@@ -7,7 +7,10 @@
 
 # The docker Stack
 
-This project is composed of a collection of usefull docker-compose files for web developpers. We also provide a standalone Cli tool to manage a list of docker compose files registered in a config.
+This project is composed of a 2 things :
+
+- A Docker Compose compatible CLI, but with more features; try it!
+- A collection of Docker Compose files that aims to provide a functional common web stack for developers. It's easy to intergrate your own projects around the stack.
 
 [**Cli tool**](doc/dctl.md) and [**compose files collection**](doc/collection.md) are independants, you can use cli without the compose files and vice versa.
 
@@ -20,8 +23,12 @@ This project is composed of a collection of usefull docker-compose files for web
 
 ## "dctl" cli vs "docker compose" ?
 
-With **dctl**, we relies on **a config file**, no need to have started or stopped containers of a docker-compose file to see and manage them, they are known. dctl use docker compose internaly, it's a wrapper around docker compose, so you can use all docker compose commands and arguments.
+With **dctl**,
 
+- no need to be in the project folder,
+- no need to know new commands and arguments, "dclt" use the same ones as docker compose, you won't be lost,
+
+With **dctl**, you can manage your project from everywhere in your terminal.
 
 [![asciicast](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e.svg)](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e)
 

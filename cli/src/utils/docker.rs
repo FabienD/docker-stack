@@ -119,7 +119,7 @@ impl Docker {
         config_args: &Vec<&'a OsStr>,
         default_command_args: &Vec<&'a OsStr>,
         match_args: &'a ArgMatches,
-    ) -> Vec<&OsStr> {
+    ) -> Vec<&'a OsStr> {
         // Build command arguments from matches args & mix with dctl_args
         let mut args = match command_type {
             CommandType::Build => prepare_command_build(match_args).unwrap(),
