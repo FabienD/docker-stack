@@ -32,6 +32,10 @@ ruler:
 analytics:
   reporting_enabled: false
 
+limits_config:
+  max_global_streams_per_user: 0
+
+
 # By default, Loki will send anonymous, but uniquely-identifiable usage and configuration
 # analytics to Grafana Labs. These statistics are sent to https://stats.grafana.org/
 #
