@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.11 release (2025-02-08)
+
+* Update libraries (deps).
+* Update version of docker image used in Collection :
+  * Traefik 3.3
+  * Grafana 11.5.1
+  * Loki 3.3.2
+  * Promtail 3.3.2
+
 ## 1.4.10 release (2024-12-06)
 
 * Update libraries (deps).

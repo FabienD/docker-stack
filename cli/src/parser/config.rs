@@ -13,11 +13,11 @@ pub enum ComposeStatus {
 
 #[derive(Debug, Clone, Deserialize, Tabled, PartialEq)]
 pub struct ComposeItem {
-    #[tabled(rename = " 🐋 Alias", display_with = "display_alias")]
+    #[tabled(rename = " 🐋 Alias", display  = "display_alias")]
     pub alias: String,
-    #[tabled(rename = " 📃 Description", display_with = "display_description")]
+    #[tabled(rename = " 📃 Description", display  = "display_description")]
     pub description: Option<String>,
-    #[tabled(rename = "⚡Status", display_with = "display_status")]
+    #[tabled(rename = "⚡Status", display  = "display_status")]
     pub status: Option<ComposeStatus>,
     #[tabled(skip)]
     pub use_project_name: Option<bool>,
