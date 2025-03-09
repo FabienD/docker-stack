@@ -14,6 +14,7 @@ use crate::command::kill::prepare_command_kill;
 use crate::command::logs::prepare_command_logs;
 use crate::command::ls::prepare_command_ls;
 use crate::command::pause::prepare_command_pause;
+use crate::command::port::prepare_command_port;
 use crate::command::ps::prepare_command_ps;
 use crate::command::pull::prepare_command_pull;
 use crate::command::push::prepare_command_push;
@@ -41,6 +42,7 @@ pub enum CommandType {
     Ls,
     Logs,
     Pause,
+    Port,
     Pull,
     Push,
     Ps,
@@ -132,6 +134,7 @@ impl Docker {
             CommandType::Ls => prepare_command_ls(match_args).unwrap(),
             CommandType::Logs => prepare_command_logs(match_args).unwrap(),
             CommandType::Pause => prepare_command_pause(match_args).unwrap(),
+            CommandType::Port => prepare_command_port(match_args).unwrap(),
             CommandType::Pull => prepare_command_pull(match_args).unwrap(),
             CommandType::Push => prepare_command_push(match_args).unwrap(),
             CommandType::Ps => prepare_command_ps(match_args).unwrap(),
@@ -173,6 +176,7 @@ mod tests {
     use crate::command::logs::compose_logs;
     use crate::command::ls::compose_ls;
     use crate::command::pause::compose_pause;
+    use crate::command::port::compose_port;
     use crate::command::ps::compose_ps;
     use crate::command::pull::compose_pull;
     use crate::command::push::compose_push;
@@ -453,6 +457,33 @@ mod tests {
             OsStr::new("-f"),
             OsStr::new("docker-compose.yml"),
             OsStr::new("pause"),
+        ];
+
+        assert_eq!(cmd_args, expected_args);
+    }
+
+    #[test]
+    fn it_prepare_docker_compose_port() {
+        let bin_path = "docker".to_string();
+        let docker: Docker = Container::init(bin_path.to_owned());
+
+        let config_args = vec![OsStr::new("-f"), OsStr::new("docker-compose.yml")];
+        let default_command_args = vec![];
+
+        let matches = compose_port().get_matches_from(vec!["port", "PROJECT_NAME"]);
+
+        let cmd_args = docker.prepare_command(
+            CommandType::Port,
+            &config_args,
+            &default_command_args,
+            &matches,
+        );
+
+        let expected_args = vec![
+            OsStr::new("compose"),
+            OsStr::new("-f"),
+            OsStr::new("docker-compose.yml"),
+            OsStr::new("port"),
         ];
 
         assert_eq!(cmd_args, expected_args);

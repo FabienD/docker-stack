@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.0 release (2025-03-10)
+
+* Add support for docker compose:
+  * **port** command.
+* Update libraries (deps).
+* Update version of docker image used in Collection :
+  * Grafana 11.5.2
+  * Loki 3.4.2
+  * Promtail 3.4.2
+
 ## 1.4.11 release (2025-02-08)
 
 * Update libraries (deps).
