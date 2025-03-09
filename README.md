@@ -53,7 +53,7 @@ The cli can "manage" multiple docker-compose files (start, stop, down, restart, 
 
 ### v2
 
-- [ ] Re-implement docker compose using Docker API instead of rely on "docker compose" plugin.
+- [ ] Use a better architecture for the cli tool, improve the code quality.
 
 
 ## Contributing
