@@ -20,6 +20,7 @@ use crate::command::kill::compose_kill;
 use crate::command::logs::compose_logs;
 use crate::command::ls::compose_ls;
 use crate::command::pause::compose_pause;
+use crate::command::port::compose_port;
 use crate::command::ps::compose_ps;
 use crate::command::pull::compose_pull;
 use crate::command::push::compose_push;
@@ -54,6 +55,7 @@ fn cli() -> Command {
         .subcommand(compose_ls())
         .subcommand(compose_ps())
         .subcommand(compose_pause())
+        .subcommand(compose_port())
         .subcommand(compose_pull())
         .subcommand(compose_push())
         .subcommand(compose_restart())
@@ -218,6 +220,17 @@ pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Resul
             container
                 .compose(
                     CommandType::Pause,
+                    &default_arg,
+                    &default_command_arg,
+                    args,
+                    None,
+                )
+                .await?
+        }
+        "port" => {
+            container
+                .compose(
+                    CommandType::Port,
                     &default_arg,
                     &default_command_arg,
                     args,

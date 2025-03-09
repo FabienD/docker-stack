@@ -9,6 +9,7 @@ pub mod kill;
 pub mod logs;
 pub mod ls;
 pub mod pause;
+pub mod port;
 pub mod ps;
 pub mod pull;
 pub mod push;
