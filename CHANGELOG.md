@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.1 release (2025-06-05)
+
+* Update libraries (deps).
+* Update version of docker image used in Collection :
+  * Grafana 11.6.2
+  * Loki 3.5.1
+  * Promtail 3.5.1
+
 ## 1.5.0 release (2025-03-10)
 
 * Add support for docker compose:
