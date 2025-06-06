@@ -1,161 +1,95 @@
-# Docker-stack
+# dctl CLI – The missing Docker Compose companion
 
 <<[Home](../README.md)>>
 
-## "dctl" cli tools, a docker compose missing feature
+## What is `dctl`?
 
-The dctl sources can be found in the [cli](./cli/) path, written in Rust.
+`dctl` is a feature-rich CLI tool, written in Rust, that makes managing multiple Docker Compose projects effortless. It allows you to control all your local development stacks from anywhere in your terminal, with a consistent and simple interface.
 
-### The cli goals
+- **Centralized management:** Register all your compose projects in a single config file.
+- **No more aliases:** Use the same commands for all your projects, no matter where you are.
+- **Override and customize:** Easily override compose files and set default arguments per command or project.
 
-The cli tool can "manage" multiple docker-compose files (start, stop, down, restart, build and more) from everywhere in your terminal.
-All registered docker-compose files project are stored in a configuration file (config.toml), by default in your home directory (~/.config/dctl/config.toml).
-With the cli, you can avoid declaring multiple aliases in your shell, and you can use the same command to start/stop/restart/ and so on for all your projects.
-The cli offers an easy way to override default docker-compose file for a project, you can also define default arguments for all docker-compose commands to avoid repeating them in the command line.
+---
 
+## Installation
 
-### Installation
-
-You can download the binary from the [release page](https://github.com/FabienD/docker-stack/releases)
-
-Or you can build it from source. You need to [install Rust and Cargo](https://www.rust-lang.org/tools/install) before.
+- **Download the latest binary** from the [releases page](https://github.com/FabienD/docker-stack/releases)
+- **Or build from source:**
 
 ```bash
 cd cli && cargo build --release
 ```
 
-### The config file
+Requires [Rust and Cargo](https://www.rust-lang.org/tools/install).
 
-The config file is a [TOML](https://toml.io/en/) file, with the following structure.
+---
 
-Note that the **use_project_name**, **description** and the **environment file** are not mandatory.
+## Configuration
 
-**use_project_name** is true by default, docker compose will use the alias as project name. For a full compatibilty with project running without setting a [project name](https://github.com/compose-spec/compose-spec/blob/master/spec.md#name-top-level-element), set it to false, docker compose will use the directory name as project name.
+`dctl` uses a [TOML](https://toml.io/en/) config file, typically located at `~/.config/dctl/config.toml`.
 
-Since 1.0.0, the **default_command_args** is a map of docker compose command and arguments. It's used as default arguments for all docker compose command.
+**Example:**
 
 ```toml
 [main]
 docker_bin = "/usr/bin/docker"
-default_command_args = [ 
-    { command_name = "up", command_args = ["-d", "--remove-orphans"]} 
+default_command_args = [
+    { command_name = "up", command_args = ["-d", "--remove-orphans"] }
 ]
 
 [[collections]]
 alias = "stack_web"
-use_project_name = true # Default value is true
-description = "Docker stack - web components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
+description = "Web stack components"
+use_project_name = true # Optional, default: true
+enviroment_file = "/path/to/.env"
 compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/collection/web/docker-compose.yml",
+    "/path/to/web/docker-compose.yml"
 ]
 
-[[collections]]
-alias = "stack_logging"
-description = "Docker stack - logging components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stackcollection/.env"
-compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/collection/logging/docker-compose.yml",
-]
-
-[[collections]]
-alias = "stack_tools"
-description = "Docker stack - tools components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
-compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/collection/tools/docker-compose.yml",
-]
-
-[[collections]]
-alias = "stack_data"
-description = "Docker stack - data components"
-enviroment_file = "/home/fabien/workspace/infra/docker-stack/collection/.env"
-compose_files = [
-    "/home/fabien/workspace/infra/docker-stack/collection/data/docker-compose.yml",
-]
-
-[[collections]]
-alias = "project_name1"
-enviroment_file = "/home/fabien/workspace/apps/project1/.env"
-compose_files = [
-    "/home/fabien/workspace/apps/project1/docker-compose.yml",
-    "/home/fabien/workspace/apps/project1/docker-compose.dev.yml",
-]
-
-[[collections]]
-alias = "project_name2"
-use_project_name = false
-description = "The project 2"
-compose_files = [
-    "/home/fabien/workspace/apps/project2/worker/docker-compose.yml",
-    "/home/fabien/workspace/apps/project2/api/docker-compose.yml",
-]
+# ... more collections ...
 ```
 
-#### Check that all files in configuration are valid
+- **alias:** Unique name for your project.
+- **use_project_name:** (Optional) If true, uses the alias as the Docker Compose project name.
+- **description:** (Optional) Free text description.
+- **enviroment_file:** (Optional) Path to your .env file.
+- **compose_files:** List of compose files for the project.
+- **default_command_args:** (Optional) Default arguments per Docker Compose command.
+
+---
+
+## Usage
+
+### Check your configuration
 
 ```bash
 dctl check-config
 ```
 
-### dctl cli usage
+Validates your config file and all referenced compose files.
 
-```bash
-dctl --help
-```
-
-Since version 1.0.0, dctl cli arguments in option are the same as docker compose arguments. 
-
-Use the "help" command to see the available options by command.
-
-Those following docker compose command are fully supported :
-
-- build: Build all or selected service(s) for a project
-- create: Creates containers for a service of the project
-- down: Stop and remove containers, networks, images, and volumes for a project
-- exec: Execute a command in a running service of the project
-- events: Receive real time events from ontainers
-- images: List images used by the created containers
-- kill: Kill containers
-- logs: View logs output from all containers or from selected services of the project
-- ls: List running compose projects
-- ps: List containers for a project or only selected service(s) of the project
-- pause: Pause services
-- pull: Pull service images
-- push: Push services
-- restart: Restart all containers for a project or only selected service(s) of the project
-- rm: Removes stopped service containers
-- run: Run a one-off command on a service
-- start: Start all containers for a project or only selected service(s) of the project
-- stop: Stop all containers for a project or only selected service(s) of the project
-- top: Top on all containers for a project or only on selected service(s) of the project
-- unpause: Unpause services
-- up: Create and start containers for a project
-
-
-#### List registered docker-compose files
+### List registered projects
 
 ```bash
 dctl infos
 ```
 
-For each registered project, the running status is displayed (running, stopped or partially running).
-*Partially running* means that not all docker compose services of the project are running (It may be normal, depending of your compose file).
+Shows all registered projects and their running status (running, stopped, or partially running).
 
-#### Show the path of a docker-compose by the project name
-
-```bash
-dctl cd <name>
-```
-
-This return the path name of the first docker-compose file of the collection.
-We can't directly interact with the shell, you can use the command with the `cd` command.
+### Show the path to a project's compose file
 
 ```bash
-cd "$(dctl cd <name>)"
+dctl cd <alias>
 ```
 
-Use a shell function to make it easier, for example in your .bashrc or .zshrc
+Returns the path to the first compose file for the given project. Combine with `cd` in your shell:
+
+```bash
+cd "$(dctl cd <alias>)"
+```
+
+Add a helper function to your `.zshrc` or `.bashrc`:
 
 ```bash
 function gocd() {
@@ -163,38 +97,31 @@ function gocd() {
 }
 ```
 
-## Use dctl shell completion
+### Shell completion
 
-Since version 0.5.0, dctl is able to generate a shell (Bash, Elvish, Fish, PowerShell, Zsh) completion script.
+Generate completion scripts for Bash, Zsh, Fish, etc.:
 
 ```bash
 dctl completion <shell> > /path/to/completion/file
 ```
 
-For example, to generate a completion script for **Bash**, you can run:
-
-```bash
-dctl completion bash > /etc/bash_completion.d/dctl
-```
-
-For **Zsh**, you can run:
+Example for Zsh:
 
 ```bash
 dctl completion zsh > /usr/local/share/zsh/site-functions/_dctl
 compinit
 ```
 
-## Use the collection without the cli tool
+---
 
-You can use all of the docker-compose files without the cli, use docker command like this :
+## Supported Docker Compose commands
 
-```bash
-docker compose -f /docker-stack/web/docker-compose.yml --env-file /docker-stack/collection/.env up -d
-```
+`dctl` supports all major Docker Compose commands, including:
 
-Notice that tou use the docker compose V2 syntax.
+- up, down, start, stop, restart, build, exec, logs, ps, images, pull, push, rm, run, ls, pause, unpause, kill, create, events, top
 
+Arguments and options are passed through to Docker Compose, so you can use `dctl` just like the original tool.
 
 ## Contributing
 
-Feel free to contribute to this project, you can open an issue or a pull request.
+Contributions are welcome! Open an issue or a pull request to help improve `dctl`.

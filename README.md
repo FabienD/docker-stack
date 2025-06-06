@@ -4,58 +4,63 @@
 [![dependency status](https://deps.rs/repo/github/FabienD/docker-stack/status.svg?path=cli)](https://deps.rs/repo/github/FabienD/docker-stack?path=cli)
 [![GitHub license](https://img.shields.io/github/license/FabienD/docker-stack.svg)](https://github.com/FabienD/docker-stack/blob/main/LICENSE)
 
+# Docker Stack
 
-# The docker Stack
+**Docker Stack** is a developer-oriented project that provides:
 
-This project is composed of a 2 things :
+- **A powerful CLI tool (`dctl`)**: A drop-in replacement for Docker Compose, with extra features and improved usability.
+- **A curated collection of Docker Compose files**: Ready-to-use configurations for a complete local development stack.
 
-- A Docker Compose compatible CLI, but with more features; try it!
-- A collection of Docker Compose files that aims to provide a functional common web stack for developers. It's easy to intergrate your own projects around the stack.
+You can use the CLI and the compose files independently or together, depending on your needs.
 
-[**Cli tool**](doc/dctl.md) and [**compose files collection**](doc/collection.md) are independants, you can use cli without the compose files and vice versa.
+---
 
-## Documentation
+## Overview
 
-- Manage your local docker compose projects easilly with [the cli tool : dctl](doc/dctl.md)
-- Your local stack for web development. [A collection of docker-compose files](doc/collection.md)
+- **[CLI Tool Documentation](doc/dctl.md):** Manage your local Docker Compose projects more easily with `dctl`.
+- **[Compose Files Collection](doc/collection.md):** Quickly set up a local web development stack with pre-configured services.
+- **[Changelog](CHANGELOG.md):** See what's new.
 
-- The project [change log](CHANGELOG.md)
+---
 
-## "dctl" cli vs "docker compose" ?
+## Why use `dctl` instead of `docker compose`?
 
-With **dctl**,
-
-- no need to be in the project folder,
-- no need to know new commands and arguments, "dclt" use the same ones as docker compose, you won't be lost,
-
-With **dctl**, you can manage your project from everywhere in your terminal.
+- No need to be in your project folder.
+- Uses the same commands and arguments as Docker Compose—no new learning curve.
+- Manage multiple projects from anywhere in your terminal.
+- Easily override default compose files and set default arguments for all commands.
 
 [![asciicast](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e.svg)](https://asciinema.org/a/7VwsLtJmxzZ2HCkbim3kUQ21e)
 
-The cli can "manage" multiple docker-compose files (start, stop, down, restart, build and more) from **everywhere in your terminal**. With this tool, you can **avoid declaring multiple aliases** in your shell, and you can use the same command to start/stop/restart/ and so on for all your projects. The cli offers an **easy way to override default docker-compose** file for a project, you can also define **default arguments for all docker-compose commands** to avoid repeating them in the command line.
+With `dctl`, you can start, stop, restart, build, and manage multiple Docker Compose projects from anywhere, without the need for custom shell aliases. The CLI also allows you to define default arguments and override compose files per project.
 
-[See more](doc/dctl.md)
+---
 
-## Roadmap / next steps
+## Roadmap
 
-- [ ] Documentation - add examples of docker-compose files for local development.
+- [ ] Add more documentation and examples for local development.
+- [ ] Add commands to register/unregister projects using docker-compose files.
+- [ ] Make default arguments optional and project-specific.
+- [ ] Improve merging of default and command-line arguments.
 
 ### v1
 
-- [x] ~~Build - Plublish the cli tool for multiples platforms (Windows, Mac, Linux), different architectures (x86, arm, arm64).~~
-- [x] ~~Cli - improve check-config cli command, better presentation.~~
-- [x] ~~Documentation - give cli examples, screenshots.~~
-- [ ] Cli - Add a "dctl" command to register/update a project using docker-compose.yml file.
-- [ ] Cli - Add a "dctl" command to unregister a project using docker-compose.yaml file.
-- [ ] Default arguments - make it disablable by specifying a special argument.
-- [ ] Default arguments - by project.
-- [ ] Default arguments - clever merge default arguments with the ones specified in the command line.
+- [x] Publish the CLI tool for multiple platforms (Windows, Mac, Linux) and architectures (x86, arm, arm64).
+- [x] Improve the `check-config` command.
+- [x] Add CLI examples and screenshots.
 
 ### v2
 
-- [ ] Use a better architecture for the cli tool, improve the code quality.
+- [ ] Refactor the CLI tool for better architecture and code quality.
 
+---
 
 ## Contributing
 
-Contributions are welcome, feel free to open an issue or a pull request.
+Contributions are welcome! Feel free to open an issue or a pull request.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
