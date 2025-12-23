@@ -1,5 +1,5 @@
 use dotenv::dotenv;
-use eyre::Result;
+use anyhow::Result;
 use std::env;
 
 #[macro_use]
@@ -31,7 +31,7 @@ async fn main() {
     let mut config: DctlConfig = match CliConfig::load(config_file_path) {
         Ok(config) => config,
         Err(err) => {
-            println!("Load config error: {}", err);
+            eprintln!("Load config error: {}", err);
             std::process::exit(1);
         }
     };
@@ -41,7 +41,7 @@ async fn main() {
 
     // Execute cli command
     if let Err(err) = cli::run(&docker, &mut config).await {
-        println!("Command exection error: {}", err);
+        eprintln!("Command execution error: {}", err);
         std::process::exit(1);
     }
 }

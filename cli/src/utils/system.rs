@@ -1,19 +1,22 @@
-use eyre::{eyre, Result};
+use anyhow::{anyhow, Result};
 use mockall::automock;
-use std::{
-    ffi::OsStr,
-    process::{Command, Output},
-};
-use tokio::task;
+use std::ffi::OsString;
+use std::process::Output;
+use tokio::process::Command;
 
-use super::docker::CommandOuput;
+#[cfg(unix)]
+use std::os::unix::process::ExitStatusExt;
+#[cfg(windows)]
+use std::os::windows::process::ExitStatusExt;
+
+use super::docker::CommandOutput;
 
 #[derive(PartialEq, Eq)]
 pub struct System {}
 
 #[automock]
 impl System {
-    pub fn builder<'a>(bin_command: String, sorted_args: Vec<&'a OsStr>) -> Command {
+    pub fn builder(bin_command: String, sorted_args: Vec<OsString>) -> Command {
         // Build a command with the given arguments
         let mut cmd = Command::new(bin_command);
 
@@ -24,38 +27,41 @@ impl System {
         cmd
     }
 
-    pub async fn execute<'a>(
+    pub async fn execute(
         bin_command_path: String,
-        commmand_arg: &Vec<&'a OsStr>,
-        output: &CommandOuput,
+        command_arg: &[OsString],
+        output: &CommandOutput,
     ) -> Result<Output> {
         // Build command
-        let mut cmd: Command = System::builder(bin_command_path, commmand_arg.clone());
+        let mut cmd: Command = System::builder(bin_command_path, command_arg.to_vec());
 
-        // Execute command
+        // Execute command asynchronously using tokio::process::Command
         match output {
-            CommandOuput::Status => {
-                let status = task::spawn(async move { cmd.status() });
-                let status = status.await??;
+            CommandOutput::Status => {
+                let status = cmd.status().await?;
 
                 if status.success() {
+                    #[cfg(unix)]
+                    let exit_status = std::process::ExitStatus::from_raw(status.code().unwrap_or(0));
+                    #[cfg(windows)]
+                    let exit_status = std::process::ExitStatus::from_raw(status.code().unwrap_or(0) as u32);
+
                     Ok(Output {
-                        status,
+                        status: exit_status,
                         stdout: vec![],
                         stderr: vec![],
                     })
                 } else {
-                    Err(eyre!("Command failed"))
+                    Err(anyhow!("Command failed with status: {:?}", status.code()))
                 }
             }
-            CommandOuput::Output => {
-                let output = task::spawn(async move { cmd.output() });
-                let output = output.await??;
+            CommandOutput::Output => {
+                let output = cmd.output().await?;
 
                 if output.status.success() {
                     Ok(output)
                 } else {
-                    Err(eyre!("Command failed"))
+                    Err(anyhow!("Command failed with status: {:?}", output.status.code()))
                 }
             }
         }

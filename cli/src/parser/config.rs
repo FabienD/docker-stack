@@ -1,4 +1,4 @@
-use eyre::{Context, Result};
+use anyhow::{Context, Result};
 use serde::Deserialize;
 use std::{ffi::OsStr, fs};
 use tabled::Tabled;
@@ -147,7 +147,7 @@ impl DctlConfig {
 
         // Read the config file
         let config_content = fs::read_to_string(&full_config_path)
-            .wrap_err(format!("config file not found in {full_config_path}"))?;
+            .context(format!("config file not found in {full_config_path}"))?;
 
         Ok(config_content)
     }
@@ -155,7 +155,7 @@ impl DctlConfig {
     fn parse_config_file(config_content: String) -> Result<Self> {
         // Parse the config file
         let config: DctlConfig = toml::from_str(config_content.as_str())
-            .wrap_err("TOML parse error, check your config file structure.")?;
+            .context("TOML parse error, check your config file structure.")?;
 
         Ok(config)
     }
