@@ -19,6 +19,8 @@ shellexpand = { version = "3.1.1" }
 tabled = { version = "0.20.0" }
 mockall = { version = "0.14.0" }
 version = { version = "3.0.0" }
+futures = { version = "0.3" }
+toml_edit = { version = "0.23.9" }
 
 [profile.release]
 lto = "thin"

@@ -10,7 +10,9 @@ use crate::command::cd::{cd_project, exec_cd_project};
 use crate::command::completion::{exec_shell_completion, shell_completion};
 use crate::command::config::{check_config, exec_check_config};
 use crate::command::infos::{exec_projects_infos, projects_infos};
+use crate::command::register::{exec_register_project, register_project};
 use crate::command::registry::{get_compose_commands, get_command_by_name};
+use crate::command::unregister::{exec_unregister_project, unregister_project};
 
 fn cli() -> Command {
     let mut cmd = Command::new("dctl")
@@ -33,7 +35,9 @@ fn cli() -> Command {
         .subcommand(shell_completion())
         .subcommand(cd_project())
         .subcommand(check_config())
-        .subcommand(projects_infos());
+        .subcommand(projects_infos())
+        .subcommand(register_project())
+        .subcommand(unregister_project());
 
     cmd
 }
@@ -51,11 +55,19 @@ pub async fn run(container: &dyn Container, config: &mut dyn CliConfig) -> Resul
             return Ok(());
         }
         "check-config" => {
-            exec_check_config(config)?;
+            exec_check_config(config, container, args).await?;
             return Ok(());
         }
         "completion" => {
             exec_shell_completion(&mut cli(), args)?;
+            return Ok(());
+        }
+        "register" => {
+            exec_register_project(config, args)?;
+            return Ok(());
+        }
+        "unregister" => {
+            exec_unregister_project(config, args)?;
             return Ok(());
         }
         _ => {}

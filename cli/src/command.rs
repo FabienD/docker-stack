@@ -31,6 +31,8 @@ pub mod cd;
 pub mod completion;
 pub mod config;
 pub mod infos;
+pub mod register;
+pub mod unregister;
 
 // Command registry (uses definitions.rs)
 pub mod registry;

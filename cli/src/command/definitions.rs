@@ -1154,10 +1154,105 @@ pub fn watch_def() -> CommandDef {
     }
 }
 
+// ============================================================================
+// docker compose config
+// https://docs.docker.com/reference/cli/docker/compose/config/
+// ============================================================================
+pub fn config_def() -> CommandDef {
+    CommandDef {
+        name: "config",
+        about: "Parse, resolve and render compose file in canonical format",
+        needs_project: true,
+        args: vec![
+            ArgDef::Choice {
+                id: "FORMAT",
+                long: "format",
+                short: None,
+                help: "Format the output (yaml or json)",
+                choices: &["yaml", "json"],
+            },
+            ArgDef::Flag {
+                id: "QUIET",
+                long: "quiet",
+                short: Some('q'),
+                help: "Only validate the configuration, don't print anything",
+            },
+            ArgDef::Flag {
+                id: "NO_CONSISTENCY",
+                long: "no-consistency",
+                short: None,
+                help: "Don't check model consistency",
+            },
+            ArgDef::Flag {
+                id: "NO_INTERPOLATE",
+                long: "no-interpolate",
+                short: None,
+                help: "Don't interpolate environment variables",
+            },
+            ArgDef::Flag {
+                id: "NO_NORMALIZE",
+                long: "no-normalize",
+                short: None,
+                help: "Don't normalize compose model",
+            },
+            ArgDef::Flag {
+                id: "NO_PATH_RESOLUTION",
+                long: "no-path-resolution",
+                short: None,
+                help: "Don't resolve file paths",
+            },
+            ArgDef::Flag {
+                id: "RESOLVE_IMAGE_DIGESTS",
+                long: "resolve-image-digests",
+                short: None,
+                help: "Pin image tags to digests",
+            },
+            ArgDef::Value {
+                id: "OUTPUT",
+                long: "output",
+                short: Some('o'),
+                help: "Save to file (default to stdout)",
+            },
+            ArgDef::Flag {
+                id: "HASH",
+                long: "hash",
+                short: None,
+                help: "Print the service config hash",
+            },
+            ArgDef::Flag {
+                id: "IMAGES",
+                long: "images",
+                short: None,
+                help: "Print the image names",
+            },
+            ArgDef::Flag {
+                id: "PROFILES",
+                long: "profiles",
+                short: None,
+                help: "Print the profile names",
+            },
+            ArgDef::Flag {
+                id: "SERVICES",
+                long: "services",
+                short: None,
+                help: "Print the service names",
+            },
+            ArgDef::Flag {
+                id: "VOLUMES",
+                long: "volumes",
+                short: None,
+                help: "Print the volume names",
+            },
+            ArgDef::Services,
+        ],
+    }
+}
+
 /// Get all command definitions
 pub fn all_definitions() -> Vec<CommandDef> {
     vec![
         build_def(),
+        config_def(),
         create_def(),
         down_def(),
         events_def(),
@@ -1189,7 +1284,7 @@ mod tests {
 
     #[test]
     fn test_all_definitions_count() {
-        assert_eq!(all_definitions().len(), 23);
+        assert_eq!(all_definitions().len(), 24);
     }
 
     #[test]

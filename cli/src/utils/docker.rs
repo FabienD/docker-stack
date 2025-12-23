@@ -10,6 +10,7 @@ use super::system::System;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CommandType {
     Build,
+    Config,
     Create,
     Down,
     Exec,
@@ -31,7 +32,7 @@ pub enum CommandType {
     Top,
     Unpause,
     Up,
-    Watch
+    Watch,
 }
 
 impl CommandType {
@@ -39,6 +40,7 @@ impl CommandType {
     pub fn as_str(&self) -> &'static str {
         match self {
             CommandType::Build => "build",
+            CommandType::Config => "config",
             CommandType::Create => "create",
             CommandType::Down => "down",
             CommandType::Exec => "exec",

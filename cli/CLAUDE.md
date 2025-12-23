@@ -31,12 +31,14 @@ src/
 ├── command.rs           # CommandHandler trait + module declarations
 ├── command/
 │   ├── args.rs          # Declarative argument system (ArgDef, CommandDef)
-│   ├── definitions.rs   # All 23 docker compose command definitions
+│   ├── definitions.rs   # All 24 docker compose command definitions
 │   ├── registry.rs      # Command registry with handlers
 │   ├── cd.rs            # cd command (non-compose)
 │   ├── completion.rs    # Shell completion
-│   ├── config.rs        # Config check command
-│   └── infos.rs         # Project info command
+│   ├── config.rs        # Config check command (with YAML validation)
+│   ├── infos.rs         # Project info command (parallel execution)
+│   ├── register.rs      # Register new projects to config
+│   └── unregister.rs    # Remove projects from config
 ├── parser/
 │   └── config.rs        # TOML config parsing, DctlConfig, ComposeItem
 └── utils/
@@ -154,13 +156,26 @@ Tests are colocated with modules (`#[cfg(test)] mod tests`). The `mockall` crate
 
 Key test files:
 - `command/args.rs` - Argument system tests
-- `command/definitions_tests.rs` - All 23 command definitions tests (60+ tests)
+- `command/definitions_tests.rs` - All 24 command definitions tests (65+ tests)
 - `command/registry.rs` - Registry tests
+- `command/register.rs` - Register command tests
+- `command/unregister.rs` - Unregister command tests
 - `parser/tests.rs` - Config parsing tests
 - `utils/docker.rs` - Command preparation tests
 - `utils/system_tests.rs` - System execution tests
 
+Total: **148 unit tests**
+
 ### Supported Docker Compose Commands
 
-All 23 docker compose commands are supported:
-`build`, `create`, `down`, `events`, `exec`, `images`, `kill`, `logs`, `ls`, `pause`, `port`, `ps`, `pull`, `push`, `restart`, `rm`, `run`, `start`, `stop`, `top`, `unpause`, `up`, `watch`
+All 24 docker compose commands are supported:
+`build`, `config`, `create`, `down`, `events`, `exec`, `images`, `kill`, `logs`, `ls`, `pause`, `port`, `ps`, `pull`, `push`, `restart`, `rm`, `run`, `start`, `stop`, `top`, `unpause`, `up`, `watch`
+
+### CLI-specific Commands
+
+- `infos` - List all projects with status (parallel execution)
+- `cd` - Print project directory path
+- `check-config` - Validate config files (use `--validate` for YAML syntax check)
+- `completion` - Generate shell completions
+- `register` - Add project to config: `dctl register alias file1.yml [file2.yml...] [-e .env] [-d "desc"]`
+- `unregister` - Remove project from config: `dctl unregister alias [--force]`
