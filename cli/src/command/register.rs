@@ -293,10 +293,10 @@ mod tests {
         let path = expand_path("/absolute/path");
         assert_eq!(path, "/absolute/path");
 
-        // Tilde expansion should work
+        // Tilde expansion should work (cross-platform)
         let home_path = expand_path("~/test");
-        assert!(home_path.starts_with('/'));
-        assert!(home_path.ends_with("/test"));
+        assert!(!home_path.starts_with('~'), "Tilde should be expanded");
+        assert!(home_path.contains("test"));
     }
 
     #[test]
