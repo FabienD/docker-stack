@@ -109,6 +109,47 @@ pub fn exec_unregister_project(config: &dyn CliConfig, args: &ArgMatches) -> Res
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::parser::config::{ComposeItem, DefaultCommandArgs};
+
+    // Mock CliConfig for testing
+    struct MockConfig {
+        existing_aliases: Vec<String>,
+    }
+
+    impl CliConfig for MockConfig {
+        fn get_container_bin_path(&self) -> Result<String> {
+            Ok("/usr/bin/docker".to_string())
+        }
+
+        fn get_compose_item_by_alias(&self, alias: String) -> Option<ComposeItem> {
+            if self.existing_aliases.contains(&alias) {
+                Some(ComposeItem {
+                    alias,
+                    description: None,
+                    compose_files: vec![],
+                    enviroment_file: None,
+                    use_project_name: None,
+                    status: None,
+                })
+            } else {
+                None
+            }
+        }
+
+        fn get_all_compose_items(&self) -> Vec<ComposeItem> {
+            vec![]
+        }
+
+        fn get_default_command_args(&self, _command_name: &str) -> Option<DefaultCommandArgs> {
+            None
+        }
+
+        fn load(_config_path_file: String) -> Result<Self> {
+            Ok(MockConfig {
+                existing_aliases: vec![],
+            })
+        }
+    }
 
     #[test]
     fn test_unregister_command_has_required_args() {
@@ -148,6 +189,86 @@ mod tests {
 
         assert!(result.is_ok());
         let matches = result.unwrap();
+        assert!(matches.get_flag("FORCE"));
+    }
+
+    #[test]
+    fn test_expand_path() {
+        let path = expand_path("/absolute/path");
+        assert_eq!(path, "/absolute/path");
+
+        // Tilde expansion should work
+        let home_path = expand_path("~/test");
+        assert!(home_path.starts_with('/'));
+        assert!(home_path.ends_with("/test"));
+    }
+
+    #[test]
+    fn test_expand_path_with_tilde_in_middle() {
+        // Only leading tilde should be expanded
+        let path = expand_path("/path/~/test");
+        assert_eq!(path, "/path/~/test");
+    }
+
+    #[test]
+    fn test_get_config_path_default() {
+        // Clear env var to test default
+        env::remove_var("DCTL_CONFIG_FILE_PATH");
+        let path = get_config_path();
+        assert_eq!(path, "~/.config/dctl/config.toml");
+    }
+
+    #[test]
+    fn test_get_config_path_from_env() {
+        env::set_var("DCTL_CONFIG_FILE_PATH", "/custom/path/config.toml");
+        let path = get_config_path();
+        assert_eq!(path, "/custom/path/config.toml");
+        env::remove_var("DCTL_CONFIG_FILE_PATH");
+    }
+
+    #[test]
+    fn test_exec_unregister_alias_not_found() {
+        let config = MockConfig {
+            existing_aliases: vec![],
+        };
+
+        let cmd = unregister_project();
+        let matches = cmd
+            .try_get_matches_from(vec!["unregister", "nonexistent", "--force"])
+            .unwrap();
+
+        let result = exec_unregister_project(&config, &matches);
+        assert!(result.is_err());
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("does not exist"));
+    }
+
+    #[test]
+    fn test_unregister_command_without_force_flag() {
+        let cmd = unregister_project();
+
+        let result = cmd.try_get_matches_from(vec!["unregister", "myproject"]);
+
+        assert!(result.is_ok());
+        let matches = result.unwrap();
+        assert!(!matches.get_flag("FORCE"));
+    }
+
+    #[test]
+    fn test_unregister_command_force_position_after_alias() {
+        let cmd = unregister_project();
+
+        // Force flag can come after alias
+        let result = cmd.try_get_matches_from(vec!["unregister", "myproject", "-f"]);
+
+        assert!(result.is_ok());
+        let matches = result.unwrap();
+        assert_eq!(
+            matches.get_one::<String>("ALIAS").unwrap(),
+            "myproject"
+        );
         assert!(matches.get_flag("FORCE"));
     }
 }

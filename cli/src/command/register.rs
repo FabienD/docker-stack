@@ -137,6 +137,47 @@ pub fn exec_register_project(config: &dyn CliConfig, args: &ArgMatches) -> Resul
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::parser::config::{ComposeItem, DefaultCommandArgs};
+
+    // Mock CliConfig for testing
+    struct MockConfig {
+        existing_aliases: Vec<String>,
+    }
+
+    impl CliConfig for MockConfig {
+        fn get_container_bin_path(&self) -> Result<String> {
+            Ok("/usr/bin/docker".to_string())
+        }
+
+        fn get_compose_item_by_alias(&self, alias: String) -> Option<ComposeItem> {
+            if self.existing_aliases.contains(&alias) {
+                Some(ComposeItem {
+                    alias,
+                    description: None,
+                    compose_files: vec![],
+                    enviroment_file: None,
+                    use_project_name: None,
+                    status: None,
+                })
+            } else {
+                None
+            }
+        }
+
+        fn get_all_compose_items(&self) -> Vec<ComposeItem> {
+            vec![]
+        }
+
+        fn get_default_command_args(&self, _command_name: &str) -> Option<DefaultCommandArgs> {
+            None
+        }
+
+        fn load(_config_path_file: String) -> Result<Self> {
+            Ok(MockConfig {
+                existing_aliases: vec![],
+            })
+        }
+    }
 
     #[test]
     fn test_register_command_has_required_args() {
@@ -222,6 +263,32 @@ mod tests {
     }
 
     #[test]
+    fn test_register_command_short_options() {
+        let cmd = register_project();
+
+        let result = cmd.try_get_matches_from(vec![
+            "register",
+            "myproject",
+            "/path/to/docker-compose.yml",
+            "-e",
+            "/path/to/.env",
+            "-d",
+            "Description",
+        ]);
+
+        assert!(result.is_ok());
+        let matches = result.unwrap();
+        assert_eq!(
+            matches.get_one::<String>("ENV_FILE").unwrap(),
+            "/path/to/.env"
+        );
+        assert_eq!(
+            matches.get_one::<String>("DESCRIPTION").unwrap(),
+            "Description"
+        );
+    }
+
+    #[test]
     fn test_expand_path() {
         let path = expand_path("/absolute/path");
         assert_eq!(path, "/absolute/path");
@@ -230,5 +297,99 @@ mod tests {
         let home_path = expand_path("~/test");
         assert!(home_path.starts_with('/'));
         assert!(home_path.ends_with("/test"));
+    }
+
+    #[test]
+    fn test_expand_path_with_tilde_in_middle() {
+        // Only leading tilde should be expanded
+        let path = expand_path("/path/~/test");
+        assert_eq!(path, "/path/~/test");
+    }
+
+    #[test]
+    fn test_get_config_path_default() {
+        // Clear env var to test default
+        env::remove_var("DCTL_CONFIG_FILE_PATH");
+        let path = get_config_path();
+        assert_eq!(path, "~/.config/dctl/config.toml");
+    }
+
+    #[test]
+    fn test_get_config_path_from_env() {
+        env::set_var("DCTL_CONFIG_FILE_PATH", "/custom/path/config.toml");
+        let path = get_config_path();
+        assert_eq!(path, "/custom/path/config.toml");
+        env::remove_var("DCTL_CONFIG_FILE_PATH");
+    }
+
+    #[test]
+    fn test_exec_register_alias_already_exists() {
+        let config = MockConfig {
+            existing_aliases: vec!["existing".to_string()],
+        };
+
+        let cmd = register_project();
+        let matches = cmd
+            .try_get_matches_from(vec![
+                "register",
+                "existing",
+                "tests/docker-compose.test.yml",
+            ])
+            .unwrap();
+
+        let result = exec_register_project(&config, &matches);
+        assert!(result.is_err());
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("already exists"));
+    }
+
+    #[test]
+    fn test_exec_register_compose_file_not_found() {
+        let config = MockConfig {
+            existing_aliases: vec![],
+        };
+
+        let cmd = register_project();
+        let matches = cmd
+            .try_get_matches_from(vec![
+                "register",
+                "newproject",
+                "/nonexistent/docker-compose.yml",
+            ])
+            .unwrap();
+
+        let result = exec_register_project(&config, &matches);
+        assert!(result.is_err());
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("does not exist"));
+    }
+
+    #[test]
+    fn test_exec_register_env_file_not_found() {
+        let config = MockConfig {
+            existing_aliases: vec![],
+        };
+
+        let cmd = register_project();
+        let matches = cmd
+            .try_get_matches_from(vec![
+                "register",
+                "newproject",
+                "tests/docker-compose.test.yml",
+                "-e",
+                "/nonexistent/.env",
+            ])
+            .unwrap();
+
+        let result = exec_register_project(&config, &matches);
+        assert!(result.is_err());
+        assert!(result
+            .unwrap_err()
+            .to_string()
+            .contains("Environment file does not exist"));
     }
 }
