@@ -1,6 +1,6 @@
 use clap::{Arg, ArgMatches, Command};
 use clap_complete::{generate, Shell};
-use eyre::{eyre, Result};
+use anyhow::{anyhow, Result};
 use std::io;
 
 pub fn shell_completion() -> Command {
@@ -22,7 +22,7 @@ pub fn exec_shell_completion(command: &mut Command, args: &ArgMatches) -> Result
         "zsh" => Shell::Zsh,
         "powershell" => Shell::PowerShell,
         "elvish" => Shell::Elvish,
-        _ => return Err(eyre!("Shell not supported")),
+        _ => return Err(anyhow!("Shell not supported")),
     };
     generate(shell, command, "dctl", &mut io::stdout());
     Ok(())

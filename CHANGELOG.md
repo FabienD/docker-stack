@@ -1,5 +1,39 @@
 # Changelog
 
+## 2.0.0 release (2025-12-23)
+
+Major refactoring of the CLI architecture for better maintainability and compatibility with Docker Compose.
+
+### Breaking Changes
+* Internal API changes - command handlers now return `Vec<OsString>` instead of `Vec<&OsStr>`
+
+### New Features
+* **Declarative argument system**: New type-safe argument definitions with validation
+  * `ArgDef::Flag` - Boolean flags (--flag)
+  * `ArgDef::Value` - String values (--option value)
+  * `ArgDef::Choice` - Predefined choices with validation (--pull always|missing|never)
+  * `ArgDef::Number` - Numeric values with validation (--timeout 30)
+  * `ArgDef::Services` - Multiple services support
+  * `ArgDef::ServiceWithCommand` - Service + command + args (for exec/run)
+* **Full exec/run command support**: Now correctly passes commands and arguments to containers
+  * Example: `dctl exec myproject php bash -c "echo hello"`
+  * Example: `dctl run --rm myproject php bin/console cache:clear`
+
+### Improvements
+* **65% code reduction**: Replaced 23 individual command files (~3500 lines) with declarative definitions (~1200 lines)
+* **Docker Compose compatibility**: All 23 commands verified against official Docker Compose documentation
+* **Better type validation**: Choice arguments reject invalid values, Number arguments reject negative/non-numeric values
+* **Async execution**: Migrated to `tokio::process::Command` for better async support
+* **133 unit tests**: Comprehensive test coverage for all commands
+
+### Technical Changes
+* New `CommandHandler` trait with registry pattern
+* New `definitions.rs` with all command definitions
+* New `args.rs` with declarative argument system
+* Removed duplicate code across command files
+* Fixed typos: `CommandOuput` → `CommandOutput`, `docker_commmand_arg` → `docker_command_arg`
+* Error messages now output to stderr instead of stdout
+
 ## 1.5.2 release (2025-09-05)
 
 * Update libraries (deps).

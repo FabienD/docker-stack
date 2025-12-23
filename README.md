@@ -51,7 +51,11 @@ With `dctl`, you can start, stop, restart, build, and manage multiple Docker Com
 
 ### v2
 
-- [ ] Refactor the CLI tool for better architecture and code quality.
+- [x] Refactor the CLI tool for better architecture and code quality.
+- [x] Declarative argument system with type validation.
+- [x] Full `exec`/`run` command support with command arguments.
+- [x] 65% code reduction through declarative definitions.
+- [x] All 23 commands verified against Docker Compose documentation.
 
 ---
 

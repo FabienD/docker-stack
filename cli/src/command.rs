@@ -1,30 +1,36 @@
-// Docker compose commands
-pub mod build;
-pub mod create;
-pub mod down;
-pub mod events;
-pub mod exec;
-pub mod images;
-pub mod kill;
-pub mod logs;
-pub mod ls;
-pub mod pause;
-pub mod port;
-pub mod ps;
-pub mod pull;
-pub mod push;
-pub mod restart;
-pub mod rm;
-pub mod run;
-pub mod start;
-pub mod stop;
-pub mod top;
-pub mod unpause;
-pub mod up;
-pub mod watch;
+use clap::{ArgMatches, Command};
+use std::ffi::OsString;
 
-// Others commands
+use crate::utils::docker::CommandType;
+
+/// Trait for handling docker compose commands
+/// This trait allows factoring common command handling logic
+pub trait CommandHandler {
+    /// Returns the command name (e.g., "build", "up", "down")
+    fn name(&self) -> &'static str;
+
+    /// Returns the clap Command definition
+    fn cli(&self) -> Command;
+
+    /// Returns the CommandType for docker compose execution
+    fn command_type(&self) -> CommandType;
+
+    /// Prepares command arguments from ArgMatches
+    fn prepare(&self, args: &ArgMatches) -> Vec<OsString>;
+}
+
+// Declarative argument definition system
+pub mod args;
+pub mod definitions;
+
+#[cfg(test)]
+mod definitions_tests;
+
+// Non-docker-compose commands
 pub mod cd;
 pub mod completion;
 pub mod config;
 pub mod infos;
+
+// Command registry (uses definitions.rs)
+pub mod registry;

@@ -1,7 +1,7 @@
 use std::{ffi::OsStr, path::Path};
 
 use clap::{Arg, Command};
-use eyre::Result;
+use anyhow::Result;
 
 use crate::parser::config::ComposeItem;
 

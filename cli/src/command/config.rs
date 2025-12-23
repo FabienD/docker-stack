@@ -1,6 +1,6 @@
 use crate::parser::config::{CliConfig, ComposeItem};
 use clap::Command;
-use eyre::Result;
+use anyhow::Result;
 use std::{path::Path};
 
 pub fn check_config() -> Command {
