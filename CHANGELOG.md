@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.1 release (2026-03-01)
+
+* Update libraries (deps).
+* Update version of docker image used in Collection :
+  * Grafana 12.4.0
+  * Loki 3.6.7
+  * Promtail 3.6.7
+
 ## 2.0.0 release (2025-12-23)
 
 Major refactoring of the CLI architecture for better maintainability and compatibility with Docker Compose.
