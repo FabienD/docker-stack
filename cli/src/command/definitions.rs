@@ -1248,15 +1248,363 @@ pub fn config_def() -> CommandDef {
     }
 }
 
+// ============================================================================
+// docker compose attach
+// https://docs.docker.com/reference/cli/docker/compose/attach/
+// ============================================================================
+pub fn attach_def() -> CommandDef {
+    CommandDef {
+        name: "attach",
+        about: "Attach local standard input, output, and error streams to a service's running container",
+        needs_project: true,
+        args: vec![
+            ArgDef::Value {
+                id: "DETACH_KEYS",
+                long: "detach-keys",
+                short: None,
+                help: "Override the key sequence for detaching from a container",
+            },
+            ArgDef::Number {
+                id: "INDEX",
+                long: "index",
+                short: None,
+                help: "Index of the container if service has multiple replicas",
+            },
+            ArgDef::Flag {
+                id: "NO_STDIN",
+                long: "no-stdin",
+                short: None,
+                help: "Do not attach STDIN",
+            },
+            ArgDef::Flag {
+                id: "SIG_PROXY",
+                long: "sig-proxy",
+                short: None,
+                help: "Proxy all received signals to the process",
+            },
+            ArgDef::Container,
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose bridge
+// https://docs.docker.com/reference/cli/docker/compose/bridge/
+// ============================================================================
+pub fn bridge_def() -> CommandDef {
+    CommandDef {
+        name: "bridge",
+        about: "Convert compose files into another model",
+        needs_project: true,
+        args: vec![ArgDef::ServiceWithCommand],
+    }
+}
+
+// ============================================================================
+// docker compose commit
+// https://docs.docker.com/reference/cli/docker/compose/commit/
+// ============================================================================
+pub fn commit_def() -> CommandDef {
+    CommandDef {
+        name: "commit",
+        about: "Create a new image from a service container's changes",
+        needs_project: true,
+        args: vec![
+            ArgDef::Value {
+                id: "AUTHOR",
+                long: "author",
+                short: Some('a'),
+                help: "Author (e.g., \"John Hannibal Smith <hannibal@a-team.com>\")",
+            },
+            ArgDef::Value {
+                id: "CHANGE",
+                long: "change",
+                short: Some('c'),
+                help: "Apply Dockerfile instruction to the created image",
+            },
+            ArgDef::Number {
+                id: "INDEX",
+                long: "index",
+                short: None,
+                help: "Index of the container if service has multiple replicas",
+            },
+            ArgDef::Value {
+                id: "MESSAGE",
+                long: "message",
+                short: Some('m'),
+                help: "Commit message",
+            },
+            ArgDef::Flag {
+                id: "PAUSE",
+                long: "pause",
+                short: Some('p'),
+                help: "Pause container during commit",
+            },
+            ArgDef::ServiceWithCommand,
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose cp
+// https://docs.docker.com/reference/cli/docker/compose/cp/
+// ============================================================================
+pub fn cp_def() -> CommandDef {
+    CommandDef {
+        name: "cp",
+        about: "Copy files/folders between a service container and the local filesystem",
+        needs_project: true,
+        args: vec![
+            ArgDef::Flag {
+                id: "ALL",
+                long: "all",
+                short: None,
+                help: "Include containers created by the run command",
+            },
+            ArgDef::Flag {
+                id: "ARCHIVE",
+                long: "archive",
+                short: Some('a'),
+                help: "Archive mode (copy all uid/gid information)",
+            },
+            ArgDef::Flag {
+                id: "FOLLOW_LINK",
+                long: "follow-link",
+                short: Some('L'),
+                help: "Always follow symbol link in SRC_PATH",
+            },
+            ArgDef::Number {
+                id: "INDEX",
+                long: "index",
+                short: None,
+                help: "Index of the container if service has multiple replicas",
+            },
+            ArgDef::ServiceWithCommand,
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose export
+// https://docs.docker.com/reference/cli/docker/compose/export/
+// ============================================================================
+pub fn export_def() -> CommandDef {
+    CommandDef {
+        name: "export",
+        about: "Export a service container's filesystem as a tar archive",
+        needs_project: true,
+        args: vec![
+            ArgDef::Number {
+                id: "INDEX",
+                long: "index",
+                short: None,
+                help: "Index of the container if service has multiple replicas",
+            },
+            ArgDef::Value {
+                id: "OUTPUT",
+                long: "output",
+                short: Some('o'),
+                help: "Write to a file, instead of STDOUT",
+            },
+            ArgDef::Container,
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose publish
+// https://docs.docker.com/reference/cli/docker/compose/publish/
+// ============================================================================
+pub fn publish_def() -> CommandDef {
+    CommandDef {
+        name: "publish",
+        about: "Publish compose application",
+        needs_project: true,
+        args: vec![
+            ArgDef::Flag {
+                id: "APP",
+                long: "app",
+                short: None,
+                help: "Published compose application (includes referenced images)",
+            },
+            ArgDef::Value {
+                id: "OCI_VERSION",
+                long: "oci-version",
+                short: None,
+                help: "OCI image/artifact specification version",
+            },
+            ArgDef::Flag {
+                id: "RESOLVE_IMAGE_DIGESTS",
+                long: "resolve-image-digests",
+                short: None,
+                help: "Pin image tags to digests",
+            },
+            ArgDef::Flag {
+                id: "WITH_ENV",
+                long: "with-env",
+                short: None,
+                help: "Include environment variables in the published OCI artifact",
+            },
+            ArgDef::Flag {
+                id: "YES",
+                long: "yes",
+                short: Some('y'),
+                help: "Assume 'yes' as answer to all prompts",
+            },
+            ArgDef::Container,
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose scale
+// https://docs.docker.com/reference/cli/docker/compose/scale/
+// ============================================================================
+pub fn scale_def() -> CommandDef {
+    CommandDef {
+        name: "scale",
+        about: "Scale services",
+        needs_project: true,
+        args: vec![
+            ArgDef::Flag {
+                id: "NO_DEPS",
+                long: "no-deps",
+                short: None,
+                help: "Don't start linked services",
+            },
+            ArgDef::Services,
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose stats
+// https://docs.docker.com/reference/cli/docker/compose/stats/
+// ============================================================================
+pub fn stats_def() -> CommandDef {
+    CommandDef {
+        name: "stats",
+        about: "Display a live stream of container(s) resource usage statistics",
+        needs_project: true,
+        args: vec![
+            ArgDef::Flag {
+                id: "ALL",
+                long: "all",
+                short: Some('a'),
+                help: "Show all containers (default shows just running)",
+            },
+            ArgDef::Value {
+                id: "FORMAT",
+                long: "format",
+                short: None,
+                help: "Format output using a custom template",
+            },
+            ArgDef::Flag {
+                id: "NO_STREAM",
+                long: "no-stream",
+                short: None,
+                help: "Disable streaming stats and only pull the first result",
+            },
+            ArgDef::Flag {
+                id: "NO_TRUNC",
+                long: "no-trunc",
+                short: None,
+                help: "Do not truncate output",
+            },
+            ArgDef::Services,
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose version
+// https://docs.docker.com/reference/cli/docker/compose/version/
+// ============================================================================
+pub fn version_def() -> CommandDef {
+    CommandDef {
+        name: "version",
+        about: "Show the Docker Compose version information",
+        needs_project: false,
+        args: vec![
+            ArgDef::Choice {
+                id: "FORMAT",
+                long: "format",
+                short: Some('f'),
+                help: "Format the output",
+                choices: &["pretty", "json"],
+            },
+            ArgDef::Flag {
+                id: "SHORT",
+                long: "short",
+                short: None,
+                help: "Shows only Compose's version number",
+            },
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose volumes
+// https://docs.docker.com/reference/cli/docker/compose/volumes/
+// ============================================================================
+pub fn volumes_def() -> CommandDef {
+    CommandDef {
+        name: "volumes",
+        about: "List volumes",
+        needs_project: true,
+        args: vec![
+            ArgDef::Value {
+                id: "FORMAT",
+                long: "format",
+                short: None,
+                help: "Format output using a custom template",
+            },
+            ArgDef::Flag {
+                id: "QUIET",
+                long: "quiet",
+                short: Some('q'),
+                help: "Only display volume names",
+            },
+            ArgDef::Services,
+        ],
+    }
+}
+
+// ============================================================================
+// docker compose wait
+// https://docs.docker.com/reference/cli/docker/compose/wait/
+// ============================================================================
+pub fn wait_def() -> CommandDef {
+    CommandDef {
+        name: "wait",
+        about: "Block until containers of all (or specified) services stop",
+        needs_project: true,
+        args: vec![
+            ArgDef::Flag {
+                id: "DOWN_PROJECT",
+                long: "down-project",
+                short: None,
+                help: "Drops project when the first container stops",
+            },
+            ArgDef::Services,
+        ],
+    }
+}
+
 /// Get all command definitions
 pub fn all_definitions() -> Vec<CommandDef> {
     vec![
+        attach_def(),
+        bridge_def(),
         build_def(),
+        commit_def(),
         config_def(),
+        cp_def(),
         create_def(),
         down_def(),
         events_def(),
         exec_def(),
+        export_def(),
         images_def(),
         kill_def(),
         logs_def(),
@@ -1264,16 +1612,22 @@ pub fn all_definitions() -> Vec<CommandDef> {
         pause_def(),
         port_def(),
         ps_def(),
+        publish_def(),
         pull_def(),
         push_def(),
         restart_def(),
         rm_def(),
         run_def(),
+        scale_def(),
         start_def(),
+        stats_def(),
         stop_def(),
         top_def(),
         unpause_def(),
         up_def(),
+        version_def(),
+        volumes_def(),
+        wait_def(),
         watch_def(),
     ]
 }
@@ -1284,7 +1638,7 @@ mod tests {
 
     #[test]
     fn test_all_definitions_count() {
-        assert_eq!(all_definitions().len(), 24);
+        assert_eq!(all_definitions().len(), 35);
     }
 
     #[test]

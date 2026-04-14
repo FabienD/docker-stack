@@ -164,12 +164,12 @@ Key test files:
 - `utils/docker.rs` - Command preparation tests
 - `utils/system_tests.rs` - System execution tests
 
-Total: **148 unit tests**
+Total: **196 unit tests**
 
 ### Supported Docker Compose Commands
 
-All 24 docker compose commands are supported:
-`build`, `config`, `create`, `down`, `events`, `exec`, `images`, `kill`, `logs`, `ls`, `pause`, `port`, `ps`, `pull`, `push`, `restart`, `rm`, `run`, `start`, `stop`, `top`, `unpause`, `up`, `watch`
+All 35 docker compose commands are supported:
+`attach`, `bridge`, `build`, `commit`, `config`, `cp`, `create`, `down`, `events`, `exec`, `export`, `images`, `kill`, `logs`, `ls`, `pause`, `port`, `ps`, `publish`, `pull`, `push`, `restart`, `rm`, `run`, `scale`, `start`, `stats`, `stop`, `top`, `unpause`, `up`, `version`, `volumes`, `wait`, `watch`
 
 ### CLI-specific Commands
 

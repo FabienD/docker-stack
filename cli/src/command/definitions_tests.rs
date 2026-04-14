@@ -707,4 +707,276 @@ mod tests {
         ]);
         assert!(result.is_err(), "Should reject non-numeric value");
     }
+
+    // ========================================================================
+    // docker compose attach
+    // ========================================================================
+    #[test]
+    fn test_attach_minimal() {
+        let def = attach_def();
+        let matches = def.to_clap_command().get_matches_from(vec!["attach", "myproject", "web"]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["attach", "web"]);
+    }
+
+    #[test]
+    fn test_attach_with_flags() {
+        let def = attach_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "attach", "--no-stdin", "--index", "2", "myproject", "web"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["attach", "--index", "2", "--no-stdin", "web"]);
+    }
+
+    // ========================================================================
+    // docker compose bridge
+    // ========================================================================
+    #[test]
+    fn test_bridge_with_subcommand() {
+        let def = bridge_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "bridge", "myproject", "convert"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["bridge", "convert"]);
+    }
+
+    // ========================================================================
+    // docker compose commit
+    // ========================================================================
+    #[test]
+    fn test_commit_minimal() {
+        let def = commit_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "commit", "myproject", "web"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["commit", "web"]);
+    }
+
+    #[test]
+    fn test_commit_with_message_and_tag() {
+        let def = commit_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "commit", "-m", "snapshot", "myproject", "web", "myimage:1.0"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["commit", "--message", "snapshot", "web", "myimage:1.0"]);
+    }
+
+    // ========================================================================
+    // docker compose config
+    // ========================================================================
+    #[test]
+    fn test_config_minimal() {
+        let def = config_def();
+        let matches = def.to_clap_command().get_matches_from(vec!["config", "myproject"]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["config"]);
+    }
+
+    #[test]
+    fn test_config_with_services_flag() {
+        let def = config_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "config", "--services", "--quiet", "myproject"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["config", "--quiet", "--services"]);
+    }
+
+    #[test]
+    fn test_config_with_format_choice() {
+        let def = config_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "config", "--format", "json", "myproject"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["config", "--format", "json"]);
+    }
+
+    // ========================================================================
+    // docker compose cp
+    // ========================================================================
+    #[test]
+    fn test_cp_minimal() {
+        let def = cp_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "cp", "myproject", "web:/etc/conf", "./conf"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["cp", "web:/etc/conf", "./conf"]);
+    }
+
+    #[test]
+    fn test_cp_with_archive_flag() {
+        let def = cp_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "cp", "-a", "myproject", "web:/etc/conf", "./conf"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["cp", "--archive", "web:/etc/conf", "./conf"]);
+    }
+
+    // ========================================================================
+    // docker compose export
+    // ========================================================================
+    #[test]
+    fn test_export_minimal() {
+        let def = export_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "export", "myproject", "web"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["export", "web"]);
+    }
+
+    #[test]
+    fn test_export_with_output() {
+        let def = export_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "export", "-o", "web.tar", "myproject", "web"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["export", "--output", "web.tar", "web"]);
+    }
+
+    // ========================================================================
+    // docker compose publish
+    // ========================================================================
+    #[test]
+    fn test_publish_minimal() {
+        let def = publish_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "publish", "myproject", "myregistry/myapp:1.0"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["publish", "myregistry/myapp:1.0"]);
+    }
+
+    #[test]
+    fn test_publish_with_flags() {
+        let def = publish_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "publish", "--with-env", "--resolve-image-digests", "myproject", "myapp:1"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["publish", "--resolve-image-digests", "--with-env", "myapp:1"]);
+    }
+
+    // ========================================================================
+    // docker compose scale
+    // ========================================================================
+    #[test]
+    fn test_scale_minimal() {
+        let def = scale_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "scale", "myproject", "web=3"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["scale", "web=3"]);
+    }
+
+    #[test]
+    fn test_scale_with_no_deps() {
+        let def = scale_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "scale", "--no-deps", "myproject", "web=3", "api=2"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["scale", "--no-deps", "web=3", "api=2"]);
+    }
+
+    // ========================================================================
+    // docker compose stats
+    // ========================================================================
+    #[test]
+    fn test_stats_minimal() {
+        let def = stats_def();
+        let matches = def.to_clap_command().get_matches_from(vec!["stats", "myproject"]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["stats"]);
+    }
+
+    #[test]
+    fn test_stats_with_flags() {
+        let def = stats_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "stats", "-a", "--no-stream", "--no-trunc", "myproject"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["stats", "--all", "--no-stream", "--no-trunc"]);
+    }
+
+    // ========================================================================
+    // docker compose version
+    // ========================================================================
+    #[test]
+    fn test_version_minimal() {
+        let def = version_def();
+        let matches = def.to_clap_command().get_matches_from(vec!["version"]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["version"]);
+    }
+
+    #[test]
+    fn test_version_with_format_and_short() {
+        let def = version_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "version", "-f", "json", "--short"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["version", "--format", "json", "--short"]);
+    }
+
+    #[test]
+    fn test_version_does_not_need_project() {
+        let def = version_def();
+        assert!(!def.needs_project);
+    }
+
+    // ========================================================================
+    // docker compose volumes
+    // ========================================================================
+    #[test]
+    fn test_volumes_minimal() {
+        let def = volumes_def();
+        let matches = def.to_clap_command().get_matches_from(vec!["volumes", "myproject"]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["volumes"]);
+    }
+
+    #[test]
+    fn test_volumes_with_quiet() {
+        let def = volumes_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "volumes", "-q", "myproject"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["volumes", "--quiet"]);
+    }
+
+    // ========================================================================
+    // docker compose wait
+    // ========================================================================
+    #[test]
+    fn test_wait_minimal() {
+        let def = wait_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "wait", "myproject", "web"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["wait", "web"]);
+    }
+
+    #[test]
+    fn test_wait_with_down_project() {
+        let def = wait_def();
+        let matches = def.to_clap_command().get_matches_from(vec![
+            "wait", "--down-project", "myproject", "web", "api"
+        ]);
+        let args = def.prepare_args(&matches);
+        assert_args_eq(args, vec!["wait", "--down-project", "web", "api"]);
+    }
 }
