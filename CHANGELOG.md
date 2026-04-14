@@ -1,5 +1,37 @@
 # Changelog
 
+## 2.1.0 release (2026-04-14)
+
+### New Features
+* **12 new docker compose commands**: CLI now wraps 35 compose commands (up from 23)
+  * `attach` - Attach stdin/stdout/stderr to a running container
+  * `bridge` - Convert compose files into another model
+  * `commit` - Create a new image from a service container's changes
+  * `config` - Parse, resolve and render compose file in canonical format
+  * `cp` - Copy files/folders between a service container and the local filesystem
+  * `export` - Export a service container's filesystem as a tar archive
+  * `publish` - Publish compose application
+  * `scale` - Scale services
+  * `stats` - Display a live stream of container resource usage statistics
+  * `version` - Show the Docker Compose version information
+  * `volumes` - List volumes
+  * `wait` - Block until containers of all (or specified) services stop
+
+### Dependency Updates
+* `tokio` 1.49.0 → 1.51.1
+* `clap` 4.5.60 → 4.6.0
+* `clap_complete` 4.5.66 → 4.6.2
+* `toml` 0.9.12 → 1.1 (major)
+* `toml_edit` 0.23.9 → 0.25 (major)
+* `anyhow` → 1.0.102
+
+### Collection Updates
+* Grafana 12.4.0 → 13.0.0
+* Loki / Promtail 3.6.7 → 3.6.10
+
+### Tests
+* 196 unit tests (up from 171)
+
 ## 2.0.1 release (2026-03-01)
 
 * Update libraries (deps).

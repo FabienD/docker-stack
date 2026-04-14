@@ -36,11 +36,17 @@ macro_rules! define_command_from_def {
 }
 
 // Define all command handlers using the new definitions
+define_command_from_def!(AttachCommand, Attach, attach_def);
+define_command_from_def!(BridgeCommand, Bridge, bridge_def);
 define_command_from_def!(BuildCommand, Build, build_def);
+define_command_from_def!(CommitCommand, Commit, commit_def);
+define_command_from_def!(ConfigCommand, Config, config_def);
+define_command_from_def!(CpCommand, Cp, cp_def);
 define_command_from_def!(CreateCommand, Create, create_def);
 define_command_from_def!(DownCommand, Down, down_def);
 define_command_from_def!(EventsCommand, Events, events_def);
 define_command_from_def!(ExecCommand, Exec, exec_def);
+define_command_from_def!(ExportCommand, Export, export_def);
 define_command_from_def!(ImagesCommand, Images, images_def);
 define_command_from_def!(KillCommand, Kill, kill_def);
 define_command_from_def!(LogsCommand, Logs, logs_def);
@@ -48,26 +54,38 @@ define_command_from_def!(LsCommand, Ls, ls_def);
 define_command_from_def!(PauseCommand, Pause, pause_def);
 define_command_from_def!(PortCommand, Port, port_def);
 define_command_from_def!(PsCommand, Ps, ps_def);
+define_command_from_def!(PublishCommand, Publish, publish_def);
 define_command_from_def!(PullCommand, Pull, pull_def);
 define_command_from_def!(PushCommand, Push, push_def);
 define_command_from_def!(RestartCommand, Restart, restart_def);
 define_command_from_def!(RmCommand, Rm, rm_def);
 define_command_from_def!(RunCommand, Run, run_def);
+define_command_from_def!(ScaleCommand, Scale, scale_def);
 define_command_from_def!(StartCommand, Start, start_def);
+define_command_from_def!(StatsCommand, Stats, stats_def);
 define_command_from_def!(StopCommand, Stop, stop_def);
 define_command_from_def!(TopCommand, Top, top_def);
 define_command_from_def!(UnpauseCommand, Unpause, unpause_def);
 define_command_from_def!(UpCommand, Up, up_def);
+define_command_from_def!(VersionCommand, Version, version_def);
+define_command_from_def!(VolumesCommand, Volumes, volumes_def);
+define_command_from_def!(WaitCommand, Wait, wait_def);
 define_command_from_def!(WatchCommand, Watch, watch_def);
 
 /// Returns all docker compose command handlers
 pub fn get_compose_commands() -> Vec<Box<dyn CommandHandler>> {
     vec![
+        Box::new(AttachCommand),
+        Box::new(BridgeCommand),
         Box::new(BuildCommand),
+        Box::new(CommitCommand),
+        Box::new(ConfigCommand),
+        Box::new(CpCommand),
         Box::new(CreateCommand),
         Box::new(DownCommand),
         Box::new(EventsCommand),
         Box::new(ExecCommand),
+        Box::new(ExportCommand),
         Box::new(ImagesCommand),
         Box::new(KillCommand),
         Box::new(LogsCommand),
@@ -75,16 +93,22 @@ pub fn get_compose_commands() -> Vec<Box<dyn CommandHandler>> {
         Box::new(PauseCommand),
         Box::new(PortCommand),
         Box::new(PsCommand),
+        Box::new(PublishCommand),
         Box::new(PullCommand),
         Box::new(PushCommand),
         Box::new(RestartCommand),
         Box::new(RmCommand),
         Box::new(RunCommand),
+        Box::new(ScaleCommand),
         Box::new(StartCommand),
+        Box::new(StatsCommand),
         Box::new(StopCommand),
         Box::new(TopCommand),
         Box::new(UnpauseCommand),
         Box::new(UpCommand),
+        Box::new(VersionCommand),
+        Box::new(VolumesCommand),
+        Box::new(WaitCommand),
         Box::new(WatchCommand),
     ]
 }
@@ -101,7 +125,7 @@ mod tests {
     #[test]
     fn it_returns_all_compose_commands() {
         let commands = get_compose_commands();
-        assert_eq!(commands.len(), 23);
+        assert_eq!(commands.len(), 35);
     }
 
     #[test]
