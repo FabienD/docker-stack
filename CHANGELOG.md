@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.1.1 release (2026-08-25)
+
+Maintenance release: dependency and docker image updates only, no functional change.
+
+### Dependency Updates
+* `tokio` 1.51.1 → 1.53.1
+* `clap` 4.6.0 → 4.6.6
+* `clap_complete` 4.6.2 → 4.6.9
+* `serde` 1.0.228 → 1.0.229
+* `serde_json` 1.0.149 → 1.0.151
+* `anyhow` 1.0.102 → 1.0.104
+* `async-trait` 0.1.89 → 0.1.92
+* `futures` 0.3.32 → 0.3.34
+* `toml` 1.1.2 → 1.1.4
+* `toml_edit` 0.25.11 → 0.25.13
+* `tabled` 0.20.0 → 0.21.0 (major)
+* `mockall` 0.14.0 → 0.15.0 (major)
+
+### Collection Updates
+* Traefik 3.6 → 3.7
+* Grafana 13.0.0 → 13.0.2
+* Loki 3.6.10 → 3.6.15
+* Promtail 3.6.10 → 3.6.11 — last image published upstream; Promtail is superseded by Grafana Alloy and no longer tracks Loki releases
+
+### Tests
+* 200 unit tests (up from 196) — new coverage on the `dctl infos` table rendering
+
 ## 2.1.0 release (2026-04-14)
 
 ### New Features

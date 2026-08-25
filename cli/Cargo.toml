@@ -1,26 +1,26 @@
 [package]
 name = "dctl"
-version = "2.1.0"
+version = "2.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = { version = "1.51.1", features = ["macros", "rt-multi-thread", "process"] }
-async-trait = { version = "0.1.89" }
-anyhow = { version = "1.0.102" }
-clap = { version = "4.6.0", features = ["cargo"] }
-clap_complete = { version = "4.6.2" }
-toml = { version =  "1.1" }
+tokio = { version = "1.53.1", features = ["macros", "rt-multi-thread", "process"] }
+async-trait = { version = "0.1.92" }
+anyhow = { version = "1.0.104" }
+clap = { version = "4.6.6", features = ["cargo"] }
+clap_complete = { version = "4.6.9" }
+toml = { version =  "1.1.4" }
 dotenvy = { version = "0.15.7" }
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = { version = "1.0.149" }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = { version = "1.0.151" }
 shellexpand = { version = "3.1.2" }
-tabled = { version = "0.20.0" }
-mockall = { version = "0.14.0" }
+tabled = { version = "0.21.0" }
+mockall = { version = "0.15.0" }
 version = { version = "3.0.0" }
-futures = { version = "0.3" }
-toml_edit = { version = "0.25" }
+futures = { version = "0.3.34" }
+toml_edit = { version = "0.25.13" }
 
 [profile.release]
 lto = "thin"

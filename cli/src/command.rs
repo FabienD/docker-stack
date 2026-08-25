@@ -36,3 +36,6 @@ pub mod unregister;
 
 // Command registry (uses definitions.rs)
 pub mod registry;
+
+#[cfg(test)]
+mod infos_tests;
