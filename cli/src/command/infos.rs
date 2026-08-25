@@ -87,12 +87,18 @@ pub async fn exec_projects_infos(
     }
 
     // Print all projects with their status
-    println!(
-        "{}",
-        Table::new(items)
-            .with(Style::modern())
-            .with(Margin::new(0, 0, 1, 1))
-    );
+    println!("{}", render_items_table(items));
 
     Ok(())
+}
+
+/// Render the projects table.
+///
+/// Extracted from `exec_projects_infos` so the rendering can be tested
+/// without mocking docker. This is the only surface `tabled` drives.
+pub fn render_items_table(items: Vec<ComposeItem>) -> String {
+    Table::new(items)
+        .with(Style::modern())
+        .with(Margin::new(0, 0, 1, 1))
+        .to_string()
 }
