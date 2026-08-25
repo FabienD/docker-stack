@@ -16,7 +16,7 @@ dotenvy = { version = "0.15.7" }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = { version = "1.0.151" }
 shellexpand = { version = "3.1.2" }
-tabled = { version = "0.20.0" }
+tabled = { version = "0.21.0" }
 mockall = { version = "0.15.0" }
 version = { version = "3.0.0" }
 futures = { version = "0.3.34" }
