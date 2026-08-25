@@ -158,13 +158,14 @@ Key test files:
 - `command/args.rs` - Argument system tests
 - `command/definitions_tests.rs` - All 24 command definitions tests (65+ tests)
 - `command/registry.rs` - Registry tests
+- `command/infos_tests.rs` - Projects table rendering tests (4 tests)
 - `command/register.rs` - Register command tests
 - `command/unregister.rs` - Unregister command tests
 - `parser/tests.rs` - Config parsing tests
 - `utils/docker.rs` - Command preparation tests
 - `utils/system_tests.rs` - System execution tests
 
-Total: **196 unit tests**
+Total: **200 unit tests**
 
 ### Supported Docker Compose Commands
 
